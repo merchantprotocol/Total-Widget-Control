@@ -12,25 +12,9 @@
 
 ob_end_clean();
 
-if (@file_get_contents( dirname(dirname(__file__)).DS.'license' ))
+$parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
+if (@file_get_contents( dirname(dirname(__file__)).DS.$parts['host'] ))
 {
 	die('1');
 }
 die('0');
-/*
-if (!function_exists('twc_widget_meta_navmenu'))
-{
-	require dirname(dirname(__file__)).DS.'auth.php';
-	if (!function_exists('twc_widget_meta_navmenu'))
-	{
-		if (!file_exists(dirname(dirname(__file__)).DS.'license'))
-		{
-			if ($GLOBALS['TWCAUTH'])
-			{
-				die('0');
-			}
-		}
-	}
-	die('1');
-}
-*/

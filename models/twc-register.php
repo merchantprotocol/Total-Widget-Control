@@ -10,8 +10,9 @@
  * 
  */
 
+//loading libraries
+require_once ABSPATH.'wp-admin'.DS.'includes'.DS.'plugin.php';
 
-//delete_option('twc_unique_registration_key');die();
 //initializing variables
 $current_screen = twc_get_current_screen();
 $first = get_option('twc_unique_registration_key', true);
@@ -21,12 +22,13 @@ update_option('twc_unique_registration_key', $uniqueID);
 $domain = 'http://'.str_replace('http://', '', $_SERVER['HTTP_HOST']);
 $parts = parse_url($domain);
 $host = $parts['host'];
-$file_path = plugin_dir_path(dirname(__file__)).'license';
+$file_path = plugin_dir_path(dirname(__file__)).$parts['host'];
+$headers = get_plugin_data( plugin_dir_path(dirname(__file__)).'index.php' );
 
 
 if (!file_exists($file_path)&& $current_screen->action == 'register'&& !isset($_REQUEST[$uniqueID]))
 {
-	$path = "http://community.5twentystudios.com/?view=register-for-free&email=".get_bloginfo('admin_email')."&domain=$domain&type=twc-free&unique=$uniqueID";
+	$path = "http://community.5twentystudios.com/?view=register-for-free&email=".get_bloginfo('admin_email')."&ver=".urlencode($headers['Version'])."&domain=$domain&type=twc-free&unique=$uniqueID";
 	if (!ini_get('allow_url_fopen'))
 	{
 		ini_set('allow_url_fopen', 1);

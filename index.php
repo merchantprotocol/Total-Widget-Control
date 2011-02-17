@@ -11,14 +11,12 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is deisgned to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.0
+ * Version: 1.3
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
  * 
  * 
- * @TODO I need to add an initial setup page that will introduce new users to this system
- * @TODO This plugin should immediately be active for ever user as a default
  * @TODO I need to clean up the twc-nav-menu javascript to only include the js that I need
  * @TODO I need to build in my own set of default widgets and default wrappers
  * @TODO I need to activate shortcodes for widgets

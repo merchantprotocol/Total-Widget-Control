@@ -291,7 +291,6 @@ function twc_default_sidebar( $index )
 {
 	//initializing variables
 	global $wp_registered_sidebars, $wp_registered_widgets, $twc_default_sidebar_widgets, $twc_isDefault;
-	$twc_isDefault = true;
 	
 	if ( is_int($index) ) {
 		$index = "sidebar-$index";
@@ -312,6 +311,7 @@ function twc_default_sidebar( $index )
 	// or if there are no defaults for this sidebar
 	if ($all_count > 0) return false;
 	if (!isset($twc_default_sidebar_widgets[$index])) return false;
+	$twc_isDefault = true;
 	
 	foreach ((array)$twc_default_sidebar_widgets[$index] as $id => $widget)
 	{
@@ -341,6 +341,8 @@ function twc_default_sidebar( $index )
 			$did_one = true;
 		}
 	}
+	$twc_isDefault = false;
+	
 }
 
 /**
@@ -902,7 +904,7 @@ function twc_list_style_twc()
 		return ($view == 'twc');
 	}
 	
-	if (!$GLOBALS['TWCAUTH']) update_user_option($current_user->ID, 'twc_list_style', $view);
+	update_user_option($current_user->ID, 'twc_list_style', $view);
 	return ($view == 'twc');
 }
 
