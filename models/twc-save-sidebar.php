@@ -10,9 +10,8 @@
  * 
  */
 
-//security check
-if (!current_user_can('activate_plugins')) return;
-
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
 
 //initializing variables
 $twc_data = $_REQUEST['twc_data'];

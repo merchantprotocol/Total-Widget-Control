@@ -7,11 +7,12 @@
  * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
  * @Since 1.0
  * 
- * @TODO need to sort the functions alphabetically
  * @TODO I need to loop the widgets after init and create my own global arrays of certain widgets.
  * @TODO After looping the init global widget arrays, they need to be filtered
  */
 
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die( );
 
 /**
  * function adds adjusts the plugin actions

@@ -11,9 +11,8 @@
  * 
  */
 
-//security check
-if (!current_user_can('activate_plugins')) return false;
-
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
 
 //initializing variables
 $widget_id = $_REQUEST['widget_id'];

@@ -10,6 +10,9 @@
  * 
  */
 
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+
 //initializing variables
 $current_screen = twc_get_current_screen();
 

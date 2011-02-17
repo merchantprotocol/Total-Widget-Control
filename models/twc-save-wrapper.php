@@ -10,6 +10,9 @@
  * 
  */
 
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+
 //initializing variables
 $widget = twc_get_widget_from_slug( $_REQUEST['widget-id'] );
 $POST = $widget['p'];

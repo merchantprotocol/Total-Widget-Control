@@ -10,6 +10,9 @@
  * 
  */
 
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+
 ob_end_clean();
 
 $parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);

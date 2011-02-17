@@ -24,7 +24,6 @@
  * 
  */
 
-
 defined('ABSPATH') or die("Cannot access pages directly.");
 
 /**
@@ -49,15 +48,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * @TODO need to set this to call get_option from the db
  * @TODO need to add this as a security check to every file
  */
-defined("TWC_CURRENT_USER_CAN") or define("TWC_CURRENT_USER_CAN", "activate_plugins");
-
-/**
- * The WordPress Version
- * 
- * Function should set the proper wordpress version, so that we can acurratly know 
- * which set of actions and filters to declare
- */
-defined("TWC_WP_VERSION") or define("TWC_WP_VERSION", "3.0");
+defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can("edit_theme_options")) );
 
 /**
  * Startup
@@ -72,23 +63,14 @@ defined("TWC_WP_VERSION") or define("TWC_WP_VERSION", "3.0");
  * @since 1.0
  */
 require_once dirname(__file__).DS."bootstrap.php";
-require_once dirname(__file__).DS."auth.php";
-
-set_controller_path( get_theme_path() );
-set_controller_path( dirname( __FILE__ ) );
-
-/**
- * Loading Resources
- * 
- * These files make up this plugins uniqueness, Hack Away!
- * 
- */
 require_once dirname(__file__).DS."total-widget-control.php";
+require_once dirname(__file__).DS."auth.php";
 
 /**
  * Initialize the Framework
  * 
  */
+set_controller_path( dirname( __FILE__ ) );
 twc_initialize();
 
 

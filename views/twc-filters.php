@@ -10,7 +10,8 @@
  * 
  */
 
-
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
 
 if (twc_inactive_list()) return false;
 

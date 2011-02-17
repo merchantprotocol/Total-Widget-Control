@@ -10,6 +10,9 @@
  * 
  */
 
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+
 //initializing
 $widget_id = $_REQUEST['widget_id'];
 $old_sidebar_id = $_REQUEST['old_sidebar_id'];

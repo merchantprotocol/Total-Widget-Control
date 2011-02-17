@@ -10,7 +10,8 @@
  * 
  */
 
-
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
 
 //initializing variables
 global $wp_registered_widgets, $wp_registered_widget_controls, $sidebars_widgets;

@@ -10,7 +10,8 @@
  * 
  */
 
-
+defined('ABSPATH') or die("Cannot access pages directly.");
+if ( TWC_CURRENT_USER_CANNOT ) wp_die();
 
 ?>
 <?php if ($current_screen->action != 'undo'): ?>

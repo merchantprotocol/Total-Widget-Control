@@ -11,7 +11,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-
+if ( TWC_CURRENT_USER_CANNOT ) wp_die( );
 
 if (!function_exists("byrd_get_show_view")):
 	/**
@@ -24,6 +24,9 @@ if (!function_exists("byrd_get_show_view")):
 	 */
 	function byrd_get_show_view( $name = null )
 	{
+		//reasons to fail
+		if ( TWC_CURRENT_USER_CANNOT ) wp_die( __( 'Cheatin&#8217; uh?' ));
+		
 		$paths = set_controller_path();
 		$theme = get_theme_path();
 		
