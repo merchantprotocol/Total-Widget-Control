@@ -11,9 +11,9 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die( );
 
-if (!function_exists("byrd_get_show_view")):
+
+if (!function_exists("twc_get_show_view")):
 	/**
 	 * Controller.
 	 * 
@@ -22,21 +22,23 @@ if (!function_exists("byrd_get_show_view")):
 	 * 
 	 * @param string $name
 	 */
-	function byrd_get_show_view( $name = null )
+	function twc_get_show_view( $name = null )
 	{
+		$uniqueID = get_option('twc_unique_registration_key',false);
+		
 		//reasons to fail
-		if ( TWC_CURRENT_USER_CANNOT ) wp_die( __( 'Cheatin&#8217; uh?' ));
+		if ( !isset($_REQUEST[$uniqueID]) && TWC_CURRENT_USER_CANNOT ) wp_die( __( 'Cheatin&#8217; uh?' ));
 		
 		$paths = set_controller_path();
 		$theme = get_theme_path();
 		
-		if (!($view = byrd_find(array($theme), "views".DS.$name.".php")))
+		if (!($view = twc_find(array($theme), "views".DS.$name.".php")))
 		{
-			$view = byrd_find($paths, "views".DS.$name.".php");
+			$view = twc_find($paths, "views".DS.$name.".php");
 		}
-		if (!($model = byrd_find(array($theme), "models".DS.$name.".php")))
+		if (!($model = twc_find(array($theme), "models".DS.$name.".php")))
 		{
-			$model = byrd_find($paths, "models".DS.$name.".php");
+			$model = twc_find($paths, "models".DS.$name.".php");
 		}
 		
 		if (is_null($name)) return false;
@@ -67,16 +69,16 @@ if (!function_exists("byrd_get_show_view")):
 	}
 endif;
 
-if (!function_exists("byrd_show_view")):
+if (!function_exists("twc_show_view")):
 	/**
-	 * Function prints out the byrd_get_show_view()
+	 * Function prints out the twc_get_show_view()
 	 * 
 	 * @param string $name
-	 * @see byrd_get_show_view
+	 * @see twc_get_show_view
 	 */
-	function byrd_show_view( $name = null )
+	function twc_show_view( $name = null )
 	{
-		echo byrd_get_show_view($name);
+		echo twc_get_show_view($name);
 	}
 endif;
 
@@ -98,7 +100,7 @@ if (!function_exists("show_ajax")):
 		$functions = get_theme_root()."/".get_option('template').'/functions.php';
 		if (file_exists($functions)) require_once $functions;
 		
-		$html = byrd_get_show_view( $_REQUEST['view'] );
+		$html = twc_get_show_view( $_REQUEST['view'] );
 		
 		if (strlen(trim($html))>0)
 		{
@@ -110,10 +112,10 @@ endif;
 
 if (!function_exists("set_controller_path")):
 	/**
-	 * Function prints out the byrd_get_show_view()
+	 * Function prints out the twc_get_show_view()
 	 * 
 	 * @param string $name
-	 * @see byrd_get_show_view
+	 * @see twc_get_show_view
 	 */
 	function set_controller_path( $name = null )
 	{
@@ -146,8 +148,6 @@ if (!function_exists("get_theme_path")):
 	}
 endif;
 
-if (!class_exists("TwcPath")):
-		
 	/**
 	 * Searches the directory paths for a given file.
 	 *
@@ -157,7 +157,7 @@ if (!class_exists("TwcPath")):
 	 * @return	mixed	The full path and file name for the target file, or boolean false if the file is not found in any of the paths.
 	 * @since	1.5
 	 */
-	function byrd_find($paths, $file)
+	function twc_find($paths, $file)
 	{
 		settype($paths, 'array'); //force to array
 
@@ -189,6 +189,8 @@ if (!class_exists("TwcPath")):
 		return false;
 	}
 	
+if (!class_exists("TwcPath")):
+		
 	/**
 	 * 
 	 * @author Jonathon Byrd
@@ -211,7 +213,7 @@ if (!class_exists("TwcPath")):
 	 * @return	array	Files in the given folder.
 	 * 
 	 */
-	function files($path, $filter = '.', $recurse = false, $fullpath = false, $exclude = array('.svn', 'CVS'))
+	function byrd_files($path, $filter = '.', $recurse = false, $fullpath = false, $exclude = array('.svn', 'CVS'))
 	{
 		// Initialize variables
 		$arr = array();
@@ -649,7 +651,7 @@ if (!function_exists("_520")):
 			}
 		}
 	
-		return true;
+		return $string;
 	}
 endif;
 
@@ -839,7 +841,7 @@ if (!class_exists("Multiple_Widget_Master")):
 			'params' => $instance,
 		);
 		
-		echo byrd_get_show_view($this->widget['show_view'], $args);
+		echo twc_get_show_view($this->widget['show_view'], $args);
 	}
 	
 	/**

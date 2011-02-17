@@ -11,7 +11,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <tr id="edit-<?php echo $widget_id; ?>" class="alternate inline-edit-row inline-edit-row-page quick-edit-row quick-edit-row-page inline-editor" style="width:100%;">

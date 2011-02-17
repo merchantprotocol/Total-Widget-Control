@@ -11,7 +11,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing
 set_user_setting( 'widgets_access', 'on' );

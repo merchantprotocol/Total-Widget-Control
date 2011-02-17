@@ -1,4 +1,5 @@
 
+.buy_option {margin:10px 0;margin-left:30px;}
 #post-body li {border:none !important;}
 .major-publishing-actions h3 {margin:0;padding:0;}
 #post-body-content {padding-left: 15px!important;}
@@ -26,13 +27,12 @@ div#widgets-left {margin-right: 0px;}
 li .sub-hidden {display:none;}
 .float_img_left {position:relative;float:left;margin:12px; border:10px solid #ccc;}
 .twenty_wrapper a.twenty {text-decoration:none;}
-.twcp #post-body, .twcp, .twcp a {color:#ccc !important;cursor:none !important;}
 #message a {padding-left:10px;text-decoration:none;font-size:11px;}
 a.twc_checkmark {background: url(../../../../wp-admin/images/xit.gif) no-repeat;
 margin: 10px 5px 0 0px;cursor: pointer;width: 10px;height: 10px;display: block;
 float: left;text-indent: -9999px;overflow: hidden;padding:0 !important;}
 a.twc_checkmark:hover {background-position:-10px 0;}
-.twc_auth {width:600px;border:10px solid #ccc;background:#fff;border-radius:10px;-moz-border-radius: 10px;height:350px;position:relative;margin: 50px 0 0 100px;}
+.twc_auth {width:600px;border:10px solid #ccc;background:#fff;border-radius:10px;-moz-border-radius: 10px;position:relative;margin: 50px 0 0 100px;}
 .twc_auth iframe {width:560px;margin-left:18px;border:2px solid #ccc;height:250px;border-radius:5px;-moz-border-radius:5px;}
 .twc_auth h1 {margin-left:20px;color:#555;text-shadow: 1px 1px #ccc;}
 .twc_auth .button-primary {position:relative;float:right;margin:15px 0;}

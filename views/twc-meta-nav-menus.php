@@ -8,11 +8,10 @@
  * @Since 1.0
  * 
  * 
- * 
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 // Load all the nav menu interface functions
 require_once( ABSPATH . 'wp-admin/includes/nav-menu.php' );

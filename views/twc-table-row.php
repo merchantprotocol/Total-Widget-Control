@@ -11,7 +11,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <?php if ($current_screen->action != 'undo'): ?>
@@ -27,7 +27,7 @@ class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
 			</a>
 			
 			<span id="the_title-<?php echo $widget['id']; ?>">
-				<?php echo apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :'')); ?>
+				<?php echo apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget); ?>
 			</span>
 		</strong>
 		<br/><?php echo $widget['callback'][0]->widget_options['description']; ?>

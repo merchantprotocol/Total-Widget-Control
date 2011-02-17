@@ -11,7 +11,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die();
+if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 $current_screen = twc_get_current_screen();
@@ -25,9 +25,33 @@ if ($current_screen->action != 'auth') return false;
 	<h1>Total Widget Control Registration</h1>
 	<iframe src="http://community.5twentystudios.com/twc-terms-and-conditions/"></iframe>
 	
-	<input type="submit" name="action" class="button-secondary" value="I Don't Agree" 
+	<div class="buy_option">
+		<label>
+		<input type="radio" name="license" value="1" checked="checked"/>
+		<span>I'd like to purchase a pro license</span>
+		</label>
+	</div>
+	<div class="buy_option">
+		<label>
+		<input type="radio" name="license" value="2"/>
+		<span>I've already purchased a pro license</span>
+		</label>
+	</div>
+	<div class="buy_option">
+		<label>
+		<input type="radio" name="license" value="0"/>
+		<span>I'll just try the free version, thanks!</span>
+		</label>
+	</div>
+	
+	<input type="button" name="action" class="button-secondary" value="I Don't Agree" 
 	onClick="javascript:window.location.href='<?php bloginfo('url'); ?>/wp-admin/widgets.php?list_style=wp';" />
 	
-	<input type="submit" name="action" class="button-primary" value="I Agree" 
+	<input type="submit" class="button-primary" value="I Agree" 
+	onClick="jQuery('#twc-widget-wrap').attr('action', '<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register');jQuery('#twc-widget-wrap').unbind('submit');return true;" />
+	
+	<!-- 
 	onClick="javascript:window.location.href='<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register';" />
+	 -->
+	<div class="clear"></div>
 </div>

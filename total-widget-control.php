@@ -12,7 +12,7 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-if ( TWC_CURRENT_USER_CANNOT ) wp_die( );
+
 
 /**
  * function adds adjusts the plugin actions
@@ -172,11 +172,11 @@ function twc_controller()
 			$view = 'twc-edit';
 			break;
 		case 'delete': 
-			byrd_get_show_view('twc-trash-instance');
+			twc_get_show_view('twc-trash-instance');
 			$view = 'twc-table';
 			break;
 		case 'save': 
-			byrd_get_show_view('twc-save-edit');
+			twc_get_show_view('twc-save-edit');
 			$view = 'twc-add';
 			break;
 		case 'add':
@@ -486,23 +486,22 @@ function twc_display_the_widget($instance, $widget, $args)
 /**
  * function returns true if the widget is to be displayed
  *
- * @param unknown_type $display
- * @param unknown_type $widget
+ * @param boolean $current
+ * @param array $widget
  * @return unknown
  */
-function twc_display_if_excluded( $display, $widget )
+function twc_display_if_excluded( $current, $widget )
 {
 	//initializing variables
 	global $twc_isDefault;
 	
 	//check to see if we're even going to load this widget
-	$isMatch = (is_array($widget['p']['menu_item_object_id']) && in_array(twc_get_object_id(), (array)$widget['p']['menu_item_object_id']));
 	$isExclude = (isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude');
 	
-	if (!$twc_isDefault && ((!$isMatch && !$isExclude) || ($isMatch && $isExclude))) 
+	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
 		return false;
 	
-	return false;
+	return true;
 }
 
 /**
@@ -864,17 +863,19 @@ function twc_initialize()
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
+	add_filter('init', 'twc_registration', 1000);
+	add_filter('init', 'twc_receive_license', 1000);
 	
-	function twc_register(){ byrd_show_view('twc-register'); }
+	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
 	function twc_destruct(){ _520(); exit(); }
 	function twc_admin_notices(){ add_action('admin_notices', 'read_520_rss'); }
-	function twc_view_screen_options(){ return byrd_get_show_view('twc-screen-options'); }
-	function twc_view_help_home(){ return byrd_get_show_view('twc-help-home'); }
-	function twc_view_help_edit(){ return byrd_get_show_view('twc-help-edit'); }
-	function twc_view_help_add(){ return byrd_get_show_view('twc-help-add'); }
-	function twc_view_widget_wrap(){ byrd_show_view('twc-widget-wrap'); }
-	function twc_view_auth(){ byrd_show_view('twc-auth'); }
+	function twc_view_screen_options(){ return twc_get_show_view('twc-screen-options'); }
+	function twc_view_help_home(){ return twc_get_show_view('twc-help-home'); }
+	function twc_view_help_edit(){ return twc_get_show_view('twc-help-edit'); }
+	function twc_view_help_add(){ return twc_get_show_view('twc-help-add'); }
+	function twc_view_widget_wrap(){ twc_show_view('twc-widget-wrap'); }
+	function twc_view_auth(){ twc_show_view('twc-auth'); }
 	if (!array_key_exists('TWCAUTH', $GLOBALS)) $GLOBALS['TWCAUTH'] = true;
 	
 }
@@ -1030,6 +1031,81 @@ function twc_register_placeholder_sidebar()
 		'before_title' => '',
 		'after_title' => '',
 	));
+}
+
+/**
+ * function is responsible for pinging for a license and redirecting if necessary
+ *
+ * @return unknown
+ */
+function twc_registration()
+{
+	//loading libraries
+	require_once ABSPATH.'wp-admin'.DS.'includes'.DS.'plugin.php';
+	
+	//initializing variables
+	$current_screen = twc_get_current_screen();
+	$first = get_option('twc_unique_registration_key', true);
+	$uniqueID = get_option('twc_unique_registration_key', create_guid());
+	update_option('twc_unique_registration_key', $uniqueID);
+	
+	//reasons to fail
+	if ($current_screen->action != 'register') return false;
+	if (isset($_REQUEST[$uniqueID]) || !isset($_REQUEST['license'])) return false;
+	
+	//initializing variables
+	$headers = get_plugin_data( dirname(__file__).DS.'index.php' );
+	$domain = 'http://'.str_replace('http://', '', $_SERVER['HTTP_HOST']);
+	$file_path = plugin_dir_path(dirname(__file__)).$parts['host'];
+	
+	switch($_REQUEST['license'])
+	{
+		case '1': case '2': $type = 'twc-pro'; break;
+		default: $type = 'twc-free'; break;
+	}
+	
+	$path = "http://community.5twentystudios.com/?view=register-for-free&email=".
+		get_bloginfo('admin_email')."&ver=".urlencode($headers['Version']).
+		"&domain=".urlencode($domain)."&type=$type&unique=$uniqueID";
+	
+	if (ini_get('allow_url_fopen') && $result = @file_get_contents($path))
+	{
+		
+	}
+	else 
+	{
+		$curl = curl_init($path);
+	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+	    $result = curl_exec($curl);
+	    curl_close($curl);
+	}
+	if (trim($result))
+	{
+		$result = trim(str_replace("\r\n",'', $result));
+		header('Location: '.$result);
+		exit();
+	}
+	return false;
+}
+
+/**
+ * function is responsible for saving the license file if its sent
+ *
+ * @return false
+ */
+function twc_receive_license()
+{
+	//initializing variables
+	$uniqueID = get_option('twc_unique_registration_key', false);
+	$domain = 'http://'.str_replace('http://', '', $_SERVER['HTTP_HOST']);
+	$parts = parse_url($domain);
+	$file_path = dirname(__file__).DS.$parts['host'];
+	
+	if (!isset($_REQUEST[$uniqueID])) return false;
+	
+	@file_put_contents($file_path, $_REQUEST[$uniqueID]);
+	return false;
 }
 
 /**
@@ -1312,7 +1388,7 @@ function twc_view_switch()
 	if ((!$GLOBALS['TWCAUTH']) && (twc_list_style_twc() 
 	|| $current_screen->parent_base != 'widgets')) return false;
 	
-	echo '<div>'.byrd_get_show_view('twc-view-switch').'</div>';
+	echo '<div>'.twc_get_show_view('twc-view-switch').'</div>';
 	
 }
 
@@ -1381,10 +1457,11 @@ function twcp_widget_wrapper( $display, $widget )
 	//initializing variables
 	$path = TwcPath::clean(get_theme_path().'/widget-wrappers/');
 	$hasWrapper = (!isset($widget['p']['twcp_wrapper_file']) || !trim($widget['p']['twcp_wrapper_file']));
-	$wrapper = byrd_find(array($path), @$widget['p']['twcp_wrapper_file']);
+	$wrapper = twc_find(array($path), @$widget['p']['twcp_wrapper_file']);
 	
 	//reasons to return
-	if (!$hasWrapper || !$wrapper) return $display;
+	if (!$hasWrapper || !$wrapper || !is_file($wrapper) || !file_exists($wrapper)) 
+		return $display;
 	
 	ob_start();
 	require $wrapper;
