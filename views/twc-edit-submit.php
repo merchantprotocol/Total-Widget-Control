@@ -13,9 +13,6 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-//initializing variables
-global $widget;
-
 ?>
 <div class="postbox">
 	<h3 class="hndle"><span>Publish</span></h3>
@@ -31,72 +28,83 @@ global $widget;
 			<div class="clear"></div>
 		</div>
 	
-		<div id="misc-publishing-actions" class="twcp">
+		<div id="misc-publishing-actions" class="twcp twcpi">
 			<div class="misc-pub-section">
 				<label for="post_status">Status:</label>
-				<span id="post-status-display">Enabled</span>
+				<span id="post-status-display"><?php echo $twcp_status; ?></span>
 				<a href="#" class="edit-post-status hide-if-no-js" tabindex="4">Edit</a>
 				
 				<div id="post-status-select" class="hide-if-js">
-					<input type="hidden" name="hidden_post_status" id="hidden_post_status" value="draft">
-					<select name="post_status" id="post_status" tabindex="4">
-						<option value="pending">Pending Review</option>
-						<option selected="selected" value="draft">Draft</option>
+				<p>
+					<input type="hidden" id="twcp_status_default" name="twcp_status_default" value="<?php echo $twcp_status; ?>" /> 
+					<select name="twcp_status" id="twcp_status" tabindex="4">
+						<option <?php echo (($twcp_status == 'enabled') ? 'selected="selected"':'');?> value="enabled">Enabled</option>
+						<option <?php echo (($twcp_status == 'disabled') ? 'selected="selected"':'');?> value="disabled">Disabled</option>
 					</select>
-					<a href="#post_status" class="save-post-status hide-if-no-js button">OK</a>
-					<a href="#post_status" class="cancel-post-status hide-if-no-js">Cancel</a>
+					<a href="#" class="twcp_toggler_status hide-if-no-js button">OK</a>
+					<a href="#" class="twcp_toggler_status_cancel hide-if-no-js">Cancel</a>
+				</p>
 				</div>
 			</div>
 			<div class="misc-pub-section " id="visibility">
 				Visibility: 
-				<span id="post-visibility-display">Public</span>
+				<span id="post-visibility-display"><?php echo $twcp_visibility; ?></span>
 				<a href="#" class="edit-visibility hide-if-no-js">Edit</a>
 				
 				<div id="post-visibility-select" class="hide-if-js">
-					<input type="checkbox" style="display:none" name="hidden_post_sticky" id="hidden-post-sticky" value="sticky">
-					
-					
-					<input type="radio" name="visibility" id="visibility-radio-public" value="public" checked="checked"> <label for="visibility-radio-public" class="selectit">Public</label><br>
-					<span id="sticky-span"><input id="sticky" name="sticky" type="checkbox" value="sticky" tabindex="4"> <label for="sticky" class="selectit">Stick this post to the front page</label><br></span>
-					<input type="radio" name="visibility" id="visibility-radio-password" value="password"> <label for="visibility-radio-password" class="selectit">Password protected</label><br>
-					<span id="password-span"><label for="post_password">Password:</label> <input type="text" name="post_password" id="post_password" value=""><br></span>
-					<input type="radio" name="visibility" id="visibility-radio-private" value="private"> <label for="visibility-radio-private" class="selectit">Private</label><br>
-					
-					<p>
-					 <a href="#visibility" class="save-post-visibility hide-if-no-js button">OK</a>
-					 <a href="#visibility" class="cancel-post-visibility hide-if-no-js">Cancel</a>
-					</p>
+				<p>
+					<span class="checkspace">
+						<input id="twcp_visible_parent" name="twcp_visible_parent" <?php echo ($twcp_visible_parent == 'parent') ?'checked="checked"':''; ?> type="checkbox" value="parent" tabindex="4"> 
+						<label for="twcp_visible_parent" class="selectit">Visible to parent roles also.</label><br>
+					</span>
+					<input type="hidden" id="twcp_visibility_default" name="twcp_visibility_default" value="<?php echo $twcp_visibility; ?>" /> 
+					<select name="twcp_visibility" id="twcp_visibility" tabindex="4">
+						<?php foreach ((array)$options as $value => $text): ?>
+							<option <?php echo (($twcp_visibility == $value) ? 'selected="selected"':'');?> value="<?php echo $value; ?>"><?php echo $text; ?></option>
+						<?php endforeach; ?>
+						<option <?php echo (($twcp_visibility == 'public') ? 'selected="selected"':'');?> value="public">Public</option>
+					</select>
+					<a href="#" class="twcp_toggler_visibility hide-if-no-js button">OK</a>
+					<a href="#" class="twcp_toggler_visibility_cancel hide-if-no-js">Cancel</a>
+				</p>
 				</div>
 			</div>
 
-			<div class="misc-pub-section curtime misc-pub-section-last">
-				<span id="timestamp">Publish <b>immediately</b></span>
+			<div class="misc-pub-section curtime misc-pub-section-last"> 
+				<span id="timestamp"><?php echo $twcp_publish_time_format; ?></span>
 				<a href="#" class="edit-timestamp hide-if-no-js" tabindex="4">Edit</a>
 				<div id="timestampdiv" class="hide-if-js">
+					<input type="hidden" id="twcp_mm_default" name="twcp_mm_default" value="<?php echo $twcp_mm; ?>" /> 
+					<input type="hidden" id="twcp_jj_default" name="twcp_jj_default" value="<?php echo $twcp_jj; ?>" /> 
+					<input type="hidden" id="twcp_YY_default" name="twcp_YY_default" value="<?php echo $twcp_YY; ?>" /> 
+					<input type="hidden" id="twcp_hh_default" name="twcp_hh_default" value="<?php echo $twcp_hh; ?>" /> 
+					<input type="hidden" id="twcp_ii_default" name="twcp_ii_default" value="<?php echo $twcp_ii; ?>" /> 
 					<div class="timestamp-wrap">
-						<select id="mm" name="mm" tabindex="4">
-								<option value="01">Jan</option>
-								<option value="02" selected="selected">Feb</option>
-								<option value="03">Mar</option>
-								<option value="04">Apr</option>
-								<option value="05">May</option>
-								<option value="06">Jun</option>
-								<option value="07">Jul</option>
-								<option value="08">Aug</option>
-								<option value="09">Sep</option>
-								<option value="10">Oct</option>
-								<option value="11">Nov</option>
-								<option value="12">Dec</option>
+					<p>
+						<select id="mm" name="twcp_mm" tabindex="4">
+								<option value="01" <?php echo (($mm == '01') ? 'selected="selected"':'');?>>Jan</option>
+								<option value="02" <?php echo (($mm == '02') ? 'selected="selected"':'');?>>Feb</option>
+								<option value="03" <?php echo (($mm == '03') ? 'selected="selected"':'');?>>Mar</option>
+								<option value="04" <?php echo (($mm == '04') ? 'selected="selected"':'');?>>Apr</option>
+								<option value="05" <?php echo (($mm == '05') ? 'selected="selected"':'');?>>May</option>
+								<option value="06" <?php echo (($mm == '06') ? 'selected="selected"':'');?>>Jun</option>
+								<option value="07" <?php echo (($mm == '07') ? 'selected="selected"':'');?>>Jul</option>
+								<option value="08" <?php echo (($mm == '08') ? 'selected="selected"':'');?>>Aug</option>
+								<option value="09" <?php echo (($mm == '09') ? 'selected="selected"':'');?>>Sep</option>
+								<option value="10" <?php echo (($mm == '10') ? 'selected="selected"':'');?>>Oct</option>
+								<option value="11" <?php echo (($mm == '11') ? 'selected="selected"':'');?>>Nov</option>
+								<option value="12" <?php echo (($mm == '12') ? 'selected="selected"':'');?>>Dec</option>
 						</select>
-						<input type="text" id="jj" name="jj" value="14" size="2" maxlength="2" tabindex="4" autocomplete="off">
-						, <input type="text" id="aa" name="aa" value="2011" size="4" maxlength="4" tabindex="4" autocomplete="off"> 
-						@ <input type="text" id="hh" name="hh" value="02" size="2" maxlength="2" tabindex="4" autocomplete="off"> 
-						: <input type="text" id="mn" name="mn" value="45" size="2" maxlength="2" tabindex="4" autocomplete="off">
+						<input type="text" id="jj" name="twcp_jj" value="<?php echo $twcp_jj; ?>" size="2" maxlength="2" tabindex="4" autocomplete="off">
+						, <input type="text" id="aa" name="twcp_YY" value="<?php echo $twcp_YY; ?>" size="4" maxlength="4" tabindex="4" autocomplete="off"> 
+						@ <input type="text" id="hh" name="twcp_hh" value="<?php echo $twcp_hh; ?>" size="2" maxlength="2" tabindex="4" autocomplete="off"> 
+						: <input type="text" id="mn" name="twcp_ii" value="<?php echo $twcp_ii; ?>" size="2" maxlength="2" tabindex="4" autocomplete="off">
+					</p>
 					</div>
 				
 					<p>
-					<a href="#edit_timestamp" class="save-timestamp hide-if-no-js button">OK</a>
-					<a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js">Cancel</a>
+					<a href="#" class="twcp_toggler_time hide-if-no-js button">OK</a>
+					<a href="#" class="twcp_toggler_time_cancel hide-if-no-js">Cancel</a>
 					</p>
 				</div>
 			</div>

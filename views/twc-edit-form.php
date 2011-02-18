@@ -19,10 +19,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		<label class="hide-if-no-js" style="<?php if ($widget['p']['twcp_widget_title']) echo 'display:none;'; ?>" id="title-prompt-text" for="title">Enter admin title here</label>
 		<input type="text" name="twcp_widget_title" size="30" tabindex="1" value="<?php echo $widget['p']['twcp_widget_title']; ?>" id="title" autocomplete="off">
 	</div>
-	<div class="">
-		<div id="edit-slug-box"></div>
-	</div>
-	<input type="hidden" id="samplepermalinknonce" name="samplepermalinknonce" value="5d260f07eb">
 </div>
 
 <div id="menu-management" class="widget-options">

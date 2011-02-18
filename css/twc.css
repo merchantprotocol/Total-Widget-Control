@@ -1,4 +1,8 @@
 
+.checkspace {margin:0 0 5px 0;display: block;}
+#post-status-display, #post-visibility-display {text-transform:capitalize;}
+#titlewrap {margin-bottom:35px;}
+.widget {border:none;}
 .buy_option {margin:10px 0;margin-left:30px;}
 #post-body li {border:none !important;}
 .major-publishing-actions h3 {margin:0;padding:0;}

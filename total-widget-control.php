@@ -13,7 +13,6 @@
 
 defined('ABSPATH') or die("Cannot access pages directly.");
 
-
 /**
  * function adds adjusts the plugin actions
  *
@@ -521,6 +520,82 @@ function twc_display_if_default( $display, $widget )
 	if ($twc_isDefault && $isDefault) return true;
 	
 	return $display;
+}
+
+/**
+ * function is responsible for displaying proper visibility
+ *
+ * @param unknown_type $display
+ * @param unknown_type $widget
+ */
+function twc_display_if_visiblity( $display, $widget )
+{
+	//reasons to fail
+	if (!$display) return $display;
+	if (!isset($widget['p']['twcp_visibility']) || $widget['p']['twcp_visibility'] == 'public') 
+		return $display;
+	
+	//initializing variables
+	global $current_user, $wp_roles;
+	get_currentuserinfo();
+	$user_roles = $current_user->roles;
+	$user_role = array_shift($user_roles);
+	$isParent = false;
+	$visibleParent = ($widget['p']['twcp_visible_parent'] == 'parent');
+	
+	foreach ((array)$wp_roles->roles as $role => $name)
+	{
+		if ($role == $widget['p']['twcp_visibility'])
+		{
+			break;
+		}
+		if ($role == $user_role)
+		{
+			$isParent = true;
+			break;
+		}
+	}
+	
+	//setting matches
+	$matchedRole = ($user_role == $widget['p']['twcp_visibility']);
+	
+	if ($matchedRole) return true;
+	if ($visibleParent && $isParent) return true;
+	
+	return false;
+}
+
+/**
+ * function is responsible for displaying the status
+ *
+ * @param unknown_type $display
+ * @param unknown_type $widget
+ */
+function twc_display_if_status( $display, $widget )
+{
+	//reasons to fail
+	if (!$display) return false;
+	if ($widget['p']['twcp_status'] != 'enabled') return false;
+	
+	return true;
+}
+
+/**
+ * function is responsible for displaying the status
+ *
+ * @param unknown_type $display
+ * @param unknown_type $widget
+ */
+function twc_display_if_timestamp( $display, $widget )
+{
+	//initializing variables
+	$widget_time = $widget['p']['twcp_publish_time'];
+	
+	//reasons to fail
+	if (!$display) return false;
+	if ($widget_time > time()) return false;
+	
+	return true;
 }
 
 /**
@@ -1131,6 +1206,18 @@ function twc_save_default_sidebar( $fields )
 	
 	if (array_key_exists('twcp_widget_title', $_REQUEST))
 		$fields['twcp_widget_title'] = $_REQUEST['twcp_widget_title'];
+	
+	if (array_key_exists('twcp_status', $_REQUEST))
+		$fields['twcp_status'] = $_REQUEST['twcp_status'];
+	
+	if (array_key_exists('twcp_visibility', $_REQUEST))
+		$fields['twcp_visibility'] = $_REQUEST['twcp_visibility'];
+	
+	if (array_key_exists('twcp_publish_time', $_REQUEST))
+		$fields['twcp_publish_time'] = $_REQUEST['twcp_publish_time'];
+	
+	if (array_key_exists('twcp_visible_parent', $_REQUEST))
+		$fields['twcp_visible_parent'] = $_REQUEST['twcp_visible_parent'];
 	
 	return $fields;
 }
