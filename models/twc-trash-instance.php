@@ -17,7 +17,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 $widget_id = $_REQUEST['widget_id'];
 $old_sidebar_id = $_REQUEST['old_sidebar_id'];
 $delete_permanently = (isset($_REQUEST['delete_confirmation']));
-$widget = twc_get_widget_from_slug( $widget_id );
+$widget = twc_get_widget_by_id( $widget_id );
 
 
 twc_delete_widget_instance($widget_id, $delete_permanently);

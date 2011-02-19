@@ -103,6 +103,64 @@ function twc_add_javascript()
 }
 
 /**
+ * Handles and bulk actions
+ *
+ * @return unknown
+ */
+function twc_bulk_actions()
+{
+	//reasons to fail
+	if (!isset($_REQUEST['twcp_bulk_action'])) return false;
+	if (!isset($_REQUEST['twcp_bulk']) || empty($_REQUEST['twcp_bulk'])) return false;
+	
+	//get the action
+	foreach ((array)$_REQUEST['twcp_bulk_action'] as $action)
+	{
+		if ($action) break;
+	}
+	
+	//reasons to fail
+	if (!$action) return false;
+	
+	switch ($action)
+	{
+		case 'delete':
+			twc_bulk_delete($_REQUEST['twcp_bulk']);
+			break;
+		case 'trash':
+			twc_bulk_trash($_REQUEST['twcp_bulk']);
+			break;
+		default:break;
+	}
+}
+
+/**
+ * function is responsible for permentantely deleting given widgets.
+ *
+ * @param unknown_type $widgets
+ */
+function twc_bulk_delete( $widgets )
+{
+	foreach ((array)$widgets as $widget_id)
+	{
+		twc_delete_widget_instance( $widget_id, $delete_permanently = true );
+	}
+}
+
+/**
+ * function is responsible for trashing widget instances
+ *
+ * @param unknown_type $widgets
+ */
+function twc_bulk_trash( $widgets )
+{
+	foreach ((array)$widgets as $widget_id)
+	{
+		twc_delete_widget_instance( $widget_id, $delete_permanently = false );
+	}
+}
+
+/**
  * Cleans up the sidebar and widget variables
  * 
  * @TODO Make sure that this function cleans up empty sidebar IDs
@@ -133,7 +191,7 @@ function twc_clear( $wp = null )
 		if (is_array($sidebars_widgets[$sidebar_slug]))
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
 			
-			$widget = twc_get_widget_from_slug( $widget_slug );	
+			$widget = twc_get_widget_by_id( $widget_slug );	
 			if (!$widget)
 			{
 				unset($sidebars_widgets[$sidebar_slug]);
@@ -163,26 +221,31 @@ function twc_controller()
 	
 	switch ($current_screen->action)
 	{
-		default: 
+		default:
 			if (count($wp_registered_sidebars) == 1)
 				$view = 'twc-no-sidebars';
 			break;
-		case 'edit': 
+		case 'edit':
 			$view = 'twc-edit';
 			break;
 		case 'delete': 
 			twc_get_show_view('twc-trash-instance');
 			$view = 'twc-table';
 			break;
-		case 'save': 
+		case 'save':
 			twc_get_show_view('twc-save-edit');
 			$view = 'twc-add';
 			break;
 		case 'add':
 			if (isset($_REQUEST['editwidget']) && !empty($_REQUEST['editwidget']))
-			$view = 'twc-edit';
+			{
+				twc_create_new_widget();
+				$view = 'twc-edit';
+			}
 			else 
-			$view = 'twc-add';
+			{
+				$view = 'twc-add';
+			}
 			break;
 	}
 	
@@ -250,7 +313,7 @@ function twc_count_page_sidebar_widgets( $sidebar_id, $object_id = null )
 	
 	foreach ((array)$sidebars_widgets[$sidebar_id] as $widget_id)
 	{
-		$widget = twc_get_widget_from_slug($widget_id);
+		$widget = twc_get_widget_by_id($widget_id);
 		
 		if (in_array($object_id, (array)$widget['p']['menu_item_object_id']))
 			$count++;
@@ -278,6 +341,43 @@ function twc_count_sidebar_widgets( $sidebar_id )
 	
 	$widgets = $sidebars_widgets[$sidebar_id];
 	return count($widgets);
+}
+
+/**
+ * Function is responsible for loading a brand new widget, 
+ * given an id_base
+ * 
+ * Upon the thought of adding a new widget, the system will register a new widget
+ * instance with wordpress and then load from the wp_registered_widgets array
+ *
+ * @param string $id_base
+ * @return 
+ */
+function twc_create_new_widget()
+{
+	//reasons to fail
+	if ( !isset($_GET['addnew']) ) return false;
+	
+	//initializing variables
+	global $wp_registered_widgets, $wp_registered_widget_controls, $widget;
+	$widget_id = $editwidget = $_GET['editwidget'];
+	
+	if ( isset($_GET['base']) && isset($_GET['num']) ) { // multi-widget
+		// Copy minimal info from an existing instance of this widget to a new instance
+		foreach ( $wp_registered_widget_controls as $control ) {
+			if ( $_GET['base'] === $control['id_base'] ) {
+				$control_callback = $control['callback'];
+				$multi_number = (int) $_GET['num'];
+				$control['params'][0]['number'] = $multi_number;
+				$widget_id = $control['id'] = $control['id_base'] . '-' . $multi_number;
+				$wp_registered_widget_controls[$control['id']] = $control;
+				break;
+			}
+		}
+	}
+	$wp_registered_widgets[$widget_id] = $wp_registered_widgets[$editwidget];
+	$widget = $wp_registered_widgets[$widget_id] = twc_get_widget_by_id($widget_id);
+	twc_save_widget_fields( $widget_id, array() );
 }
 
 /**
@@ -368,27 +468,29 @@ function twc_delete_widget_instance( $widget_id, $delete_permanently = false )
 	else
 	{
 		//initializing variables
-		$id_base = _get_widget_id_base($widget_id);
-		$multi_number = str_replace($id_base.'-', '', $widget_id);
+		$widget = twc_get_widget_by_id($widget_id);
 		
-		$_POST = array();
-		$_POST['multi_number'] = $multi_number;
-		$_POST['the-widget-id'] = $widget_id;
-		$_POST['delete_widget'] = '1';
-		$wp_registered_widgets[$widget_id]['params'][0]['number'] = $multi_number;
-		
-		//this calls the widgets update function with the given params
-		foreach ( (array) $wp_registered_widget_updates as $name => $control )
+		if ($widget)
 		{
-			if ( $name != $id_base || !is_callable($control['callback']) )
-				continue;
-		
-			ob_start();
-				call_user_func_array( $control['callback'], $control['params'] );
-			ob_get_clean();
-			break;
+			$_POST = array();
+			$_POST['multi_number'] = $widget['number'];
+			$_POST['the-widget-id'] = $widget['id'];
+			$_POST['delete_widget'] = '1';
+			$wp_registered_widgets[$widget_id]['params'][0]['number'] = $widget['number'];
+			
+			//this calls the widgets update function with the given params
+			foreach ( (array) $wp_registered_widget_updates as $name => $control )
+			{
+				if ( $name != $widget['id_base'] || !is_callable($control['callback']) )
+					continue;
+				
+				ob_start();
+					call_user_func_array( $control['callback'], $control['params'] );
+				ob_get_clean();
+				unset($wp_registered_widgets[$widget_id]);
+				break;
+			}
 		}
-		
 	}
 	
 	wp_set_sidebars_widgets($sidebars_widgets);
@@ -431,7 +533,7 @@ function twc_display_the_sidebar( $params )
 		// since we're running a loop already, then let's take this opportunity
 		// to create the defaults widgets array\
 		// @TODO This data needs to be sorted out just after the init function
-		$_widget = twc_get_widget_from_slug($widget_id);
+		$_widget = twc_get_widget_by_id($widget_id);
 		if ($_widget['p']['twcp_default_sidebar'] == 'default')
 		{
 			$default_sidebar_id = twc_get_widgets_sidebar($widget_id);
@@ -464,7 +566,7 @@ function twc_display_the_widget($instance, $widget, $args)
 {
 	//initializing variables
 	global $wp_query;
-	$widget = twc_get_widget_from_slug($widget->id);
+	$widget = twc_get_widget_by_id($widget->id);
 	
 	//check to see if we're even going to load this widget
 	$display = (is_array($widget['p']['menu_item_object_id']) 
@@ -693,10 +795,10 @@ class twcEmptyWidgetClass
  */
 function twc_filter_list_for()
 {
-	if (!isset($_REQUEST['twc_filter_widgets']) || empty($_REQUEST['twc_filter_widgets'])) return false;
+	if (!isset($_REQUEST['twcp_filter']) || empty($_REQUEST['twcp_filter'])) return false;
 	$_REQUEST['inactive'] = 'active';
 	
-	return $_REQUEST['twc_filter_widgets'];
+	return $_REQUEST['twcp_filter'];
 }
 
 /**
@@ -751,80 +853,54 @@ function twc_get_object_id()
 }
 
 /**
- * Returns the widget data based off of a slug
- * 
- * @TODO RENAME to twc_get_widget_by_id
+ * Function is responsible for loading the widget, validating its variables
+ * and loading the widgets parameters.
  *
- * @param unknown_type $slug
- * @return unknown
+ * @param string $widget_id
+ * @return static reference array $widget
  */
-function twc_get_widget_from_slug( $widget_id )
+function &twc_get_widget_by_id( $widget_id )
 {
-	global $wp_registered_widgets, $wp_registered_widget_controls;
+	//initializing variables
+	global $wp_registered_widgets;
+	static $twc_registered_widgets;
+	$widget = @$wp_registered_widgets[$widget_id];
 	
-	if (!isset($wp_registered_widgets[$widget_id]) && !(isset($_REQUEST['addnew']) && $_REQUEST['addnew'])) 
-		return false;
-	
-	//initializing identification
-	$id_base = (isset($_REQUEST['base']) && !empty($_REQUEST['base']))?$_REQUEST['base']:(($widget_id)? _get_widget_id_base($widget_id):'');
-	$number = (($widget_id)? (str_replace(array($id_base,'-'), '', $widget_id)):'');
-	$number = (isset($_REQUEST['num'])&&!empty($_REQUEST['num']))? (int)trim($_REQUEST['num']):$number;
-	
-	
-	if (!$widget = $wp_registered_widgets[$widget_id])
+	if (!isset($twc_registered_widgets))
 	{
-		if (!$widget = $wp_registered_widgets[$id_base.'-1'])
-		{
-			if (!$widget = $wp_registered_widgets[$id_base.'-2'])
-			{
-				if (!$widget = $wp_registered_widgets[$widget_id])
-				{
-					$widget = $wp_registered_widgets[$widget_id];
-				}
-			}
-		}
+		$twc_registered_widgets = array();
 	}
 	
-	$widget['id_base'] = $id_base;
+	//reasons to fail
+	if (isset($twc_registered_widgets[$widget_id])) return $twc_registered_widgets[$widget_id];
+	if (!$widget) return false;
+	
+	//initializing widget variables
+	$widget['id'] = $widget_id;
+	$widget['id_base'] = _get_widget_id_base($widget_id);
+	$widget['number'] = absint(str_replace($widget['id_base'], '', $widget_id));
+	$widget['multiwidget'] = (isset($widget['number']) && $widget['number']);
+	$widget['sidebar_id'] = twc_get_widgets_sidebar( $widget_id );
+	$widget['position'] = twc_get_widgets_sidebar( $widget_id, 'position' );
 	$widget['p'] = array();
-	$widget['multiwidget'] = false;
-	$widget['number'] = false;
-	if ($number)
+	
+	//validating the widget identification
+	$widget['params'][0]['number'] = $widget['number'];
+	if (is_object( $widget['callback'][0] ))
 	{
-		$widget['multiwidget'] = true;
-		$widget['number'] = $number;
+		$widget['callback'][0]->number = $widget['number'];
+		$widget['callback'][0]->id = $widget['id'];
 	}
 	
-	if (is_callable($widget['callback']) || isset($_REQUEST['addnew']) && $_REQUEST['addnew'])
-	{
-		$widget['id'] = $widget_id;
-		$widget['callback'] = $wp_registered_widget_controls[$widget['id']]['callback'];
-		$widget['params'][0]['number'] = $number;
-		
-		if (is_object($widget['callback'][0]))
-		{
-			$widget['callback'][0]->number = $widget['number'];
-			$widget['callback'][0]->id = $widget['id'];
-		}
-	}
-	
+	//loading settings
 	if (is_callable( array($widget['callback'][0], 'get_settings') ))
 	{
 		$params = $widget['callback'][0]->get_settings();
 		$widget['p'] = $params[$widget['number']];
 	}
-	elseif (isset($wp_registered_widget_controls[$widget_id]['params'])
-	&& !empty($wp_registered_widget_controls[$widget_id]['params']))
-	{
-		$widget['p'] = $params;
-	}
-	elseif (!$widget['multiwidget'])
-	{
-		$singles = get_option('twc_single_widget_data', array());
-		if (isset($singles[$widget['id']])) $widget['p'] = $singles[$widget['id']];
-	}
 	
-	return $widget; 
+	$twc_registered_widgets[$widget_id] = $widget;
+	return $widget;
 }
 
 /**
@@ -884,13 +960,29 @@ function twc_get_widgets_sidebar( $widget_id, $type = 'sidebar' )
 		}
 	}
 	
-	if (!isset($flipped[$widget_id])) return 'wp_inactive_widgets';
-	if (!isset($flipped[$widget_id][$type])) return 'wp_inactive_widgets';
-	if ($type == 'position' && !is_int($flipped[$widget_id][$type])) return 0;
-	if ($type == 'sidebar' && empty($flipped[$widget_id][$type])) return 'wp_inactive_widgets';
-	
-	$sidebar_id = $flipped[$widget_id][$type];
-	return $sidebar_id;
+	//return sidebar info
+	if ($type == 'position')
+	{
+		if (!isset($flipped[$widget_id][$type]))
+		{
+			return 0;
+		}
+		else
+		{
+			return $flipped[$widget_id][$type];
+		}
+	}
+	else // if sidebar
+	{
+		if (!isset($flipped[$widget_id][$type]))
+		{
+			return 'wp_inactive_widgets';
+		}
+		else
+		{
+			return $flipped[$widget_id][$type];
+		}
+	}
 }
 
 /**
@@ -935,6 +1027,7 @@ function twc_initialize()
 	add_action('twc_display_admin', 'twc_view_auth');
 	add_action('twc_display_admin', 'twc_register');
 	add_action('twc-register', 'twc_register');
+	add_action('twc-table', 'twc_rows', 10);
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
@@ -1062,6 +1155,91 @@ function twc_read_wrapper_files()
 	}
 	
 	return $file_data;
+}
+
+/**
+ * Builds the row data, we do this outside of the model, for pagination purposes.
+ *
+ * @return null
+ */
+function twc_rows()
+{
+	//initializing variables
+	global $wp_registered_sidebars, $wp_registered_widgets, $twcp_pagi, $twc_rows;
+	$sidebars_widgets = twc_wp_get_sidebars_widgets();
+	$sidebars = array();
+	$current_screen = twc_get_current_screen();
+	$twc_rows = array();
+	$twcp_pagi = apply_filters('twcp_pagination_defaults', array(
+		'total' => 0,
+		'per_page' => 20,
+		'page' => (isset($_REQUEST['pa'])) ?$_REQUEST['pa'] :1,
+		'pages' => '',
+		'start' => '',
+		'stop' => '',
+	));
+	
+	//reasons to fail
+	if (!empty($current_screen->action)) return false;
+	
+	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
+		if (is_array($sidebars_widgets[$sidebar_slug]))
+		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
+			
+			//show inactive widgets
+			if (twc_inactive_list() && $sidebar_slug == 'wp_inactive_widgets')
+			{
+				$twcp_pagi['total']++;
+				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+				continue;
+			}
+			
+			//show filtered items
+			if (twc_filter_list_for() && twc_filter_list_for() != $sidebar_slug)
+			{
+				$twcp_pagi['total']++;
+				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+				continue;
+			}
+			
+			//show searched for items
+			if (twc_search_list_for() && $search = twc_search_list_for())
+			{
+				$widget = twc_get_widget_by_id( $widget_slug );
+				$title = apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget);
+				
+				if (strpos(strtolower($title),strtolower($search)) !== false)
+				{
+					$twcp_pagi['total']++;
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+				}
+				continue;
+			}
+			
+			//show only active items
+			if (!twc_inactive_list() && $sidebar_slug != 'wp_inactive_widgets')
+			{
+				$twcp_pagi['total']++;
+				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+				continue;
+			}
+			
+		endforeach;
+	endforeach;
+	
+	//sorting
+	//array_multisort($sidebars, SORT_ASC, SORT_STRING,
+					//$twc_rows[1], SORT_NUMERIC, SORT_DESC,
+					//$twc_rows);
+	
+	//calculate the number of pages
+	$twcp_pagi['pages'] = ceil(($twcp_pagi['per_page'] > 0) ?$twcp_pagi['total'] / $twcp_pagi['per_page'] :1);
+	$twcp_pagi['start'] = ($twcp_pagi['per_page'] * $twcp_pagi['page']);
+	$twcp_pagi['start'] = ($twcp_pagi['start'] >= $twcp_pagi['per_page']) ?$twcp_pagi['start'] - $twcp_pagi['per_page']+1 :$twcp_pagi['start'];
+	$twcp_pagi['stop'] = $twcp_pagi['per_page'] * $twcp_pagi['page'];
+	$twcp_pagi['stop'] = ($twcp_pagi['stop'] == 0) ?$twcp_pagi['stop'] + $twcp_pagi['per_page'] :$twcp_pagi['stop'];
+	$twcp_pagi['stop'] = ($twcp_pagi['stop'] > $twcp_pagi['total']) ? $twcp_pagi['total'] :$twcp_pagi['stop'];
+	$twcp_pagi = apply_filters('twcp_pagination', $twcp_pagi);
 }
 
 /**
@@ -1275,8 +1453,8 @@ function twc_save_widget_sidebar( $widget_id, $sidebar_id, $position = 0, $delet
 /**
  * This function accepts fields for a given widget and saves those fields to the db.
  *
- * @param unknown_type $widget_id
- * @param unknown_type $fields
+ * @param string $widget_id
+ * @param array $fields
  */
 
 function twc_save_widget_fields( $widget_id, $post )
@@ -1292,7 +1470,7 @@ function twc_save_widget_fields( $widget_id, $post )
 	global $wp_registered_widget_updates;
 	$fields = $post;
 	$_POST = array();
-	$widget = twc_get_widget_from_slug($widget_id);
+	$widget = twc_get_widget_by_id($widget_id);									print_r($widget);
 	$id_base = _get_widget_id_base($widget['id']);
 	$ignore = array('sidebar_slug','id_base','widget-width','widget-height',
 	'widget_number','multi_number','action','redirect','editwidget','addnew','base','num',
@@ -1354,10 +1532,10 @@ function twc_save_widget_fields( $widget_id, $post )
  */
 function twc_search_list_for()
 {
-	if (!isset($_REQUEST['twc_filter_widgets'])) return false;
+	if (!isset($_REQUEST['twcp_search_input']) || empty($_REQUEST['twcp_search_input'])) return false;
 	$_REQUEST['inactive'] = 'active';
 	
-	return $_REQUEST['twc_filter_widgets'];
+	return $_REQUEST['twcp_search_input'];
 }
 
 /**
@@ -1409,15 +1587,35 @@ function twc_sidebar_select_box( $default = 'wp_inactive_widgets', $widget = nul
 		$id = 'twc_sidebar_select_box_'.$widget['id'];
 		$name = 'widget-'.$widget['id_base'].'['.$widget['number'].'][sidebar_slug]';
 	}
-	else 
-	{
-		$select_filter = '<option value="">  -  Remove Filter  -  </option>';
-		$default = twc_filter_list_for();
-		$id = $name = 'twc_filter_widgets';
-	}
 	
 	$select = '<select id="'.$id.'" name="'.$name.'" class="twc_sidebar_select_box">'.$select_filter;
 	
+	foreach ($sidebars as $slug => $sidebar)
+	{
+		$selected = 0;
+		if ($default == $slug) $selected = 1;
+		$select .= "<option {$class[$selected]} value='$slug'>{$sidebar['name']}</option>";
+	}
+	
+	return $select.'</select>';
+}
+
+/**
+ * Just prints a filter sidebar
+ * 
+ * @return unknown
+ */
+function twc_sidebar_filter_box()
+{
+	//initializing variables
+	global $wp_registered_sidebars;
+	$sidebars = $wp_registered_sidebars;
+	$class = array('','selected="true"');
+	$default = twc_filter_list_for();
+	
+	$select = '<select name="twcp_filter" class="twc_sidebar_filter_box">'
+			. '<option value="">  -  Remove Filter  -  </option>';
+		
 	foreach ($sidebars as $slug => $sidebar)
 	{
 		$selected = 0;
@@ -1491,7 +1689,7 @@ function twc_widget_global()
 	$widget_id = (isset($_REQUEST['widget_id']))? $_REQUEST['widget_id']: ((isset($_REQUEST['widget-id']))? $_REQUEST['widget-id'] : ((isset($_REQUEST['editwidget']))? $_REQUEST['editwidget']: false));
 	
 	//loading resources
-	$widget = twc_get_widget_from_slug( $widget_id );
+	$widget = twc_get_widget_by_id( $widget_id );
 	
 	//reasons to return
 	if (!$widget) return;

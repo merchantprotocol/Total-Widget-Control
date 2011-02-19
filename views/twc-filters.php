@@ -17,5 +17,5 @@ if (twc_inactive_list()) return false;
 
 
 ?>
-<?php echo twc_sidebar_select_box('wp_inactive_widgets',null,false,'twcp_sidebar'); ?>
+<?php echo twc_sidebar_filter_box(); ?>
 <input onClick="javascript:this.form.submit();" type="submit" id="post-query-submit" value="Filter" class="button-secondary" name="twcp_submit">

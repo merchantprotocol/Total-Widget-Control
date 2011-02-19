@@ -53,16 +53,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				
 				<input type="hidden" name="action" value="save" />
 				<input type="hidden" id="twc-redirect" name="redirect" value="" />
-				<input type="hidden" name="editwidget" value="<?php echo ((isset($_REQUEST['editwidget']))?$_REQUEST['editwidget']:''); ?>" />
-				<input type="hidden" name="addnew" value="<?php echo ((isset($_REQUEST['addnew']))?$_REQUEST['addnew']:''); ?>" />
-				<input type="hidden" name="base" value="<?php echo ((isset($_REQUEST['base']))?$_REQUEST['base']:''); ?>" />
-				<input type="hidden" name="num" value="<?php echo ((isset($_REQUEST['num']))?$_REQUEST['num']:''); ?>" />
 				<input type="hidden" name="widget-id" class="widget-id" value="<?php echo $widget['id']; ?>" />
-				<input type="hidden" name="id_base" class="id_base" value="<?php echo esc_attr($widget['id_base']); ?>" />
-				<input type="hidden" name="widget-width" class="widget-width" value="<?php if (isset( $widget['callback'][0]->width )) echo esc_attr($widget['callback'][0]->width); ?>" />
-				<input type="hidden" name="widget-height" class="widget-height" value="<?php if (isset( $widget['callback'][0]->height )) echo esc_attr($widget['callback'][0]->height); ?>" />
-				<input type="hidden" name="widget_number" class="widget_number" value="<?php echo esc_attr($widget['number']); ?>" />
-				<input type="hidden" name="multi_number" class="multi_number" value="<?php echo esc_attr($widget['number']); ?>" />
 				
 				<?php echo $sidebar_args['after_widget']; ?>
 			</div><!-- /#post-body-content -->

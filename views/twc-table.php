@@ -50,3 +50,5 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	</div>
 	<br class="clear">
 </div>
+
+<input type="hidden" name="inactive" value="<?php echo $_REQUEST['inactive']; ?>" />

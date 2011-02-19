@@ -14,9 +14,12 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
-<select name="twcp_bulk_action">
-	<option value="-1" selected="selected">Bulk Actions</option>
-	<option value="edit">Edit</option>
-	<option value="trash">Move to Trash</option>
+<select name="twcp_bulk_action[]">
+	<option value="" selected="selected">Bulk Actions</option>
+	<?php if (twc_inactive_list()): ?>
+		<option value="delete">Delete Permanently</option>
+	<?php else: ?>
+		<option value="trash">Move to Trash</option>
+	<?php endif;?>
 </select>
-<input type="submit" value="Apply" name="twcp_dobulk" id="doaction" class="button-secondary action">
+<input type="submit" value="Apply" name="twcp_dobulk" id="doaction" class="button-secondary action" onClick="javascript:this.form.submit();">

@@ -13,13 +13,46 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
+//initializing variables
+global $twcp_pagi;
+extract($twcp_pagi);
+$inactive = (twc_inactive_list()) ?'&inactive=inactive':'&inactive=active';
+$next = $page + 1;
+$prev = $page - 1;
+$under = $over = false;
+
 ?>
 <div class="tablenav-pages twcp">
-	<span class="displaying-num">Displaying 1-20 of 97</span>
-	<span class="page-numbers current">1</span>
-	<a class="page-numbers" href="/wp-admin/edit.php?post_type=volunteers&amp;paged=2">2</a>
-	<a class="page-numbers" href="/wp-admin/edit.php?post_type=volunteers&amp;paged=3">3</a>
-	<span class="page-numbers dots">&#133;</span>
-	<a class="page-numbers" href="/wp-admin/edit.php?post_type=volunteers&amp;paged=5">5</a>
-	<a class="next page-numbers" href="/wp-admin/edit.php?post_type=volunteers&amp;paged=2">&raquo;</a>
+	<span class="displaying-num">Displaying <?php echo $start; ?>-<?php echo $stop; ?> of <?php echo $total; ?></span>
+	
+	<?php if ($page > 1 && $pages > 5): ?>
+	<a class="next page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $prev.$inactive; ?>">&laquo;</a>
+	<?php endif; ?>
+	
+	<?php for ($i=1; $i <= $pages; $i++): ?>
+		<?php if ($i == $page): ?>
+			<span class="page-numbers current"><?php echo $i; ?></span>
+			
+		<?php elseif ($i == 1 || $i == $pages): ?>
+			<a class="page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $i.$inactive; ?>"><?php echo $i; ?></a>
+			
+		<?php elseif ($i > 1 && $i < ($page-2)): ?>
+			<?php if (!$under): $under = true; ?>
+			<span class="page-numbers dots">...</span>
+			<?php endif;?>
+			
+		<?php elseif ($i < $total && $i > ($page+2)): ?>
+			<?php if (!$over): $over = true; ?>
+			<span class="page-numbers dots">...</span>
+			<?php endif; ?>
+			
+		<?php else: ?>
+			<a class="page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $i.$inactive; ?>"><?php echo $i; ?></a>
+		<?php endif; ?>
+		
+	<?php endfor; ?>
+	
+	<?php if ($page < $pages): ?>
+	<a class="next page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $next.$inactive; ?>">&raquo;</a>
+	<?php endif; ?>
 </div>

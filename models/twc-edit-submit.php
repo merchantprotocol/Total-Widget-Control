@@ -26,7 +26,7 @@ $defaults = array(
 );
 foreach((array)$defaults as $property => $value)
 {
-	$defaults[$property] = (array_key_exists($property, $widget['p'])) ?$widget['p'][$property] :$value;
+	$defaults[$property] = (array_key_exists($property, (array)$widget['p'])) ?$widget['p'][$property] :$value;
 }
 extract($defaults);
 

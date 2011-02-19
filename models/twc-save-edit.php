@@ -15,7 +15,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 global $widget;
-
 $_REQUEST['twcp_publish_time'] = strtotime($_REQUEST['twcp_YY'].'-'.$_REQUEST['twcp_mm'].'-'.$_REQUEST['twcp_jj'].' '.$_REQUEST['twcp_hh'].':'.$_REQUEST['twcp_ii']);
 
 twc_save_widget_fields( $widget['id'], $_REQUEST );
