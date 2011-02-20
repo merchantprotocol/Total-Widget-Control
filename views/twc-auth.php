@@ -47,11 +47,12 @@ if ($current_screen->action != 'auth') return false;
 	<input type="button" name="action" class="button-secondary" value="I Don't Agree" 
 	onClick="javascript:window.location.href='<?php bloginfo('url'); ?>/wp-admin/widgets.php?list_style=wp';" />
 	
-	<input type="submit" class="button-primary" value="I Agree" 
-	onClick="jQuery('#twc-widget-wrap').attr('action', '<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register');jQuery('#twc-widget-wrap').unbind('submit');return true;" />
-	
-	<!-- 
-	onClick="javascript:window.location.href='<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register';" />
-	 -->
+	<input type="hidden" name="action" value="register"/>
+	<input type="submit" class="button-primary" value="I Agree"/>
 	<div class="clear"></div>
 </div>
+<script>
+jQuery(document).ready(function(){
+	jQuery('#twc-widget-wrap').unbind('submit');
+});
+</script>

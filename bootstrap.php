@@ -24,11 +24,6 @@ if (!function_exists("twc_get_show_view")):
 	 */
 	function twc_get_show_view( $name = null )
 	{
-		$uniqueID = get_option('twc_unique_registration_key',false);
-		
-		//reasons to fail
-		if ( !isset($_REQUEST[$uniqueID]) && TWC_CURRENT_USER_CANNOT ) wp_die( __( 'Cheatin&#8217; uh?' ));
-		
 		$paths = set_controller_path();
 		$theme = get_theme_path();
 		
@@ -409,7 +404,7 @@ if (!class_exists("TwcPath")):
 		{
 			@umask($origmask);
 			trigger_error(
-				'BFolder::create: ' . 'Could not create directory '
+				'Path::create: ' . 'Could not create directory '
 				.'Path: ' . $path, E_USER_WARNING
 			);
 			return false;
@@ -434,7 +429,7 @@ if (!class_exists("TwcPath")):
 		if (!$path)
 		{
 			// Bad programmer! Bad Bad programmer!
-			trigger_error('BFolder::delete: ' . 'Attempt to delete base directory' );
+			trigger_error('Path::delete: ' . 'Attempt to delete base directory' );
 			return false;
 		}
 
@@ -446,7 +441,7 @@ if (!class_exists("TwcPath")):
 		// Is this really a folder?
 		if (!is_dir($path))
 		{
-			trigger_error('BFolder::delete: ' . 'Path is not a folder '.'Path: ' . $path);
+			trigger_error('Path::delete: ' . 'Path is not a folder '.'Path: ' . $path);
 			return false;
 		}
 
@@ -454,7 +449,6 @@ if (!class_exists("TwcPath")):
 		$files = TwcPath::files($path, '.', false, true, array());
 		if (!empty($files))
 		{
-			require_once dirname(__file__).DS.'file.php';
 			if (TwcPath::delete($files) !== true)
 			{
 				// File::delete throws an error
@@ -469,7 +463,6 @@ if (!class_exists("TwcPath")):
 			if (is_link($folder))
 			{
 				// Don't descend into linked directories, just delete the link.
-				require_once dirname(__file__).DS.'file.php';
 				if (TwcPath::delete($folder) !== true)
 				{
 					// File::delete throws an error
@@ -520,7 +513,6 @@ if (!class_exists("TwcPath")):
 		$arr = array();
 
 		// Check to make sure the path valid and clean
-		require_once dirname(__file__).DS.'path.php';
 		$path = TwcPath::clean($path);
 
 		// Is the path a folder?
