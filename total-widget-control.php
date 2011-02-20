@@ -1470,7 +1470,7 @@ function twc_save_widget_fields( $widget_id, $post )
 	global $wp_registered_widget_updates;
 	$fields = $post;
 	$_POST = array();
-	$widget = twc_get_widget_by_id($widget_id);									print_r($widget);
+	$widget = twc_get_widget_by_id($widget_id);
 	$id_base = _get_widget_id_base($widget['id']);
 	$ignore = array('sidebar_slug','id_base','widget-width','widget-height',
 	'widget_number','multi_number','action','redirect','editwidget','addnew','base','num',

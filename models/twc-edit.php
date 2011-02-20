@@ -18,8 +18,8 @@ global $wp_registered_widgets, $wp_registered_widget_controls, $sidebars_widgets
 $sidebars_widgets = twc_wp_get_sidebars_widgets();
 
 $widget_id = isset($_REQUEST['widget_id']) ?$_REQUEST['widget_id']:$_REQUEST['editwidget'];
-$widget = twc_get_widget_from_slug($widget_id);
-$sidebar_id = twc_get_widgets_sidebar( $widget_id );
+$widget = twc_get_widget_by_id($widget_id);
+$sidebar_id = $widget['sidebar_id'];
 
 
 $key = $sidebar_id ? array_search( $widget_id, $sidebars_widgets[$sidebar_id] ) : '-1'; // position of widget in sidebar
