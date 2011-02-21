@@ -565,7 +565,7 @@ function twc_display_the_sidebar( $params )
 function twc_display_the_widget($instance, $widget, $args)
 {
 	//initializing variables
-	global $wp_query;
+	global $wp_query, $wp_registered_sidebars;
 	$widget = twc_get_widget_by_id($widget->id);
 	
 	//check to see if we're even going to load this widget
@@ -575,11 +575,15 @@ function twc_display_the_widget($instance, $widget, $args)
 	$display = apply_filters('twc_display_widget', $display, $widget);
 	if (!$display) return false;
 	
+	//initializing variables
+	$args = $wp_registered_sidebars[$widget['sidebar_id']];
+	
 	//load the widget into a variable
 	ob_start();
 	$widget['callback'][0]->widget($args, $instance);
 	$display = ob_get_clean();
 	
+	//displaying the widget
 	echo apply_filters('twc_widget_display', $display, $widget);
 	return apply_filters('twc_wordpress_default_sidebar', false, $instance);
 }
@@ -737,19 +741,18 @@ function twc_dynamic_sidebar( $index = 1 )
 		return false;
 
 	$sidebar = $wp_registered_sidebars[$index];
-
+	
 	$did_one = false;
 	foreach ( (array) $sidebars_widgets[$index] as $id )
 	{
-
 		if ( !isset($wp_registered_widgets[$id]) ) continue;
 		
-		$sidebar = twc_get_widgets_sidebar($index);
+		//$sidebar = twc_get_widgets_sidebar($index);
 		$params = array_merge(
 			array( array_merge( (array)$sidebar, array('widget_id' => $id, 'widget_name' => $wp_registered_widgets[$id]['name']) ) ),
 			(array) $wp_registered_widgets[$id]['params']
 		);
-
+		
 		// Substitute HTML id and class attributes into before_widget
 		$classname_ = '';
 		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn ) {
@@ -761,9 +764,7 @@ function twc_dynamic_sidebar( $index = 1 )
 		$classname_ = ltrim($classname_, '_');
 		$params[0]['before_widget'] = sprintf($params[0]['before_widget'], $id, $classname_);
 		
-		
 		$callback = $wp_registered_widgets[$id]['callback'];
-
 		
 		if ( is_callable($callback) ) {
 			call_user_func_array($callback, $params);
@@ -1227,11 +1228,6 @@ function twc_rows()
 		endforeach;
 	endforeach;
 	
-	//sorting
-	//array_multisort($sidebars, SORT_ASC, SORT_STRING,
-					//$twc_rows[1], SORT_NUMERIC, SORT_DESC,
-					//$twc_rows);
-	
 	//calculate the number of pages
 	$twcp_pagi['pages'] = ceil(($twcp_pagi['per_page'] > 0) ?$twcp_pagi['total'] / $twcp_pagi['per_page'] :1);
 	$twcp_pagi['start'] = ($twcp_pagi['per_page'] * $twcp_pagi['page']);
@@ -1330,9 +1326,16 @@ function twc_registration()
 		$curl = curl_init($path);
 	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+
 	    $result = curl_exec($curl);
-	    curl_close($curl);
+	    if(curl_errno($curl))
+		{
+		    error_log('twc curl error: '.' '.curl_error($ch).'; results: '.$result);
+		}
+		curl_close($curl);
 	}
+	
+	
 	if (trim($result))
 	{
 		$result = trim(str_replace("\r\n",'', $result));
@@ -1357,7 +1360,11 @@ function twc_receive_license()
 	
 	if (!isset($_REQUEST[$uniqueID])) return false;
 	
-	@file_put_contents($file_path, $_REQUEST[$uniqueID]);
+	if (!$result = @file_put_contents($file_path, $_REQUEST[$uniqueID], LOCK_EX))
+	{
+		ob_start();print_r($result);$result = ob_get_clean();
+		error_log('twc save license error: We received a license but could not save the file; results: '.$result);
+	}
 	return false;
 }
 
@@ -1657,6 +1664,16 @@ function twc_trigger_sidebar( $widget_shell )
 		$keeping_count = 0;
 	}
 	
+}
+
+/**
+ * Button encourages the user to upgrade to pro
+ *
+ */
+function twc_upgrade_button()
+{
+	if (function_exists('twc_widget_protitle')) return;
+	echo '<a class="twc_upgrade_button button-primary" href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=register&license=1">Upgrade to Pro $9</a>';
 }
 
 /**

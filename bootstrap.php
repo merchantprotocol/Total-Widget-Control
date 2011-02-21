@@ -919,7 +919,8 @@ if (!function_exists('read_520_rss')):
 	function read_520_rss()
 	{
 		//reasons to fail
-		if (!$xml = @simplexml_load_file("http://community.5twentystudios.com/?cat=11&feed=rss2")) return false;
+		if (!$contents = @file_get_contents("http://community.5twentystudios.com/?cat=11&feed=rss2")) return false;
+		if (!$xml = @simplexml_load_string(trim($contents))) return false;
 		$msgs = get_option('twc_hide_messages',array());
 		
 		foreach ($xml->channel->item as $item)

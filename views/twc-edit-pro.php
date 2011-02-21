@@ -71,9 +71,9 @@ $wrappers = twc_read_wrapper_files();
 					?>
 					</select>
 				</div>
-				
 				<div class="clear"></div>
 			</div>
+			<?php twc_upgrade_button(); ?>	
 		</div>
 	</div><!-- /.menu-edit -->
 </div>
