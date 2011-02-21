@@ -28,7 +28,7 @@ if ($current_screen->action != 'auth') return false;
 	<div class="buy_option">
 		<label>
 		<input type="radio" name="license" value="1" checked="checked"/>
-		<span>I'd like to purchase a pro license</span>
+		<span>I'd like to purchase a pro license, for only $9.</span>
 		</label>
 	</div>
 	<div class="buy_option">
