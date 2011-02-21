@@ -155,7 +155,7 @@ endif;
 	function twc_find($paths, $file)
 	{
 		settype($paths, 'array'); //force to array
-
+		
 		// start looping through the path set
 		foreach ($paths as $path)
 		{
@@ -175,6 +175,7 @@ endif;
 			// results in a directory registered so that
 			// non-registered directores are not accessible via directory
 			// traversal attempts.
+			
 			if (file_exists($fullname) && substr($fullname, 0, strlen($path)) == $path) {
 				return $fullname;
 			}

@@ -634,14 +634,14 @@ function twc_display_if_visiblity( $display, $widget )
 {
 	//reasons to fail
 	if (!$display) return $display;
-	if (!isset($widget['p']['twcp_visibility']) || $widget['p']['twcp_visibility'] == 'public') 
-		return $display;
+	if (!isset($widget['p']['twcp_visibility'])) return $display;
 	
 	//initializing variables
 	global $current_user, $wp_roles;
 	get_currentuserinfo();
 	$user_roles = $current_user->roles;
 	$user_role = array_shift($user_roles);
+	if (is_null($user_role)) $user_role = 'public';
 	$isParent = false;
 	$visibleParent = ($widget['p']['twcp_visible_parent'] == 'parent');
 	
@@ -662,7 +662,7 @@ function twc_display_if_visiblity( $display, $widget )
 	$matchedRole = ($user_role == $widget['p']['twcp_visibility']);
 	
 	if ($matchedRole) return true;
-	if ($visibleParent && $isParent) return true;
+	if (!$visibleParent && $isParent) return true;
 	
 	return false;
 }
@@ -1143,7 +1143,7 @@ function twc_read_wrapper_files()
 		TwcPath::create($path, 0777);
 	}
 	
-	$files = TwcPath::files($path, $filter = '.', $recurse = false, $fullpath = false, $exclude = array('.svn', 'CVS'));
+	$files = TwcPath::byrd_files($path, $filter = '.', $recurse = false, $fullpath = false, $exclude = array('.svn', 'CVS'));
 	$headers = array(
 		'wrapperTitle' => 'Wrapper Title',
 		'description' => 'Description',
@@ -1741,7 +1741,7 @@ function twcp_widget_wrapper( $display, $widget )
 {
 	//initializing variables
 	$path = TwcPath::clean(get_theme_path().'/widget-wrappers/');
-	$hasWrapper = (!isset($widget['p']['twcp_wrapper_file']) || !trim($widget['p']['twcp_wrapper_file']));
+	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
 	$wrapper = twc_find(array($path), @$widget['p']['twcp_wrapper_file']);
 	
 	//reasons to return

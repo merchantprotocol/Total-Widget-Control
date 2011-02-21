@@ -55,7 +55,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				<p>
 					<span class="checkspace">
 						<input id="twcp_visible_parent" name="twcp_visible_parent" <?php echo ($twcp_visible_parent == 'parent') ?'checked="checked"':''; ?> type="checkbox" value="parent" tabindex="4"> 
-						<label for="twcp_visible_parent" class="selectit">Visible to parent roles also.</label><br>
+						<label for="twcp_visible_parent" class="selectit">Not visible to parent roles.</label><br>
 					</span>
 					<input type="hidden" id="twcp_visibility_default" name="twcp_visibility_default" value="<?php echo $twcp_visibility; ?>" /> 
 					<select name="twcp_visibility" id="twcp_visibility" tabindex="4">

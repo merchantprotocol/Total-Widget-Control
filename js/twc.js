@@ -60,6 +60,8 @@ function twc_save_widget_edit()
 	values = twc_get_form_vars( inputs );
 	var checkboxes = jQuery('#menu-settings-column').find('input[type=checkbox]:checked');
 	checkboxes.each(function() {values[this.name] = jQuery(this).val();});
+	var radio = jQuery('#menu-management-liquid').find('input[type=radio]:checked');
+	radio.each(function() {values[this.name] = jQuery(this).val();});
 	var inputs = jQuery('.twcpi').find(':input');
 	inputs.each(function(){values[this.name] = jQuery(this).val();});
 	values['twcp_visible_parent'] = (jQuery('#twcp_visible_parent').attr('checked'))? jQuery('#twcp_visible_parent').val():''; 
@@ -300,15 +302,18 @@ function twc_get_form_vars( inputs )
 {
 	var values = {};
 	inputs.each(function() {
-		if(this.type != 'checkbox')
+		if(this.type == 'checkbox')
 		{
-			values[this.name] = jQuery(this).val();
+			if (jQuery(this).attr('checked'))
+			{
+				values[this.name] = (jQuery(this).attr('checked'))? 
+					((jQuery(this).val()) ?jQuery(this).val() :'on')
+					:''; 
+			}
 		}
 		else
 		{
-			var that = this;
-			//values[this.name] = (jQuery('#'+id+':checked').val() !== undefined)?'on':''; 
-			values[this.name] = (jQuery(this).attr('checked'))? jQuery(this).val():''; 
+			values[this.name] = jQuery(this).val();
 		}
 	});
 	

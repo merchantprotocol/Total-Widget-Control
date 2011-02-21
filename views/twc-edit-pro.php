@@ -15,6 +15,8 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 global $widget;
+$wrappers = twc_read_wrapper_files();
+
 
 ?>
 <div id="menu-management" class="widget-control-settings">
@@ -57,8 +59,6 @@ global $widget;
 					<select name="twcp_wrapper_file">
 					<option value=""> -- No Wrapper -- </option>
 					<?php 
-									
-					$wrappers = twc_read_wrapper_files();
 					if (is_array($wrappers)) foreach ($wrappers as $file => $wrapper)
 					{
 						$selected = '';

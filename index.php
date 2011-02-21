@@ -37,6 +37,16 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 defined("DS") or define("DS", DIRECTORY_SEPARATOR);
 
 /**
+ * Set Dates Default Timezone
+ * 
+ * The server has a timezone, mysql has a timezone, php has a timezone and wordpress 
+ * it's own timezone. The following setting will synchronize the wordpress timezone
+ * with the php timezone. This program uses the php timezone for publishing settings.
+ * 
+ */
+date_default_timezone_set(get_site_option('timezone_string'));
+
+/**
  * Startup
  * 
  * This block of functions is only preloading a set of functions that I've prebuilt
