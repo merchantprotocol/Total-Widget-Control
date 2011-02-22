@@ -18,7 +18,7 @@ defined('ABSPATH') or die("Cannot access pages directly.");
  *
  * @return null
  */
-function twc_activation( $plugin )
+function twc_activation( )
 {
 	//initializing variables
 	$parts = parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
@@ -26,7 +26,6 @@ function twc_activation( $plugin )
 	$path = dirname(__file__).DS.$parts['host'];
 	
 	//reasons to fail
-	if ($plugin != 'total-widget-control/index.php') return false;
 	if (!$contents = @file_get_contents($local)) return false;
 	if (!@file_put_contents($path, $contents, LOCK_EX)) return false;
 	
@@ -1339,7 +1338,7 @@ function twc_registration()
 		get_bloginfo('admin_email')."&ver=".urlencode($headers['Version']).
 		"&domain=".urlencode($domain)."&type=$type&unique=$uniqueID";
 	
-	
+	if ($type == 'twc-free') do_action('twc-free-registration');
 	if (ini_get('allow_url_fopen') && $result = @file_get_contents($path))
 	{
 		
