@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is deisgned to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.4
+ * Version: 1.5
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
@@ -45,6 +45,15 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * 
  */
 date_default_timezone_set(get_site_option('timezone_string'));
+
+/**
+ * Increasing resources
+ * 
+ * This is just to make sure that there aren't any problems when registering the
+ * software.
+ */
+if ((int)trim(str_replace('M','', ini_get('post_max_size'))) < 20) ini_set('post_max_size', '30M');
+if ((int)trim(str_replace('M','', ini_get('upload_max_filesize'))) < 20) ini_set('upload_max_filesize', '30M');
 
 /**
  * Startup
@@ -85,5 +94,4 @@ defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!curren
 set_controller_path( dirname( __FILE__ ) );
 require_once dirname(__file__).DS."auth.php";
 twc_initialize();
-
 

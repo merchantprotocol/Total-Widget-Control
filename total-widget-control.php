@@ -14,6 +14,26 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 
 /**
+ * Function is responsible for preparing the free license.
+ *
+ * @return null
+ */
+function twc_activation( $plugin )
+{
+	//initializing variables
+	$parts = parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
+	$local = dirname(__file__).DS.'license.php';
+	$path = dirname(__file__).DS.$parts['host'];
+	
+	//reasons to fail
+	if ($plugin != 'total-widget-control/index.php') return false;
+	if (!$contents = @file_get_contents($local)) return false;
+	if (!@file_put_contents($path, $contents, LOCK_EX)) return false;
+	
+	return true;
+}
+
+/**
  * function adds adjusts the plugin actions
  *
  * @param unknown_type $orig_links
@@ -1029,11 +1049,12 @@ function twc_initialize()
 	add_action('twc_display_admin', 'twc_register');
 	add_action('twc-register', 'twc_register');
 	add_action('twc-table', 'twc_rows', 10);
+	add_action('init', 'twc_registration', 1);
+	add_action('wp', 'twc_receive_license', 1);
+	add_action('twc-free-registration', 'twc_activation' );
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
-	add_filter('init', 'twc_registration', 1000);
-	add_filter('init', 'twc_receive_license', 1000);
 	
 	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
@@ -1046,6 +1067,7 @@ function twc_initialize()
 	function twc_view_widget_wrap(){ twc_show_view('twc-widget-wrap'); }
 	function twc_view_auth(){ twc_show_view('twc-auth'); }
 	if (!array_key_exists('TWCAUTH', $GLOBALS)) $GLOBALS['TWCAUTH'] = true;
+	
 	
 }
 
@@ -1310,12 +1332,13 @@ function twc_registration()
 	switch($_REQUEST['license'])
 	{
 		case '1': case '2': $type = 'twc-pro'; break;
-		default: $type = 'twc-free'; break;
+		default: $type = 'twc-free'; do_action('twc-free-registration'); break;
 	}
 	
 	$path = "http://community.5twentystudios.com/?view=register-for-free&email=".
 		get_bloginfo('admin_email')."&ver=".urlencode($headers['Version']).
 		"&domain=".urlencode($domain)."&type=$type&unique=$uniqueID";
+	
 	
 	if (ini_get('allow_url_fopen') && $result = @file_get_contents($path))
 	{
@@ -1360,7 +1383,11 @@ function twc_receive_license()
 	
 	if (!isset($_REQUEST[$uniqueID])) return false;
 	
-	if (!$result = @file_put_contents($file_path, $_REQUEST[$uniqueID], LOCK_EX))
+	if ($result = @file_put_contents($file_path, $_REQUEST[$uniqueID], LOCK_EX))
+	{
+		die('success');
+	}
+	else
 	{
 		ob_start();print_r($result);$result = ob_get_clean();
 		error_log('twc save license error: We received a license but could not save the file; results: '.$result);
