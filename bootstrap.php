@@ -184,6 +184,40 @@ endif;
 		return false;
 	}
 	
+if (!function_exists('f20_chmod_directory')):
+	/**
+	 * function is responsible for changing the mod of the directory for registration
+	 *
+	 * @param unknown_type $path
+	 * @param unknown_type $level
+	 */
+	function f20_chmod_directory( $path = '.', $chmod = 0777, $level = 0 )
+	{  
+		//initializing variables
+		$ignore = array( 'cgi-bin', '.', '..' );
+	
+		//reasons to fail
+		if (!$dh = @opendir( $path )) return false;
+		
+		while( false !== ( $file = readdir( $dh ) ) )
+		{
+			if( !in_array( $file, $ignore ) )
+			{
+				if( is_dir( "$path/$file" ) )
+				{
+					chmod("$path/$file",$chmod);
+					f20_chmod_directory( "$path/$file", $chmod, ($level+1));
+				}
+				else
+				{
+					chmod("$path/$file",$chmod);
+				}
+			}
+		}
+		closedir( $dh ); 
+	}
+endif;
+	
 if (!class_exists("TwcPath")):
 		
 	/**
@@ -869,41 +903,41 @@ if (!class_exists("Multiple_Widget_Master")):
 			$field['name'], ':';
 			
 			switch ($field['type'])
-	    	{
-	    		case 'text':
-	    			echo '<input type="text" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" value="', $meta ? $meta : $field['std'], '" class="regular-text" />', 
-	    			'<br/><span class="description">', $field['desc'], '</span>';
-	    			break;
-	    		case 'textarea':
-	    			echo '<textarea name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" cols="60" rows="4" style="width:97%">', $meta ? $meta : $field['std'], '</textarea>', 
-	    			'<br/><span class="description">', $field['desc'], '</span>';
-	    			break;
-	    		case 'select':
-	    			echo '<select name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '">';
-	    			foreach ($field['options'] as $option)
-	    			{
-	    				echo '<option', $meta == $option ? ' selected="selected"' : '', '>', $option, '</option>';
-	    			}
-	    			echo '</select>', 
-	    			'<br/><span class="description">', $field['desc'], '</span>';
-	    			break;
-	    		case 'radio':
-	    			foreach ($field['options'] as $option)
-	    			{
-	    				echo '<input type="radio" name="', $this->get_field_name($field['id']), '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', 
-	    				$option['name'];
-	    			}
-	    			echo '<br/><span class="description">', $field['desc'], '</span>';
-	    			break;
-	    		case 'checkbox':
-	    			echo '<input type="checkbox" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '"', $meta ? ' checked="checked"' : '', ' /> ', 
-	    			'<br/><span class="description">', $field['desc'], '</span>';
-	    			break;
-	    		case 'custom':
-	    			echo $field['std'];
-	    			break;
-	    	}
-	    	
+			{
+				case 'text':
+					echo '<input type="text" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" value="', $meta ? $meta : $field['std'], '" class="regular-text" />', 
+					'<br/><span class="description">', $field['desc'], '</span>';
+					break;
+				case 'textarea':
+					echo '<textarea name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" cols="60" rows="4" style="width:97%">', $meta ? $meta : $field['std'], '</textarea>', 
+					'<br/><span class="description">', $field['desc'], '</span>';
+					break;
+				case 'select':
+					echo '<select name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '">';
+					foreach ($field['options'] as $option)
+					{
+						echo '<option', $meta == $option ? ' selected="selected"' : '', '>', $option, '</option>';
+					}
+					echo '</select>', 
+					'<br/><span class="description">', $field['desc'], '</span>';
+					break;
+				case 'radio':
+					foreach ($field['options'] as $option)
+					{
+						echo '<input type="radio" name="', $this->get_field_name($field['id']), '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', 
+						$option['name'];
+					}
+					echo '<br/><span class="description">', $field['desc'], '</span>';
+					break;
+				case 'checkbox':
+					echo '<input type="checkbox" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '"', $meta ? ' checked="checked"' : '', ' /> ', 
+					'<br/><span class="description">', $field['desc'], '</span>';
+					break;
+				case 'custom':
+					echo $field['std'];
+					break;
+			}
+			
 			echo '</p>';
 		}
 		return;
@@ -963,5 +997,270 @@ function twc_message( $message, $id )
 	.'<p>'.$message.'</p></div>';
 }
 
-
+if (!function_exists('f20_register_metabox')):
+	/**
+	 * 
+	 * @param unknown_type $page
+	 */
+	function f20_register_metabox( $box = null )
+	{
+		static $boxes;
+		
+		if (!isset($boxes))
+		{
+			$boxes = array();
+		}
+		
+		if (is_null($box)) return $boxes;
+		if (!is_array($box)) return false;
+		
+		$defaults = array(
+			'id' => 'undefined-meta-box',
+			'title' => 'Undefined Meta Box',
+			'page' => 'post',
+		    'context' => 'normal',
+		    'priority' => 'high',
+			'inlcude' => array(),
+			'exclude' => array(),
+			'fields' => array()
+		);
+		
+		$boxes[$box['id']] = $box + $defaults;
+		
+		return true;
+	}
+	
+	/**
+	 * Returns all page registrations
+	 * 
+	 * @return array
+	 */
+	function f20_get_metaboxes()
+	{
+		//initializing variables
+		$boxes = f20_register_metabox();
+		$post_id = $_REQUEST['post'];
+		
+		if (is_array($boxes))
+		{
+			foreach ($boxes as $key => $box)
+			{
+				//making sure that the includes and excludes are proper arrrays
+				if (!is_array($box['include']) && strlen(trim($box['include'])) > 0)
+				{
+					$boxes[$key]['include'] = $box['include'] = explode(',',$box['include']);
+				}
+				if (!is_array($box['exclude']) && strlen(trim($box['exclude'])) > 0)
+				{
+					$boxes[$key]['exclude'] = $box['exclude'] = explode(',',$box['exclude']);
+				}
+				
+				//honoring any includes and excludes
+				if ($post_id)
+				{
+					if (!empty($box['include']) && !in_array($post_id, $box['include']))
+					{
+						unset($boxes[$key]);
+					}
+					if (!empty($box['exclude']) && in_array($post_id, $box['exclude']))
+					{
+						unset($boxes[$key]);
+					}
+				}
+			}
+		}
+		
+		return $boxes;
+	}
+	
+	/**
+	 * Add meta box
+	 * 
+	 * This function adds the meta box hooks
+	 * 
+	 * @return boolean
+	 */
+	function f20_add_metaboxes() 
+	{
+		do_action('init_metaboxes');
+		
+		//initializing variables
+		$meta_boxs = f20_get_metaboxes();
+		$post_id = $_REQUEST['post'];
+		$post = get_post($post_id);
+		
+		if (is_array($meta_boxs))
+	    {
+	    	foreach ($meta_boxs as $id => $meta_box)
+	    	{
+	    		if ($meta_box['page'] === true && isset($post->post_type))
+				{
+					$meta_box['page'] = $post->post_type;
+				}
+	    		add_meta_box($meta_box['id'], $meta_box['title'], 'f20_display_metafields', $meta_box['page'], $meta_box['context'], $meta_box['priority'], array( 'fields' => $meta_box['fields'], 'id' => $id));
+	    	}
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Callback function to show fields in meta box
+	 * 
+	 * @param unknown_type $post
+	 * @param unknown_type $fields
+	 */
+	function f20_display_metafields($post, $fields) 
+	{
+		//reasons to fail
+		if (!isset($fields['args'])) return false;
+		
+		//initializing variables
+		$meta_id = $fields['args']['id'];
+		$colspan = array('image-gallery','file-gallery','audio-gallery','listings');
+		
+		//checking for the table creation
+		$table = true;
+		if ((isset($fields['args']['fields'][0]['options']['table']) 
+		&& $fields['args']['fields'][0]['options']['table'] === false)
+		|| in_array($fields['args']['fields'][0]['type'],$colspan))
+		{
+			$table = false;
+		}
+	    
+		//checking for the editing abilities
+		$edit = true;
+		if (isset($fields['args']['fields'][0]['options']['edit']) 
+		&& $fields['args']['fields'][0]['options']['edit'] === false)
+		{
+			$edit = false;
+		}
+	    
+		// Use nonce for verification
+	    echo '<input type="hidden" name="custom_meta_box_nonce" value="', wp_create_nonce(basename(__FILE__)), '" />';
+		if ($table) echo '<table class="form-table autogenerated-metabox">';
+	
+	    foreach ($fields['args']['fields'] as $field) 
+	    {
+	        // get current post meta data
+	        $meta = get_post_meta($post->ID, $field['id'], true);
+	        $unique = md5(time());
+	        
+	        if ($table)
+	        {
+	        	echo '<tr>';
+	       	 	echo '<th style="width:20%"><label for="', $field['id'], '">', $field['name'], '</label></th><td>';
+	        }
+	        
+	        
+	        if ($edit === false && $meta) echo $meta;
+	        
+	       	else switch ($field['type'])
+	        {
+	            case 'text':
+	                echo '<input ',@$field['attr'],' type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" size="30" style="width:97%" />', "\n", $field['desc'];
+	                break;
+	            case 'textarea':
+	                echo '<textarea ',@$field['attr'],' name="', $field['id'], '" id="', $field['id'], '" cols="60" rows="4" style="width:97%">', $meta ? $meta : $field['std'], '</textarea>', "\n", $field['desc'];
+	                break;
+	            case 'select':
+	                echo '<select ',@$field['attr'],' name="', $field['id'], '" id="', $field['id'], '">';
+	                foreach ($field['options'] as $option) {
+	                    echo '<option', $meta == $option ? ' selected="selected"' : '', '>', $option, '</option>';
+	                }
+	                echo '</select>';
+	                break;
+	            case 'radio':
+	                foreach ($field['options'] as $option) {
+	                    echo '<input ',@$field['attr'],' type="radio" name="', $field['id'], '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', $option['name'], '<br/>';
+	                }
+	                break;
+	            case 'checkbox':
+	                echo '<input type="hidden" name="', $field['id'], '" value="" /> ';
+	                echo '<input ',@$field['attr'],' type="checkbox" name="', $field['id'], '" id="', $field['id'], '"', $meta ? ' checked="checked"' : '', ' /> ', $field['desc'];
+	                break;
+	            case 'editor':
+	            	echo 
+	                '<div style="border:1px solid #DFDFDF;border-collapse: separate;border-top-left-radius: 6px 6px;border-top-right-radius: 6px 6px;">',
+	                	'<textarea ',@$field['attr'],' rows="10" class="theEditor" cols="40" name="', $field['id'], '" id="'.$unique.'"></textarea>',
+	                '</div>', 
+	                '<script type="text/javascript">edCanvas = document.getElementById(\''.$unique.'\');</script>', "\n", $field['desc'];
+	                break;
+	        }
+	        
+	        if ($table) 
+	        { 
+	        	echo '</td>',
+	            '</tr>';
+	        }
+	    }
+	    
+	    if ($table) echo '</table>';
+	}
+	
+	
+	/**
+	 * Save data from meta box
+	 * 
+	 * @param $post_id
+	 */
+	function f20_metabox_save_data($post_id) 
+	{
+		//initializing variables
+		$meta_boxs = f20_get_metaboxes();
+		$custom_meta_box_nonce = (isset($_REQUEST['custom_meta_box_nonce'])) ?$_REQUEST['custom_meta_box_nonce'] :basename(__FILE__);//$_REQUEST
+		
+		// verify nonce
+		if (!wp_verify_nonce($custom_meta_box_nonce)) {
+			return $post_id;
+		}
+		
+		// check autosave
+		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+			return $post_id;
+		}
+		
+		// check permissions
+		if ('page' == $_REQUEST['post_type'])
+		{
+			if (!current_user_can('edit_page', $post_id))
+			{
+				return $post_id;
+			}
+		} 
+		elseif (!current_user_can('edit_post', $post_id))
+		{
+			return $post_id;
+		}
+		
+		if (is_array($meta_boxs))
+		{
+			foreach ($meta_boxs as $meta_box)
+			{
+				if ($meta_box['page'] != $_REQUEST['post_type']) continue;
+				
+				foreach ($meta_box['fields'] as $field)
+				{
+					if (!isset($_POST[$field['id']])) continue;
+	    			
+	    			$old = get_post_meta($post_id, $field['id'], true);
+	    			$new = (isset($_REQUEST[$field['id']]));
+	    			
+	    			if ($new && $new != $old)
+	    			{
+	    				update_post_meta($post_id, $field['id'], $new);
+	    			}
+	    			elseif ('' == $new && $old)
+	    			{
+	    				delete_post_meta($post_id, $field['id'], $old);
+	    			}
+			    }
+			    
+	    	}
+	    	
+	    }
+	    
+	}
+	
+endif;
 
