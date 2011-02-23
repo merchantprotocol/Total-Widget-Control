@@ -37,6 +37,15 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 defined("DS") or define("DS", DIRECTORY_SEPARATOR);
 
 /**
+ * Initialize Localization
+ * 
+ * @tutorial http://codex.wordpress.org/I18n_for_WordPress_Developers
+ * function call loads the localization files from the current folder
+ * 
+ */
+if (function_exists('load_theme_textdomain')) load_theme_textdomain('twc');
+
+/**
  * Set Dates Default Timezone
  * 
  * The server has a timezone, mysql has a timezone, php has a timezone and wordpress 
@@ -44,7 +53,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * with the php timezone. This program uses the php timezone for publishing settings.
  * 
  */
-date_default_timezone_set(get_site_option('timezone_string'));
+if (function_exists('date_default_timezone_set')) date_default_timezone_set(get_site_option('timezone_string'));
 
 /**
  * Startup

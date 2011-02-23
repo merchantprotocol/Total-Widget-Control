@@ -23,7 +23,7 @@ $under = $over = false;
 
 ?>
 <div class="tablenav-pages twcp">
-	<span class="displaying-num">Displaying <?php echo $start; ?>-<?php echo $stop; ?> of <?php echo $total; ?></span>
+	<span class="displaying-num"><?php _e('Displaying','twc');?> <?php echo $start; ?>-<?php echo $stop; ?> <?php _e('of','twc');?> <?php echo $total; ?></span>
 	
 	<?php if ($page > 1 && $pages > 5): ?>
 	<a class="next page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $prev.$inactive; ?>">&laquo;</a>

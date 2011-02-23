@@ -24,7 +24,7 @@ $wrappers = twc_read_wrapper_files();
 		<div id="nav-menu-header">
 			<div id="wrapper_head" class="submitbox">
 				<div class="major-publishing-actions secondary-publishing">
-					<h3><span>TWC Pro Settings</span></h3>
+					<h3><span><?php _e('TWC Pro Settings', 'twc'); ?></span></h3>
 				</div>
 			</div>
 		</div>
@@ -35,29 +35,32 @@ $wrappers = twc_read_wrapper_files();
 					<ul id="resourceschecklist-most-recent" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" <?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?> value="default"> 
-						Make it a Default Widget
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" 
+						<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?> value="default"> 
+						<?php _e('Make it a Default Widget', 'twc'); ?>
 						</label>
 					</li>
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" <?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?> value="inherit"> 
-						Recurse to Child Objects
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" 
+						<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?> value="inherit"> 
+						<?php _e('Recurse to Child Objects', 'twc'); ?>
 						</label>
 					</li>
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" <?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?> value="exclude"> 
-						Exclude Checked Pages
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" 
+						<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?> value="exclude"> 
+						<?php _e('Exclude Checked Pages', 'twc'); ?>
 						</label>
 					</li>
 					</ul>
 				</div>
 				
 				<div class="twc-third">
-					<label>Wrapper </label>
+					<label><?php _e('Wrapper', 'twc'); ?> </label>
 					<select name="twcp_wrapper_file">
-					<option value=""> -- No Wrapper -- </option>
+					<option value=""> -- <?php _e('No Wrapper'); ?> -- </option>
 					<?php 
 					if (is_array($wrappers)) foreach ($wrappers as $file => $wrapper)
 					{

@@ -28,7 +28,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				<div class="major-publishing-actions">
 					<h3><span><?php echo $widget['name']; ?></span></h3>
 					<label class="menu-name-label howto open-label" for="menu-name">
-						<span>ID: <?php echo $widget['id']; ?></span> 
+						<span><?php _e('ID', 'twc'); ?>: <?php echo $widget['id']; ?></span> 
 					</label>
 					<br class="clear">
 				</div>

@@ -32,8 +32,8 @@ extract($defaults);
 
 //calculating the publishing time 
 $twcp_publish_time_format = ($twcp_publish_time == 'immediately') 
-	?'Publish <b>immediately</b>' 
-	: 'Publish on :<b>'.date('M d,Y @ h:i', $twcp_publish_time).'</b>';
+	?__('Publish <b>immediately</b>') 
+	:__('Publish on :').'<b>'.date('M d,Y @ h:i', $twcp_publish_time).'</b>';
 if ($twcp_publish_time == 'immediately')
 {
 	extract(array(

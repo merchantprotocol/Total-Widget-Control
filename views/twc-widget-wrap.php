@@ -24,7 +24,7 @@ $current_screen = twc_get_current_screen();
 
 <div class="wrap">
 	<div id="icon-themes" class="icon32"><br></div>
-	<h2>Total Widget Control
+	<h2><?php _e('Total Widget Control','twc'); ?>
 	<?php do_action('twc_widget_wrap_h2'); ?>
 	</h2>
 

@@ -17,9 +17,8 @@ if (twc_inactive_list()) return false;
 
 ?>
 <p class="search-box twcp">
-	<label class="screen-reader-text" for="post-search-input">Search Widgets:</label>
+	<label class="screen-reader-text" for="post-search-input"><?php _e('Search Widgets:','twc');?></label>
 	<input type="text" id="post-search-input" name="twcp_search_input" value="">
-	<input type="submit" value="Search Widgets" name="twcp_submit" class="button" 
-	onClick="javascript:this.form.submit();">
+	<input type="submit" value="<?php _e('Search Widgets','twc');?>" name="twcp_submit" class="button" onClick="javascript:this.form.submit();">
 </p>
 <?php twc_upgrade_button(); ?>

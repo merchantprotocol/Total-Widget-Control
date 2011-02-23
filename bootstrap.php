@@ -12,7 +12,6 @@
 
 defined('ABSPATH') or die("Cannot access pages directly.");
 
-
 if (!function_exists("twc_get_show_view")):
 	/**
 	 * Controller.
@@ -777,7 +776,6 @@ if (!function_exists("init_registered_widgets")):
 		foreach ($widgets as $id => $widget)
 		{
 			$wp_widget_factory->widgets[$id] =& new Multiple_Widget_Master( $widget );
-			//init_registered_widget( $widget );
 		}
 		
 		return false;
