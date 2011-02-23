@@ -15,8 +15,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <?php if ($current_screen->action != 'undo'): ?>
-<tr id="tr_row_widget-<?php echo $widget['id']; ?>" valign="top"
-class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
+<tr id="tr_row_widget-<?php echo $widget['id']; ?>" valign="top" class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
 <?php endif; ?>
 
 	<th scope="row" class="check-column"><input type="checkbox" name="twcp_bulk[]" value="<?php echo $widget['id']; ?>"></th>
