@@ -15,8 +15,8 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <tr>
-	<th scope="col" id="cb" class="manage-column column-cb check-column" style=""><input type="checkbox"></th>
-	<th scope="col" id="title" class="manage-column" style="width:60%">Title</th>
-	<th scope="col" id="sidebar" class="manage-column" style="width:30%;">Sidebar</th>
-	<th scope="col" id="date" class="manage-column" style="width:10%;text-align:center;">Position</th>
+	<th scope="col" id="cb" class="manage-column column-cb check-column" style=""><input type="checkbox" class="twcp"></th>
+	<th scope="col" id="title" class="manage-column" style="width:60%"><?php _e('Title','twc'); ?></th>
+	<th scope="col" id="sidebar" class="manage-column" style="width:30%;"><?php _e('Sidebar','twc'); ?></th>
+	<th scope="col" id="date" class="manage-column" style="width:10%;text-align:center;"><?php _e('Position','twc'); ?></th>
 </tr>

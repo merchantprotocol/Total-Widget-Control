@@ -33,11 +33,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		</div>
 		
 		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][widget-id]" class="widget-id" value="<?php echo esc_attr($id_format); ?>" />
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][id_base]" class="id_base" value="<?php echo esc_attr($id_base); ?>" />
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][widget-width]" class="widget-width" value="<?php if (isset( $control['width'] )) echo esc_attr($control['width']); ?>" />
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][widget-height]" class="widget-height" value="<?php if (isset( $control['height'] )) echo esc_attr($control['height']); ?>" />
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][widget_number]" class="widget_number" value="<?php echo esc_attr($widget_number); ?>" />
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][multi_number]" class="multi_number" value="<?php echo esc_attr($widget_number); ?>" />
 		
 		<div class="widget-control-actions">
 			<div class="alignleft">

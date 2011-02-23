@@ -15,21 +15,15 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <div class="twc_auth">
-	<h1>Registering.
+	<h1><?php _e('Registering.','twc');?>
 	<img id="register_spinner" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>"/>
 	<span id="register_redirect" style="display:none;color:green;text-shadow:none;font-size:70%;font-weight:bold;">
-	Redirecting...</span>
+	<?php _e('Redirecting...','twc'); ?></span>
 	<span class="register_error" style="display:none;color:red;text-shadow:none;font-size:70%;font-weight:bold;">
-	Error.</span>
+	<?php _e('Error.','twc'); ?></span>
 	</h1>
-	<p>Your registration process is in progress, we're working to activate your software.
-	Please be patient as we register your software and download your license. We will 
-	redirect you as soon as the software is active, you can also navigate away from this page
-	whenever you would like.</p>
-	<p class="register_error" style="display:none;">Uh Oh! The license that was just downloaded contains a 
-	programming error. Please take your error log file over to the support forum to figure 
-	out if it's a compatibility error with your system. Otherwise, delete the license
-	from your plugin folder and try again.</p>
+	<p><?php _e('Your registration process is in progress, we\'re working to activate your software. Please be patient as we register your software and download your license. We will  redirect you as soon as the software is active, you can also navigate away from this page whenever you would like.','twc'); ?></p>
+	<p class="register_error" style="display:none;"><?php _e('Uh Oh! The license that was just downloaded contains a programming error. Please take your error log file over to the support forum to figure out if it\'s a compatibility error with your system. Otherwise, delete the license from your plugin folder and try again.','twc'); ?></p>
 </div>
 <script>
 function twc_register_check_license()

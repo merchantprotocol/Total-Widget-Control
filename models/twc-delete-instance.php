@@ -17,5 +17,5 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 $widget_id = $_REQUEST['widget_id'];
 twc_delete_widget_instance($widget_id);
 
-wp_redirect('widgets.php');
+wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
 exit();

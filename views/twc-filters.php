@@ -18,4 +18,4 @@ if (twc_inactive_list()) return false;
 
 ?>
 <?php echo twc_sidebar_filter_box(); ?>
-<input onClick="javascript:this.form.submit();" type="submit" id="post-query-submit" value="Filter" class="button-secondary" name="twcp_submit">
+<input onClick="javascript:this.form.submit();" type="submit" id="post-query-submit" value="<?php _e('Filter', 'twc'); ?>" class="button-secondary" name="twcp_submit">

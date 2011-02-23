@@ -15,11 +15,12 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <select name="twcp_bulk_action[]">
-	<option value="" selected="selected">Bulk Actions</option>
+	<option value="" selected="selected"><?php _e("Bulk Actions", 'twc'); ?></option>
 	<?php if (twc_inactive_list()): ?>
-		<option value="delete">Delete Permanently</option>
+		<option value="delete"><?php _e("Delete Permanently", 'twc'); ?></option>
 	<?php else: ?>
-		<option value="trash">Move to Trash</option>
+		<option value="trash"><?php _e("Move to Trash", 'twc'); ?></option>
 	<?php endif;?>
 </select>
-<input type="submit" value="Apply" name="twcp_dobulk" id="doaction" class="button-secondary action" onClick="javascript:this.form.submit();">
+<input type="submit" value="<?php _e('Apply','twc'); ?>" name="twcp_dobulk" id="doaction" 
+class="button-secondary action" onClick="javascript:this.form.submit();">

@@ -15,14 +15,13 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <?php if ($current_screen->action != 'undo'): ?>
-<tr id="tr_row_widget-<?php echo $widget['id']; ?>" valign="top"
-class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
+<tr id="tr_row_widget-<?php echo $widget['id']; ?>" valign="top" class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
 <?php endif; ?>
 
 	<th scope="row" class="check-column"><input type="checkbox" name="twcp_bulk[]" value="<?php echo $widget['id']; ?>"></th>
 	<td class="widget-title column-title">
 		<strong>
-			<a class="row-title" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>" title="Edit <?php echo $widget['name']; ?>">
+			<a class="row-title" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
 				<?php echo $widget['name']; ?>
 			</a>
 			
@@ -32,23 +31,22 @@ class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
 		</strong>
 		<br/><?php echo $widget['callback'][0]->widget_options['description']; ?>
 		<div class="row-actions">
-			<span class="edit"><a title="Edit this item"
-			href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>">
-			Edit</a> | </span>
+			<span class="edit"><a title="<?php _e('Edit this item','twc'); ?>" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>">
+			<?php _e('Edit','twc');?></a> | </span>
 			
 			<?php if (!twc_inactive_list()): ?>
 			<span class="inline hide-if-no-js">
 				<a onClick="javascript: return twc_load_qedit('<?php echo $widget['id']; ?>');"
-				href="#" class="editinline" title="Edit this item inline">Quick&nbsp;Edit</a> | 
+				href="#" class="editinline" title="<?php _e('Edit this item inline','twc');?>"><?php _e('Quick Edit','twc');?></a> | 
 			</span>
 			
 			<span class="trash"><a class="ontrash" onClick="javascript: return twc_trash_widget('<?php echo $widget['id']; ?>');"
-			title="Move this item to the Trash" href="#">Trash</a> | </span>
+			title="<?php _e('Move this item to the Trash','twc');?>" href="#"><?php _e('Trash','twc');?></a> | </span>
 			<?php else: ?>
 			
 			<span class="trash">
 				<a class="ontrash" onClick="javascript: return twc_delete_permanently('<?php echo $widget['id']; ?>');"
-				title="Delete it permanently" href="#">Delete Permanently</a>
+				title="<?php _e('Delete it permanently','twc');?>" href="#"><?php _e('Delete Permanently','twc');?></a>
 			</span>
 			<?php endif; ?>
 			
