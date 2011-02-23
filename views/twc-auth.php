@@ -22,7 +22,7 @@ if ($current_screen->action != 'auth') return false;
 
 ?>
 <div class="grid" id="griddler_ii" style="height: 529px;">
-<div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions" target="_blank">
+<div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions/" target="_blank">
 <?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 <aside>
 	<ul>

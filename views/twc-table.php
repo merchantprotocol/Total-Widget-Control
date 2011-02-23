@@ -27,7 +27,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 </div>
 <div class="clear"></div>
 
-<table class="widefat post fixed" cellspacing="0">
+<table class="widefat post fixed twc_table" cellspacing="0">
 	<thead>
 	<?php twc_show_view('twc-table-header'); ?>
 	</thead>

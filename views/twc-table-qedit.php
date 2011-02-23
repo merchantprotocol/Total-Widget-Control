@@ -14,7 +14,7 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
-<tr id="edit-<?php echo $widget_id; ?>" class="alternate inline-edit-row inline-edit-row-page quick-edit-row quick-edit-row-page inline-editor" style="width:100%;">
+<tr id="edit-<?php echo $widget['id']; ?>" class="alternate inline-edit-row inline-edit-row-page quick-edit-row quick-edit-row-page inline-editor" style="width:100%;">
 <td colspan="4">
 	<?php echo $sidebar_args['before_widget']; ?>
 	
@@ -32,21 +32,21 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		?>
 		</div>
 		
-		<input type="hidden" name="widget-<?php echo esc_attr($id_base); ?>[<?php echo esc_attr($widget_number); ?>][widget-id]" class="widget-id" value="<?php echo esc_attr($id_format); ?>" />
+		<input type="hidden" name="widget-<?php echo esc_attr($widget['id_base']); ?>[<?php echo esc_attr($widget['number']); ?>][widget-id]" class="widget-id" value="<?php echo esc_attr($widget['id']); ?>" />
 		
 		<div class="widget-control-actions">
 			<div class="alignleft">
-				<a class="widget-control-remove" onClick="javascript:return twc_trash_widget('<?php echo $widget_id; ?>');" 
+				<a class="widget-control-remove" onClick="javascript:return twc_trash_widget('<?php echo $widget['id']; ?>');" 
 				href="#remove"><?php _e('Deactivate'); ?></a> |
 				
-				<a class="widget-control-close" onClick="javascript:return twc_close_qedit('<?php echo $widget_id; ?>');" 
+				<a class="widget-control-close" onClick="javascript:return twc_close_qedit('<?php echo $widget['id']; ?>');" 
 				href="#close"><?php _e('Close'); ?></a>
 			</div>
 			<div class="alignright<?php if ( 'noform' === $has_form ) echo ' widget-control-noform'; ?>">
 				<img src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" 
 				class="ajax-feedback"/>
 				
-				<input onClick="javascript: twc_save_widget_qedit('<?php echo $widget_id; ?>');" 
+				<input onClick="javascript: twc_save_widget_qedit('<?php echo $widget['id']; ?>');" 
 				type="button" name="submit" class="button-primary" value="<?php esc_attr_e('Save'); ?>" />
 			</div>
 			<br class="clear" />

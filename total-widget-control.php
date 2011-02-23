@@ -319,7 +319,7 @@ function twc_count_inactive_widgets()
  * 
  * @param string $sidebar_id
  * @param string $object_id
- */
+ *//*
 function twc_count_page_sidebar_widgets( $sidebar_id, $object_id = null )
 {
 	//initializng variables
@@ -345,11 +345,24 @@ function twc_count_page_sidebar_widgets( $sidebar_id, $object_id = null )
 	{
 		$widget = twc_get_widget_by_id($widget_id);
 		
-		if (in_array($object_id, (array)$widget['p']['menu_item_object_id']))
-			$count++;
+		if (twc_get_object_id())
+		{
+			$display = (is_array($widget['p']['menu_item_object_id']) 
+				&& in_array(twc_get_object_id(), (array)$widget['p']['menu_item_object_id']));
+		}
+		else 
+		{
+			$display = (is_array($widget['p']['menu_item_urls']) 
+				&& in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
+		}
+			
+		if ($display) $count++;
+		
+		//if (in_array($object_id, (array)$widget['p']['menu_item_object_id']))
+		//	$count++;
 	}
 	return $count;
-}
+}*/
 
 /**
  * Function is responsible for counting the number of widget
@@ -423,7 +436,7 @@ function twc_create_new_widget()
 function twc_default_sidebar( $index )
 {
 	//initializing variables
-	global $wp_registered_sidebars, $wp_registered_widgets, $twc_default_sidebar_widgets, $twc_isDefault;
+	global $wp_registered_sidebars, $wp_registered_widgets, $twc_default_sidebar_widgets, $twc_has_displayed, $twc_isDefault;
 	
 	if ( is_int($index) ) {
 		$index = "sidebar-$index";
@@ -437,12 +450,9 @@ function twc_default_sidebar( $index )
 		}
 	}
 	
-	//initializing variables
-	$all_count = twc_count_page_sidebar_widgets($index);
-	
 	// fail if we have widgets on this page 
 	// or if there are no defaults for this sidebar
-	if ($all_count > 0) return false;
+	if ($twc_has_displayed) return false;
 	if (!isset($twc_default_sidebar_widgets[$index])) return false;
 	$twc_isDefault = true;
 	
@@ -598,13 +608,11 @@ function twc_display_the_sidebar( $params )
 function twc_display_the_widget($instance, $widget, $args)
 {
 	//initializing variables
-	global $wp_query, $wp_registered_sidebars;
+	global $wp_query, $wp_registered_sidebars, $twc_has_displayed;
 	$widget = twc_get_widget_by_id($widget->id);
+	$display = twc_is_widget_displaying($widget);
 	
-	//check to see if we're even going to load this widget
-	$display = (is_array($widget['p']['menu_item_object_id']) 
-		&& in_array(twc_get_object_id(), (array)$widget['p']['menu_item_object_id']));
-	
+	//reasons to fail
 	$display = apply_filters('twc_display_widget', $display, $widget);
 	if (!$display) return false;
 	
@@ -617,6 +625,7 @@ function twc_display_the_widget($instance, $widget, $args)
 	$display = ob_get_clean();
 	
 	//displaying the widget
+	$twc_has_displayed = true;
 	echo apply_filters('twc_widget_display', $display, $widget);
 	return apply_filters('twc_wordpress_default_sidebar', false, $instance);
 }
@@ -669,7 +678,11 @@ function twc_display_if_default( $display, $widget )
  */
 function twc_display_if_visiblity( $display, $widget )
 {
+	//initializing variables
+	global $twc_widgetlistings_type;
+	
 	//reasons to fail
+	if ($twc_widgetlistings_type == 'admin') return $display;
 	if (!$display) return $display;
 	if (!isset($widget['p']['twcp_visibility'])) return $display;
 	
@@ -712,7 +725,11 @@ function twc_display_if_visiblity( $display, $widget )
  */
 function twc_display_if_status( $display, $widget )
 {
+	//initializing variables
+	global $twc_widgetlistings_type;
+	
 	//reasons to fail
+	if ($twc_widgetlistings_type == 'admin') return $display;
 	if (!$display) return false;
 	if ($widget['p']['twcp_status'] != 'enabled') return false;
 	
@@ -728,9 +745,11 @@ function twc_display_if_status( $display, $widget )
 function twc_display_if_timestamp( $display, $widget )
 {
 	//initializing variables
+	global $twc_widgetlistings_type;
 	$widget_time = $widget['p']['twcp_publish_time'];
 	
 	//reasons to fail
+	if ($twc_widgetlistings_type == 'admin') return $display;
 	if (!$display) return false;
 	if ($widget_time > time()) return false;
 	
@@ -749,8 +768,9 @@ function twc_display_if_timestamp( $display, $widget )
 function twc_dynamic_sidebar( $index = 1 )
 {
 	//initializing variables
-	global $wp_registered_sidebars, $wp_registered_widgets, $twc_isDefault;
+	global $wp_registered_sidebars, $wp_registered_widgets, $twc_isDefault, $twc_has_displayed;
 	$twc_isDefault = false;
+	$twc_has_displayed = FALSE;
 	
 	if ( is_int($index) ) {
 		$index = "sidebar-$index";
@@ -882,8 +902,18 @@ function twc_get_current_screen()
  */
 function twc_get_object_id()
 {
-	global $twc_menu_item_object_id;
-	return $twc_menu_item_object_id;
+	return twc_set_object_id();
+}
+
+/**
+ * function is responsible for making sure that set is run
+ * and then the string is returned
+ *
+ * @return string
+ */
+function twc_get_object_url()
+{
+	return twc_set_object_url();
 }
 
 /**
@@ -1050,6 +1080,11 @@ function twc_inactive_list()
  */
 function twc_initialize()
 {
+	//initializing variables
+	global $twc_table_type, $twc_widgetlistings_type, $twc_has_displayed;
+	$twc_table_type = $twc_widgetlistings_type = 'default';
+	$twc_has_displayed = false;
+	
 	add_action('widgets_init', 'init_registered_widgets', 1);
 	add_action('sidebar_admin_setup', 'twc_init', 100);
 	add_action('init', 'show_ajax', 100);
@@ -1067,9 +1102,13 @@ function twc_initialize()
 	add_action('twc-free-registration', 'twc_activation' );
 	add_action('admin_menu', 'f20_add_metaboxes');
 	add_action('save_post', 'f20_metabox_save_data');
+	add_action('wp_footer','twc_show_object_id');
+	add_action('wp','twc_set_object_url');
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
+	
+	add_action('admin_init', 'twc_set_object_id');
 	
 	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
@@ -1083,7 +1122,6 @@ function twc_initialize()
 	function twc_view_auth(){ twc_show_view('twc-auth'); }
 	if (!array_key_exists('TWCAUTH', $GLOBALS)) $GLOBALS['TWCAUTH'] = true;
 	
-	/*
 	f20_register_metabox(array(
 	    'id' => 'my-meta-box',
 	    'title' => 'Total Widget Control',
@@ -1092,62 +1130,43 @@ function twc_initialize()
 	    'priority' => 'high',
 	    'fields' => array(
 	        array(
-	            'name' => 'Text box',
-	            'desc' => 'Enter something here',
-	            'id' => 'text',
-	            'type' => 'text',
-	            'std' => 'Default value 1'
-	        ),
-	        array(
-	            'name' => 'Textarea',
-	            'desc' => 'Enter big text here',
-	            'id' => 'textarea',
-	            'type' => 'textarea',
-	            'std' => 'Default value 2'
-	        ),
-	        array(
-	            'name' => 'Select box',
-	            'id' => 'select',
-	            'type' => 'select',
-	            'options' => array('Option 1', 'Option 2', 'Option 3')
-	        ),
-	        array(
-	            'name' => 'Radio',
-	            'id' => 'radio',
-	            'type' => 'radio',
-	            'options' => array(
-	                array('name' => 'Name 1', 'value' => 'Value 1'),
-	                array('name' => 'Name 2', 'value' => 'Value 2')
-	            )
-	        ),
-	        array(
-	            'name' => 'Checkbox',
-	            'id' => 'checkbox',
-	            'type' => 'checkbox'
-	        ),
-			array(
 	            'name' => '',
 	            'desc' => '',
-	            'id' => 'property-image-gallery',
-	            'type' => 'image-gallery',
-	            'std' => ''
-	        ),
-			array(
-	            'name' => '',
-	            'desc' => '',
-	            'id' => 'property-file-gallery',
-	            'type' => 'file-gallery',
-	            'std' => ''
-	        ),
-			array(
-	            'name' => 'Audio File',
-	            'desc' => '',
-	            'id' => 'property-audio-gallery',
-	            'type' => 'audio-gallery',
+	            'id' => 'twc-meta-listings',
+	            'type' => 'show_view',
 	            'std' => ''
 	        ),
 	    )
-	));*/
+	));
+}
+
+/**
+ * function is responsible to determine if the widget will display on this page.
+ *
+ * @param string|object $widget
+ * @return boolean
+ */
+function twc_is_widget_displaying( $widget )
+{
+	//initializing variables
+	if (is_string($widget))
+	{
+		$widget = twc_get_widget_by_id($widget);
+	}
+	
+	//check to see if we're even going to load this widget
+	if (twc_get_object_id())
+	{
+		$display = (is_array($widget['p']['menu_item_object_id']) 
+			&& in_array(twc_get_object_id(), (array)$widget['p']['menu_item_object_id']));
+	}
+	else 
+	{
+		$display = (is_array($widget['p']['menu_item_urls']) 
+			&& in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
+	}
+	
+	return $display;
 }
 
 /**
@@ -1263,9 +1282,10 @@ function twc_read_wrapper_files()
 /**
  * Builds the row data, we do this outside of the model, for pagination purposes.
  *
+ * @param string $action
  * @return null
  */
-function twc_rows()
+function twc_rows( $action = 'default' )
 {
 	//initializing variables
 	global $wp_registered_sidebars, $wp_registered_widgets, $twcp_pagi, $twc_rows;
@@ -1283,48 +1303,67 @@ function twc_rows()
 	));
 	
 	//reasons to fail
-	if (!empty($current_screen->action)) return false;
+	if (!empty($current_screen->action) && $action == 'default') return false;
 	
 	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
 		if (is_array($sidebars_widgets[$sidebar_slug]))
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
 			
-			//show inactive widgets
-			if (twc_inactive_list() && $sidebar_slug == 'wp_inactive_widgets')
+			switch ($action)
 			{
-				$twcp_pagi['total']++;
-				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
-				continue;
-			}
-			
-			//show filtered items
-			if (twc_filter_list_for() && twc_filter_list_for() != $sidebar_slug)
-			{
-				$twcp_pagi['total']++;
-				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
-				continue;
-			}
-			
-			//show searched for items
-			if (twc_search_list_for() && $search = twc_search_list_for())
-			{
-				$widget = twc_get_widget_by_id( $widget_slug );
-				$title = apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget);
-				
-				if (strpos(strtolower($title),strtolower($search)) !== false)
+				case 'on-page':
+					//initializing variables
+					$widget = twc_get_widget_by_id($widget_slug);
+					$display = twc_is_widget_displaying($widget);
+					
+					//reasons to continue
+					$display = apply_filters('twc_display_widget', $display, $widget);
+					if (!$display) continue;
+						
+					//setting variables
+					$twcp_pagi['total']++;
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = $widget;
+					
+					break;
+				default:
+				//show inactive widgets
+				if (twc_inactive_list() && $sidebar_slug == 'wp_inactive_widgets')
 				{
 					$twcp_pagi['total']++;
 					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					continue;
 				}
-				continue;
-			}
-			
-			//show only active items
-			if (!twc_inactive_list() && $sidebar_slug != 'wp_inactive_widgets')
-			{
-				$twcp_pagi['total']++;
-				$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
-				continue;
+				
+				//show filtered items
+				if (twc_filter_list_for() && twc_filter_list_for() != $sidebar_slug)
+				{
+					$twcp_pagi['total']++;
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					continue;
+				}
+				
+				//show searched for items
+				if (twc_search_list_for() && $search = twc_search_list_for())
+				{
+					$widget = twc_get_widget_by_id( $widget_slug );
+					$title = apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget);
+					
+					if (strpos(strtolower($title),strtolower($search)) !== false)
+					{
+						$twcp_pagi['total']++;
+						$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					}
+					continue;
+				}
+				
+				//show only active items
+				if (!twc_inactive_list() && $sidebar_slug != 'wp_inactive_widgets')
+				{
+					$twcp_pagi['total']++;
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					continue;
+				}
+				break;
 			}
 			
 		endforeach;
@@ -1533,16 +1572,28 @@ function twc_save_menu_items( $fields )
 	//reasons to fail
 	if (!array_key_exists('menu-item', $_REQUEST)) return $fields;
 	
+	//initializing variables
+	$object_ids = array();
+	$menu_item_urls = array();
+	
 	foreach ((array)$_REQUEST['menu-item'] as $item) 
-		foreach ((array)$item as $menu_item_object_id => $id)
+		foreach ((array)$item as $menu_item => $id)
 		{
-			if (strlen($id) > 100) continue;
-			if ($menu_item_object_id != 'menu-item-object-id' && 'menu-item-object' != $menu_item_object_id) 
-				continue;
-			$object_ids[$id] = $id;
+			//saving the menu item url
+			if ($menu_item == 'menu-item-url')
+			{
+				$menu_item_urls[$id] = $id;
+			}
+			
+			//saving the object ID
+			if ($menu_item == 'menu-item-object-id') 
+			{
+				$object_ids[$id] = $id;
+			}
 		}
 	
 	$fields['menu_item_object_id'] = $object_ids;
+	$fields['menu_item_urls'] = $menu_item_urls;
 	return $fields;
 }
 
@@ -1660,24 +1711,75 @@ function twc_search_list_for()
 }
 
 /**
+ * function is responsible for setting the current url
+ *
+ */
+function twc_set_object_url()
+{
+	//initializing variables
+	global $twc_menu_item_url;
+	
+	//reasons to fail
+	if (isset($twc_menu_item_url)) return $twc_menu_item_url;
+	$twc_menu_item_url = f20_get_page_url();
+	return $twc_menu_item_url;
+}
+
+/**
  * Save the original object id
  * 
- * @TODO I need to also locate and remember the object type
- *
- * @param unknown_type $wp
+ * @return string $twc_menu_item_object_id
  */
-function twc_set_object_id( &$wp )
+function twc_set_object_id()
 {
 	//initializing variables
 	global $twc_menu_item_object_id, $wp_query;
-	$twc_menu_item_object_id = $wp_query->queried_object_id;
 	
-	if (is_null($wp_query->queried_object_id))
+	//reasons to fail
+	if (isset($twc_menu_item_object_id)) return $twc_menu_item_object_id;
+	
+	if (!isset($wp_query))
 	{
-		$wp_query->get_queried_object();
-		$twc_menu_item_object_id = $wp_query->queried_object_id;
+		wp_reset_query();
 	}
 	
+	if (!$wp_query->have_posts())
+	{
+		//this is used for the admin area
+		if (isset($_REQUEST['post']) && $post = get_post($_REQUEST['post']))
+		{
+			if ($post->post_type == 'page')
+			{
+				$query = array('page_id' => $post->ID);
+			}
+			else
+			{
+				$query = array('p' => $post->ID, 'post_type' => 'any');
+			}
+		}
+		$wp_query->query($query);
+	}
+	
+	//now that the wp_query is setup, we get the object id
+	$wp_query->get_queried_object();
+	$twc_menu_item_object_id = $wp_query->queried_object_id;
+	return $twc_menu_item_object_id;
+}
+
+/**
+ * function shows debug info
+ * 
+ * @return unknown
+ */
+function twc_show_object_id()
+{
+	//initializing varaibles
+	$debug_locations = (isset($_REQUEST['twc_debug']));
+	
+	//reasons to fail
+	if ( TWC_CURRENT_USER_CANNOT ) return false;
+	if (!$debug_locations) return false;
+	echo '<div style="position:absolute;top:0px;left:0px;background:#fff;padding:5px;">'.twc_get_object_id().'</div>';
 }
 
 /**
@@ -1760,6 +1862,7 @@ function twc_trigger_sidebar( $widget_shell )
 	//initializing variables
 	global $wp_registered_widgets, $twc_wp_registered_widgets;
 	static $keeping_count;
+	$debug_locations = (isset($_REQUEST['twc_debug']));
 	$sidebar_id = twc_get_widgets_sidebar($widget_shell['id']);
 	$count = twc_count_sidebar_widgets($sidebar_id);
 	
@@ -1773,7 +1876,9 @@ function twc_trigger_sidebar( $widget_shell )
 	{
 		//ensures that we have a well formed widget variable before calling our sidebar
 		$wp_registered_widgets = $twc_wp_registered_widgets;
+		if ($debug_locations) echo '<div style="border: 1px dashed pink;min-height:25px;"><b>'.$sidebar_id.'</b>';
 		do_action('twc_dynamic_sidebar', $sidebar_id);
+		if ($debug_locations) echo '</div>';
 		
 		$keeping_count = 0;
 	}
