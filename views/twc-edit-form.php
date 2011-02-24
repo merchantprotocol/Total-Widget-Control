@@ -21,7 +21,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	</div>
 </div>
 
-<div id="menu-management" class="widget-options">
+<div id="menu-management" class="widget-options postbox">
 	<div class="menu-edit">
 		<div id="nav-menu-header">
 			<div id="submitpost" class="submitbox">
@@ -61,4 +61,3 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 	</div><!-- /.menu-edit -->
 </div><!-- /#menu-management -->
-		

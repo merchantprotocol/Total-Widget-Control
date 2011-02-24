@@ -3,8 +3,8 @@ Contributors: jonbyrd, byrd
 Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
-Tested up to: 3.0.5
-Stable tag: 1.5.3
+Tested up to: 3.1
+Stable tag: 1.5.4
 
 Rebuilding Wordpess Widget management from the ground up. 
 
