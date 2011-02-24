@@ -82,10 +82,12 @@ function twc_add_javascript()
 	
 	wp_register_script( 'twc-nav-menu', plugin_dir_url(__file__).'js/twc-nav-menu.js');
 	wp_register_script( 'twc-base', plugin_dir_url(__file__).'js/twc.js');
+	wp_register_script( 'twc-qtip', plugin_dir_url(__file__).'js/tooltips.js');
 	
 	switch($current_screen->action)
 	{
 		default:
+			wp_enqueue_script( 'twc-qtip' );
 			wp_enqueue_script( 'twc-base' );
 			break;
 		case 'edit':
@@ -99,6 +101,7 @@ function twc_add_javascript()
 			// Nav Menu functions
 			wp_enqueue_script( 'twc-base' );
 			wp_enqueue_script( 'twc-nav-menu' );
+			wp_enqueue_script( 'twc-qtip' );
 			
 			// Metaboxes 
 			wp_enqueue_script( 'common' );
@@ -1545,8 +1548,11 @@ function twc_receive_license()
  * @param array $fields
  * @return array
  */
-function twc_save_default_sidebar( $fields )
+function twc_save_default_sidebar( $fields, $new_instance, $old_instance, $this )
 {
+	//initializing variables
+	$fields = wp_parse_args( $fields, $old_instance );
+	
 	if (array_key_exists('twcp_default_sidebar', $_REQUEST))
 		$fields['twcp_default_sidebar'] = $_REQUEST['twcp_default_sidebar'];
 	
@@ -1685,6 +1691,7 @@ function twc_save_widget_fields( $widget_id, $post )
 		}
 	}
 	
+
 	if ($widget['multiwidget'])
 	{
 		$_POST['widget-'.$id_base][$widget['number']] = apply_filters('twc-save-widget-fields', $fields);

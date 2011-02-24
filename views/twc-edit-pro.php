@@ -19,7 +19,7 @@ $wrappers = twc_read_wrapper_files();
 
 
 ?>
-<div id="menu-management" class="widget-control-settings">
+<div id="menu-management" class="widget-control-settings postbox">
 	<div class="menu-edit">
 		<div id="nav-menu-header">
 			<div id="wrapper_head" class="submitbox">

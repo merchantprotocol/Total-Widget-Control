@@ -14,7 +14,7 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
-<div id="menu-management">
+<div id="menu-management" class="postbox">
 	<div class="menu-edit">
 		<div id="nav-menu-header">
 			<div id="wrapper_head" class="submitbox">

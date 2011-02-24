@@ -15,9 +15,12 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 global $widget;
+
+//recreate the time data
 $_REQUEST['twcp_publish_time'] = strtotime($_REQUEST['twcp_YY'].'-'.$_REQUEST['twcp_mm'].'-'.$_REQUEST['twcp_jj'].' '.$_REQUEST['twcp_hh'].':'.$_REQUEST['twcp_ii']);
 if (!isset($_REQUEST['menu-item'])) $_REQUEST['menu-item'] = array();
 
+//saving
 twc_save_widget_fields( $widget['id'], $_REQUEST );
 twc_save_widget_sidebar( $widget['id'], $_REQUEST['sidebar'], $_REQUEST[$_REQUEST['sidebar'].'_position'] );
 
