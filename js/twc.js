@@ -70,7 +70,7 @@ function twc_save_widget_edit()
 	radio.each(function() {values[this.name] = jQuery(this).val();});
 	var inputs = jQuery('.twcpi').find(':input');
 	inputs.each(function(){values[this.name] = jQuery(this).val();});
-	values['twcp_visible_parent'] = (jQuery('#twcp_visible_parent').attr('checked'))? jQuery('#twcp_visible_parent').val():'off'; 
+	values['twcp_visible_parent'] = (jQuery('#twcp_visible_parent').attr('checked'))? jQuery('#twcp_visible_parent').val():''; 
 	
 	jQuery.ajax({
 		type : 'POST',

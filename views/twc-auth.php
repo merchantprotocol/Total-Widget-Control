@@ -18,12 +18,36 @@ $current_screen = twc_get_current_screen();
 
 //controller
 if ($current_screen->action != 'auth') return false;
-
+$uniqueID = get_option('twc_unique_registration_key', create_guid());
+$parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
+$domain=$parts["host"];
+$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
+	
 
 ?>
+<div class="twc_auth_wrapper">
+	<div class="twc_auth_right">
+		<div class="twc_auth_widget">
+			<h3><?php _e('Already Purchased Pro?','twc'); ?></h3>
+			<p><?php _e('You have two options, just click the "GO PRO" button below to automatically download your license, or click here to manually download your license:','twc'); ?></p>
+			<p><?php _e('This option is suggested if your system has issues during the autmated download process.','twc'); ?></p>
+			<p><a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode($domain); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a></p>
+		
+		</div>
+		<div class="twc_auth_widget">
+			<h3><?php _e('Looking for support?','twc'); ?></h3>
+			<p><?php _e('By accepting the terms of use and choosing a license, the system will associate your administrative email address with your registration.','twc'); ?></p>
+			<p><?php _e('If you would like to contact us for support inquiries, direct your emails to:','twc'); ?></p>
+			<p><?php _e('support@5twentystudios.com','twc'); ?></p>
+		</div>
+		<div class="twc_auth_widget">
+			<h3><?php _e('Get a 50% Discount on PRO!','twc'); ?></h3>
+			<p><?php _e('For the first month, we\'re offering users the ability to receive discounts by blogging about the Total Widget Control Plugin, then emailing your link and domain to:','twc'); ?></p>
+			<p><?php _e('discount@5twentystudios.com','twc'); ?></p>
+		</div>
+	</div>
+
 <div class="grid" id="griddler_ii" style="height: 529px;">
-<div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions/" target="_blank">
-<?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 <aside>
 	<ul>
 		<li>Display By Page</li>
@@ -50,7 +74,7 @@ if ($current_screen->action != 'auth') return false;
 			<h1>Personal</h1>
 		</hgroup>
 		<hgroup class="price">
-			<h2>Free<em>Always</em></h2>
+			<h2>Free<em>License</em></h2>
 		</hgroup> 
 	</header> 
 	<section>
@@ -79,7 +103,7 @@ if ($current_screen->action != 'auth') return false;
 <article>
 	<header>
 		<hgroup class="plan">
-			<h1>Commercial</h1>
+			<h1>Professional</h1>
 		</hgroup> <hgroup class="price">
 			<h2>$9<em>License</em></h2>
 			<h4 class="label">Best Value</h4>
@@ -168,7 +192,7 @@ if ($current_screen->action != 'auth') return false;
 		</li>
 		<li><span class="check">Yes</span>
 		</li>
-		<li><span class="check">Yes</span></li>
+		<li><span class="no">No</span></li>
 		<li><span class="no">No</span></li>
 	</ul>
 	</section>
@@ -214,40 +238,10 @@ if ($current_screen->action != 'auth') return false;
 </div>
 </div>
 
+<div class="clear"></div>
+</div> <!-- auth wrapper -->
 
-<?php return; ?>
-<div class="twc_auth">
-	<h1><?php _e('Total Widget Control Registration', 'twc'); ?></h1>
-	<iframe src="http://community.5twentystudios.com/twc-terms-and-conditions/"></iframe>
-	
-	<div class="buy_option">
-		<label>
-		<input type="radio" name="license" value="1" checked="checked"/>
-		<span><?php _e("I'd like to purchase a pro license, for only $9.", 'twc'); ?></span>
-		</label>
-	</div>
-	<div class="buy_option">
-		<label>
-		<input type="radio" name="license" value="2"/>
-		<span><?php _e("I've already purchased a pro license.", 'twc'); ?></span>
-		</label>
-	</div>
-	<div class="buy_option">
-		<label>
-		<input type="radio" name="license" value="0"/>
-		<span><?php _e("I'll just try the free version, thanks!", 'twc'); ?></span>
-		</label>
-	</div>
-	
-	<input type="button" name="action" class="button-secondary" value="<?php _e("I Don't Agree", 'twc'); ?>" 
-	onClick="javascript:window.location.href='<?php bloginfo('url'); ?>/wp-admin/widgets.php?list_style=wp';" />
-	
-	<input type="hidden" name="action" value="register"/>
-	<input type="submit" class="button-primary" value="<?php _e("I Agree", 'twc'); ?>/>
-	<div class="clear"></div>
-</div>
-<script>
-jQuery(document).ready(function(){
-	jQuery('#twc-widget-wrap').unbind('submit');
-});
-</script>
+<div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions/" target="_blank">
+<?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
+
+<p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px">5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.</p>

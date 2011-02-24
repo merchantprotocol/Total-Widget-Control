@@ -13,6 +13,12 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
+//initializing variables
+$uniqueID = get_option('twc_unique_registration_key', create_guid());
+$parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
+$domain=$parts["host"];
+$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
+
 ?>
 <div class="twc_auth">
 	<h1><?php _e('Registering.','twc');?>
@@ -22,10 +28,14 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<span class="register_error" style="display:none;color:red;text-shadow:none;font-size:70%;font-weight:bold;">
 	<?php _e('Error.','twc'); ?></span>
 	</h1>
-	<p><?php _e('Your registration process is in progress, we\'re working to activate your software. Please be patient as we register your software and download your license. We will  redirect you as soon as the software is active, you can also navigate away from this page whenever you would like.','twc'); ?></p>
-	<p class="register_error" style="display:none;"><?php _e('Uh Oh! The license that was just downloaded contains a programming error. Please take your error log file over to the support forum to figure out if it\'s a compatibility error with your system. Otherwise, delete the license from your plugin folder and try again.','twc'); ?></p>
+	<p><?php _e('This process will attempt to download a license for you, then activate the software before redirecting you. Please be patient.','twc'); ?></p>
+	<p class="register_error" style="display:none;">
+	<?php _e('Looks like we\'re having problems communicating with the license server. You can click this link to download a license manually, then upload the license to the TWC plugin directory.', 'twc'); ?>
+	<a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode($domain); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a>
+	</p>
 </div>
 <script>
+var twcp_count = 0;
 function twc_register_check_license()
 {
 	jQuery('.register_error').ajaxError(function(event, request, settings){
@@ -44,6 +54,13 @@ function twc_register_check_license()
 			}
 			else
 			{
+				twcp_count = twcp_count+1;
+				if (twcp_count > 30)
+				{
+					jQuery('#register_spinner').css('display','none');
+					jQuery('.register_error').css('display','inline-block');
+					return;
+				}
 				twc_register_check_license();
 			}
 		}
