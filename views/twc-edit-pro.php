@@ -35,22 +35,25 @@ $wrappers = twc_read_wrapper_files();
 					<ul id="resourceschecklist-most-recent" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" 
-						<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?> value="default"> 
+						<input type="hidden" name="twcp_default_sidebar" value="" />
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" value="default"
+							<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?>> 
 						<?php _e('Make it a Default Widget', 'twc'); ?>
 						</label>
 					</li>
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" 
-						<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?> value="inherit"> 
+						<input type="hidden" name="twcp_inherit_sidebar" value="" />
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" value="inherit"
+							<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?>> 
 						<?php _e('Recurse to Child Objects', 'twc'); ?>
 						</label>
 					</li>
 					<li>
 						<label class="menu-item-title">
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" 
-						<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?> value="exclude"> 
+						<input type="hidden" name="twcp_exclude_sidebar" value="" />
+						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" value="exclude"
+							<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?>> 
 						<?php _e('Exclude Checked Pages', 'twc'); ?>
 						</label>
 					</li>

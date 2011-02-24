@@ -4,7 +4,7 @@ Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.0.5
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 
 Rebuilding Wordpess Widget management from the ground up. 
 
@@ -130,6 +130,23 @@ This is currently a beta release of TWC, we cannot guarantee that there will be 
 4. Quickly choose where on the page your widget sets.
 
 
+== Changelog ==
+
+= 1.5.2 = 
+* Added localization support
+
+= 1.5.3 =
+* Added a Metabox to pages, posts and all custom post types.
+* Fixed the registration process
+* Fixed quick edit saving
+* Fixed quick saving sidebar
+* Fixed add new button and page
+
+
+== Upgrade Notice ==
+
+= 1.5.3 =
+This is the most stable version to date. All features have been thouroughly tested and are ready for heavy testing.
 
 == 5Twenty Studios ==
 

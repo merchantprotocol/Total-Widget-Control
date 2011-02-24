@@ -13,12 +13,18 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
+//initializing variables
+global $twc_table_type;
+
 ?>
 <?php if ($current_screen->action != 'undo'): ?>
 <tr id="tr_row_widget-<?php echo $widget['id']; ?>" valign="top" class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
 <?php endif; ?>
 
+	<?php if ($twc_table_type == 'default') :?>
 	<th scope="row" class="check-column"><input type="checkbox" name="twcp_bulk[]" value="<?php echo $widget['id']; ?>"></th>
+	<?php endif; ?>
+	
 	<td class="widget-title column-title">
 		<strong>
 			<a class="row-title" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
@@ -57,7 +63,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		<?php */?>
 		</div>
 	</td>
-	<td class="" style="white-space: nowrap;">
+	<td class="" style="white-space: nowrap;overflow: visible;">
 		<div style="position:relative;float:left;">
 		<?php echo twc_sidebar_select_box($sidebar_id, $widget); ?>
 		</div>
