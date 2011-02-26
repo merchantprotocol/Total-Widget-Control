@@ -43,7 +43,7 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #post-status-display, #post-visibility-display {text-transform:capitalize;}
 #twc-widget-wrap .widget {border:none;}
 #twc-widget-wrap .buy_option {margin:10px 0;margin-left:30px;}
-#twc-widget-wrap #post-body li {border:none !important;}
+#twc-widget-wrap #post-body li {border:none !important;display:inline-block;list-style:none;}
 #twc-widget-wrap .major-publishing-actions h3 {margin:0;padding: 5px 0;}
 #twc-widget-wrap #post-body-content {padding-left: 15px!important;}
 #twc-widget-wrap .head_space {width:100%;clear:both;height:27px;line-height:27px;}
@@ -66,7 +66,7 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #twc-widget-wrap .twc-go-back {padding: 3px 15px !important;display:inline-block;}
 #twc-widget-wrap #misc-publishing-actions {font-size: 11px;}
 #twc-widget-wrap .widget-save {padding:0 10px;text-align: right;}
-#twc-widget-wrap #nav-menu-header, #twc-widget-wrap #post-body {border-color:none;border-style:none;}
+#twc-widget-wrap #nav-menu-header, #twc-widget-wrap #post-body {border-color:none !important;border-style:none !important;}
 
 #griddler_ii article,#griddler_ii aside, #griddler_ii section, #griddler_ii header, #griddler_ii hgroup, #griddler_ii footer,#griddler_ii div,#griddler_ii p,#griddler_ii ul,#griddler_ii ol, #griddler_ii .button {display: block;padding: 0;margin: 0;list-style: none!important;text-align: center!important;border: 0 none;outline: none;}
 #griddler_ii h1, #griddler_ii h2 {	margin: 0;	}

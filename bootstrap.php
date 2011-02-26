@@ -23,8 +23,10 @@ if (!function_exists("twc_get_show_view")):
 	 */
 	function twc_get_show_view( $name = null )
 	{
+		//initializing variables
 		$paths = set_controller_path();
 		$theme = get_theme_path();
+		$html = '';
 		
 		if (!($view = twc_find(array($theme), "views".DS.$name.".php")))
 		{
@@ -47,6 +49,7 @@ if (!function_exists("twc_get_show_view")):
 			ob_start();
 				$args = func_get_args();
 				require $model;
+				unset($html);
 			$html = ob_get_clean();
 		}
 		else
@@ -54,6 +57,7 @@ if (!function_exists("twc_get_show_view")):
 			ob_start();
 				$args = func_get_args();
 				require $path;
+				unset($html);
 			$html = ob_get_clean();
 		}
 		
@@ -899,8 +903,8 @@ if (!class_exists("Multiple_Widget_Master")):
 			$meta = attribute_escape(@$instance[$field['id']]);
 			
 			echo '<p>',
-			'<label for="', $this->get_field_id($field['id']), '">',
-			$field['name'], ':';
+			'<label for="', $this->get_field_id($field['id']), '">';
+			if ($field['name']) echo $field['name'], ':';
 			
 			switch ($field['type'])
 			{

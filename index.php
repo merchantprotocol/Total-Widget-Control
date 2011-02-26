@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is designed to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.5.4
+ * Version: 1.5.5
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
@@ -70,7 +70,8 @@ if (function_exists('date_default_timezone_set')) date_default_timezone_set(get_
 require_once ABSPATH.WPINC.DS."pluggable.php";
 require_once dirname(__file__).DS."bootstrap.php";
 require_once dirname(__file__).DS."total-widget-control.php";
-
+require_once dirname(__file__).DS."template-codes.php";
+require_once dirname(__file__).DS."widgets.php";
 
 /**
  * User Control Level
@@ -86,6 +87,22 @@ require_once dirname(__file__).DS."total-widget-control.php";
  */
 defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can("edit_theme_options")) );
 
+/**
+ * Are Sortables Turned On
+ * 
+ * You probably shouldn't turn on this constant at all, it's still very much in
+ * the development stage.
+ */
+defined("TWC_SORTABLES") or define("TWC_SORTABLES", FALSE);
+
+/**
+ * Is administrator
+ * 
+ * The value of this constant will determine if the user can modify widgets from
+ * the front end of the website. We combine this with sortables even being turned 
+ * on.
+ */
+defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can("edit_theme_options") && TWC_SORTABLES));
 
 /**
  * Initialize the Framework
