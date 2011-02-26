@@ -31,6 +31,7 @@ if (!empty($_FILES))
 	$licenses = get_option('twc_licenses',array());
 	$licenses[$parts['host']] = @file_get_contents($_FILES['license']['tmp_name']);
 	update_option('twc_licenses',$licenses);
+	update_option('twc_is_free',false);
 	
 	wp_redirect(get_option('url').'/wp-admin/widgets.php?list_style=twc');
 	exit();
