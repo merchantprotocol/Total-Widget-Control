@@ -15,12 +15,12 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 $current_screen = twc_get_current_screen();
+wp_enqueue_style( 'twc' );
+	
 
 ?>
 <?php do_action('twc_before_wrapper'); ?>
 <?php require_once( './admin-header.php' ); ?>
-
-<link rel='stylesheet' href='<?php echo plugin_dir_url(dirname(__file__)); ?>css/twc.css' type='text/css' media='all' /> 
 
 <div class="wrap">
 	<div id="icon-themes" class="icon32"><br></div>
