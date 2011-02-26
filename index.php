@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is designed to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.5.5
+ * Version: 1.5.6
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
@@ -32,28 +32,8 @@ defined('ABSPATH') or die("Cannot access pages directly.");
  * The directory separator is different between linux and microsoft servers.
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
- * 
  */
 defined("DS") or define("DS", DIRECTORY_SEPARATOR);
-
-/**
- * Initialize Localization
- * 
- * @tutorial http://codex.wordpress.org/I18n_for_WordPress_Developers
- * function call loads the localization files from the current folder
- * 
- */
-if (function_exists('load_theme_textdomain')) load_theme_textdomain('twc');
-
-/**
- * Set Dates Default Timezone
- * 
- * The server has a timezone, mysql has a timezone, php has a timezone and wordpress 
- * it's own timezone. The following setting will synchronize the wordpress timezone
- * with the php timezone. This program uses the php timezone for publishing settings.
- * 
- */
-if (function_exists('date_default_timezone_set')) date_default_timezone_set(get_site_option('timezone_string'));
 
 /**
  * Startup
@@ -71,7 +51,25 @@ require_once ABSPATH.WPINC.DS."pluggable.php";
 require_once dirname(__file__).DS."bootstrap.php";
 require_once dirname(__file__).DS."total-widget-control.php";
 require_once dirname(__file__).DS."template-codes.php";
-require_once dirname(__file__).DS."widgets.php";
+//require_once dirname(__file__).DS."widgets.php";
+
+/**
+ * Initialize Localization
+ * 
+ * @tutorial http://codex.wordpress.org/I18n_for_WordPress_Developers
+ * function call loads the localization files from the current folder
+ */
+if (function_exists('load_theme_textdomain')) load_theme_textdomain('twc');
+
+/**
+ * Set Dates Default Timezone
+ * 
+ * The server has a timezone, mysql has a timezone, php has a timezone and wordpress 
+ * it's own timezone. The following setting will synchronize the wordpress timezone
+ * with the php timezone. This program uses the php timezone for publishing settings.
+ */
+if (function_exists('date_default_timezone_set')) date_default_timezone_set(get_site_option('timezone_string'));
+if (function_exists('ini_set')) ini_set('date.timezone', get_site_option('timezone_string'));
 
 /**
  * User Control Level

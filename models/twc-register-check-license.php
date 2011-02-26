@@ -16,7 +16,9 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 ob_end_clean();
 
 $parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
-if (@file_get_contents( dirname(dirname(__file__)).DS.$parts['host'] ))
+$licenses = get_option('twc_licenses',array());
+
+if (isset($licenses[$parts['host']]))
 {
 	die('1');
 }

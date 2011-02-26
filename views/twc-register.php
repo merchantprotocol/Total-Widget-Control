@@ -13,12 +13,6 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-//initializing variables
-$uniqueID = get_option('twc_unique_registration_key', create_guid());
-$parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
-$domain=$parts["host"];
-$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
-
 ?>
 <div class="twc_auth">
 	<h1><?php _e('Registering.','twc');?>

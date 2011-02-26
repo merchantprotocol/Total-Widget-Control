@@ -28,22 +28,19 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 <div class="twc_auth_wrapper">
 	<div class="twc_auth_right">
 		<div class="twc_auth_widget">
-			<h3><?php _e('Already Purchased Pro?','twc'); ?></h3>
-			<p><?php _e('You have two options, just click the "GO PRO" button below to automatically download your license, or click here to manually download your license:','twc'); ?></p>
-			<p><?php _e('This option is suggested if your system has issues during the autmated download process.','twc'); ?></p>
-			<p><a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode($domain); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a></p>
-		
-		</div>
-		<div class="twc_auth_widget">
 			<h3><?php _e('Looking for support?','twc'); ?></h3>
-			<p><?php _e('By accepting the terms of use and choosing a license, the system will associate your administrative email address with your registration.','twc'); ?></p>
 			<p><?php _e('If you would like to contact us for support inquiries, direct your emails to:','twc'); ?></p>
-			<p><?php _e('support@5twentystudios.com','twc'); ?></p>
+			<p><a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>
+			<p><?php _e('If you can\'t wait for an answer, try our online resources.','twc'); ?></p>
+			<ul>
+				<li><a href="http://community.5twentystudios.com/kb/">Knowledge Base</a></li>
+				<li><a href="http://community.5twentystudios.com/community/">Support Forums</a></li>
+				<li><a href="http://www.5twentystudios.com/">5Twenty Studios</a></li>
+			</ul>
 		</div>
 		<div class="twc_auth_widget">
-			<h3><?php _e('Get a 50% Discount on PRO!','twc'); ?></h3>
-			<p><?php _e('For the first month, we\'re offering users the ability to receive discounts by blogging about the Total Widget Control Plugin, then emailing your link and domain to:','twc'); ?></p>
-			<p><?php _e('discount@5twentystudios.com','twc'); ?></p>
+			<h3><?php _e('Register manually','twc'); ?></h3>
+			<p><?php _e('If you have already purchased a license for this domain, <a href="'.get_option('url').'/wp-admin/widgets.php?action=manual'.'">click here.</a>','twc'); ?></p>
 		</div>
 	</div>
 
@@ -51,10 +48,12 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 <aside>
 	<ul>
 		<li>Display By Page</li>
+		<li>Admin Quick Edit</li>
+		<li>Static Defaults</li>
+		<li>Dynamic Defaults</li>
 		<li>Display By Role</li>
 		<li>Publish Status</li>
 		<li>Publish Date</li>
-		<li>Default Sidebar</li>
 		<li>Custom Titles</li>
 		<li>Custom Styles</li>
 		<li>Bulk Actions</li>
@@ -79,7 +78,9 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header> 
 	<section>
 	<ul>
-		<li><span>Any Page</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
 		<li><span class="no">No</span></li>
 		<li><span class="no">No</span></li>
 		<li><span class="no">No</span></li>
@@ -111,7 +112,19 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
-		<li><span>Any Page</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li class="tooltip-holder"><span class="check">Dynamic</span>
+			<div class="tooltip">
+				<div>
+					<h3>Dynamic Default Sidebars</h3>
+					<p>When no widgets are set to display, then your default widgets
+					will display. No more needing to hard code sidebars that will
+					display when there are no active widgets.</p>
+				</div>
+			</div>
+		</li>
 		<li class="tooltip-holder"><span class="check">Any Role</span>
 			<div class="tooltip">
 				<div>
@@ -136,16 +149,6 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 					<h3>Just Like Posts</h3>
 					<p>By default, widgets display immediately, or you can choose the
 					exact date and time for a widget to publish itself.</p>
-				</div>
-			</div>
-		</li>
-		<li class="tooltip-holder"><span class="check">Dynamic</span>
-			<div class="tooltip">
-				<div>
-					<h3>Dynamic Default Sidebars</h3>
-					<p>When no widgets are set to display, then your default widgets
-					will display. No more needing to hard code sidebars that will
-					display when there are no active widgets.</p>
 				</div>
 			</div>
 		</li>
@@ -190,8 +193,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 				</div>
 			</div>
 		</li>
-		<li><span class="check">Yes</span>
-		</li>
+		<li><span class="check">Yes</span></li>
 		<li><span class="no">No</span></li>
 		<li><span class="no">No</span></li>
 	</ul>
@@ -213,7 +215,9 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
-		<li><span>Any Page</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Any Role</span></li>
 		<li><span class="check">Enable/Disable</span></li>
 		<li><span class="check">Date and Time</span></li>

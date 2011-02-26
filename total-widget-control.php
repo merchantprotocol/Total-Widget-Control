@@ -12,7 +12,6 @@
  */
 
 defined('ABSPATH') or die("Cannot access pages directly.");
-//update_option('twc_is_free',false);
 
 /**
  * Function is responsible for preparing the free license.
@@ -232,6 +231,9 @@ function twc_controller()
 		default:
 			if (count($wp_registered_sidebars) == 1)
 				$view = 'twc-no-sidebars';
+			break;
+		case 'manual':
+			$view = 'twc-manual-license';
 			break;
 		case 'edit':
 			$view = 'twc-edit';
@@ -883,7 +885,7 @@ function &twc_get_widget_by_id( $widget_id )
 	$widget['p'] = array();
 	
 	//validating the widget identification
-	$widget['params'][0]['number'] = $widget['number'];
+	@$widget['params'][0]['number'] = $widget['number'];
 	if (is_object( $widget['callback'][0] ))
 	{
 		$widget['callback'][0]->number = $widget['number'];
@@ -1042,6 +1044,7 @@ function twc_initialize()
 	add_action('twc_init', 'twc_destruct', 100);
 	add_action('twc_display_admin', 'twc_view_auth');
 	add_action('twc_display_admin', 'twc_register');
+	add_action('twc_display_admin', 'twc_manual_license');
 	add_action('twc-register', 'twc_register');
 	add_action('twc-table', 'twc_rows', 10);
 	add_action('widgets_init', 'init_registered_widgets', 1);
@@ -1057,6 +1060,7 @@ function twc_initialize()
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
 	add_filter('twc_widget_display', 'twc_sortable_wrapper', 1000, 2);
 	
+	function twc_manual_license(){twc_show_view('twc-manual-license');}
 	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
 	function twc_destruct(){ _520(); exit(); }
@@ -1423,6 +1427,7 @@ function twc_registration()
 			add_action('twc_display_admin', 'twc_register');
 			$type = 'twc-pro'; 
 			break;
+		case '10': return; break;
 		default: 
 			$type = 'twc-free';
 			break;
@@ -1453,7 +1458,7 @@ function twc_registration()
 	
 	if ($type == 'twc-free')  
 			do_action('twc-free-registration'); 
-			
+	
 	if (trim($result))
 	{
 		$result = trim(str_replace("\r\n",'', $result));
@@ -1474,28 +1479,15 @@ function twc_receive_license()
 	$uniqueID = get_option('twc_unique_registration_key', false);
 	$domain = 'http://'.str_replace('http://', '', $_SERVER['HTTP_HOST']);
 	$parts = parse_url($domain);
-	$file_path = dirname(__file__).DS.$parts['host'];
 	
+	//reasons to fail
 	if (!isset($_REQUEST[$uniqueID])) return false;
 	
-	//preparing for registration
-	f20_chmod_directory(dirname(__file__), 0777);
+	$licenses = get_option('twc_licenses',array());
+	$licenses[$parts['host']] = $_REQUEST[$uniqueID];
+	update_option('twc_licenses',$licenses);
 	
-	if ($result = @file_put_contents($file_path, $_REQUEST[$uniqueID], LOCK_EX))
-	{
-		die('success');
-	}
-	else
-	{
-		ob_start();print_r($result);$result = ob_get_clean();
-		error_log('twc save license error: We received a license but could not save the file; results: '.$result);
-	}
-	
-	//preparing for registration
-	f20_chmod_directory(dirname(__file__), 0755);
-	
-	die('done : false');
-	return false;
+	return die('done : success');
 }
 
 /**
