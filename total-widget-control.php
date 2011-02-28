@@ -253,6 +253,22 @@ function twc_clear_license( $inside = false )
 }
 
 /**
+ * Function is responsible for clearing the current license
+ *
+ * @return null
+ */
+function twc_clear_originals( $inside = false )
+{
+	if (!$inside && !array_key_exists('twc_clear_originals', $_REQUEST)) return false;
+	if (TWC_CURRENT_USER_CANNOT) return false;
+	
+	update_option('twc_first_activate',array());
+	
+	wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
+	exit();
+}
+
+/**
  * Total Widget Controller
  * 
  * This function is responsible for determining which administrative page that we're
@@ -1083,6 +1099,7 @@ function twc_initialize()
 	add_action('admin_notices', 'twc_view_switch', 1);
 	add_action('admin_init', 'twc_set_object_id');
 	add_action('init', 'twc_clear_license',1);
+	add_action('init', 'twc_clear_originals',1);
 	add_action('init', 'twc_add_javascript');
 	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
