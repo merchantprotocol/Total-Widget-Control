@@ -51,7 +51,7 @@ require_once ABSPATH.WPINC.DS."pluggable.php";
 require_once dirname(__file__).DS."bootstrap.php";
 require_once dirname(__file__).DS."total-widget-control.php";
 require_once dirname(__file__).DS."template-codes.php";
-//require_once dirname(__file__).DS."widgets.php";
+require_once dirname(__file__).DS."widgets.php";
 
 /**
  * Initialize Localization

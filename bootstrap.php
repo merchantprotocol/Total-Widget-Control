@@ -841,7 +841,7 @@ if (!class_exists("Multiple_Widget_Master")):
 	 */
 	function Multiple_Widget_Master( $widget )
 	{
-		$this->widget = $widget;
+		$this->widget = apply_filters('twc_widget_setup', $widget);
 		$widget_ops = array(
 			'classname' => $this->widget['classname'], 
 			'description' => $this->widget['description'] 
@@ -870,7 +870,8 @@ if (!class_exists("Multiple_Widget_Master")):
 			'params' => $instance,
 		);
 		
-		echo twc_get_show_view($this->widget['show_view'], $args);
+		$show_view = apply_filters('twc_widget_view', $this->widget['show_view'], $widget, $instance, $args);
+		echo twc_get_show_view($show_view, $args);
 	}
 	
 	/**
@@ -897,27 +898,27 @@ if (!class_exists("Multiple_Widget_Master")):
 	{
 		//reasons to fail
 		if (empty($this->widget['fields'])) return false;
+		do_action('twc_widget_before');
 		
 		foreach ($this->widget['fields'] as $field)
 		{
 			$meta = attribute_escape(@$instance[$field['id']]);
 			
-			echo '<p>',
-			'<label for="', $this->get_field_id($field['id']), '">';
-			if ($field['name']) echo $field['name'], ':';
+			if ($field['name']) echo '<p>','<label for="',$this->get_field_id($field['id']), '">',
+				$field['name'],':';
 			
 			switch ($field['type'])
 			{
 				case 'text':
-					echo '<input type="text" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" value="', $meta ? $meta : $field['std'], '" class="regular-text" />', 
+					echo '<input type="text" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" value="', $meta ? $meta : $field['std'], '" class="twc_text" />', 
 					'<br/><span class="description">', $field['desc'], '</span>';
 					break;
 				case 'textarea':
-					echo '<textarea name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" cols="60" rows="4" style="width:97%">', $meta ? $meta : $field['std'], '</textarea>', 
+					echo '<textarea class="twc_textarea" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" cols="60" rows="4" style="width:97%">', $meta ? $meta : $field['std'], '</textarea>', 
 					'<br/><span class="description">', $field['desc'], '</span>';
 					break;
 				case 'select':
-					echo '<select name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '">';
+					echo '<select class="twc_select" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '">';
 					foreach ($field['options'] as $option)
 					{
 						echo '<option', $meta == $option ? ' selected="selected"' : '', '>', $option, '</option>';
@@ -928,13 +929,14 @@ if (!class_exists("Multiple_Widget_Master")):
 				case 'radio':
 					foreach ($field['options'] as $option)
 					{
-						echo '<input type="radio" name="', $this->get_field_name($field['id']), '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', 
+						echo '<input class="twc_radio" type="radio" name="', $this->get_field_name($field['id']), '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', 
 						$option['name'];
 					}
 					echo '<br/><span class="description">', $field['desc'], '</span>';
 					break;
 				case 'checkbox':
-					echo '<input type="checkbox" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '"', $meta ? ' checked="checked"' : '', ' /> ', 
+					echo '<input type="hidden" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '" /> ', 
+						 '<input class="twc_checkbox" type="checkbox" name="', $this->get_field_name($field['id']), '" id="', $this->get_field_id($field['id']), '"', $meta ? ' checked="checked"' : '', ' /> ', 
 					'<br/><span class="description">', $field['desc'], '</span>';
 					break;
 				case 'custom':
@@ -942,8 +944,9 @@ if (!class_exists("Multiple_Widget_Master")):
 					break;
 			}
 			
-			echo '</p>';
+			if ($field['name']) echo '</p>';
 		}
+		do_action('twc_widget_after');
 		return;
 	}
 	
