@@ -64,3 +64,5 @@ jQuery(document).ready(function(){
 	twc_register_check_license();
 });
 </script>
+
+<?php require_once( './admin-footer.php' ); exit(); ?>

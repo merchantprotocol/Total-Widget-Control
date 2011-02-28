@@ -17,7 +17,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 global $widget;
 $wrappers = twc_read_wrapper_files();
 
-
 ?>
 <div class="postbox">
 	<div class="handlediv" title="Click to toggle"><br></div>

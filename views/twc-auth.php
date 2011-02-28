@@ -252,3 +252,5 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 <?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 
 <p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px">5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.</p>
+
+<?php require_once( './admin-footer.php' ); exit(); ?>
