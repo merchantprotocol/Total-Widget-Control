@@ -942,6 +942,18 @@ if (!class_exists("Multiple_Widget_Master")):
 				case 'custom':
 					echo $field['std'];
 					break;
+				case 'metabox':
+					if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit')
+					|| (isset($_REQUEST['action']) && $_REQUEST['action'] == 'add' && isset($_REQUEST['addnew'])))
+					echo '</div>
+					</div>
+					<div id="query_view_params" class="postbox">
+						<div class="handlediv" title="Click to toggle"><br></div>
+						<h3 class="hndle">
+							<span>Query View Parameters</span>
+						</h3>
+						<div class="inside">';
+					break;
 			}
 			
 			if ($field['name']) echo '</p>';

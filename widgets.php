@@ -648,21 +648,16 @@ register_multiwidget(array(
 	),
 	array(
 		'type' => 'custom',
-		'std' => '</div>
-	</div>
-</div>
-<div id="query_view_params" class="postbox">
-	<div class="handlediv" title="Click to toggle"><br></div>
-	<h3 class="hndle">
-		<span>Query View Parameters</span>
-	</h3>
-	<div class="inside">'
+		'std' => '</div>'
 	),
 	
 	////////////////////////////////////////////////////////
 	//
 	//    Query View Parameters
 	//
+	array(
+		'type' => 'metabox',
+	),
 	array(
 		'name' => __('Display as bullet list'),
 		'desc' => __(''),

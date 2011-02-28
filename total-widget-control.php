@@ -33,21 +33,9 @@ function twc_activation( )
  */
 function twc_activate_plugin()
 {
-	//initializing variables
-	$once = get_option('twc_first_activate', false);
-	global $wp_registered_widgets;
-	
 	//reasons to fail
-	if ($once) return false;
-	
-	foreach ($wp_registered_widgets as $widget_id => $class)
-	{
-		if (substr($widget_id,-2) == '-1') continue;
-		if ((int)trim(substr($widget_id,-2)) == -1) continue;
-		twc_save_widget_fields($widget_id, array('twcp_default_sidebar' => 'default'));
-	}
-	
-	update_option('twc_first_activate', true);
+	if (get_option('twc_first_activate', false)) return false;
+	update_option('twc_first_activate', wp_get_sidebars_widgets());
 }
 
 /**
@@ -56,7 +44,6 @@ function twc_activate_plugin()
  */
 function twc_deactivate_plugin()
 {
-	
 	set_user_setting( 'widgets_access', 'off' );
 }
 
@@ -451,12 +438,16 @@ function twc_default_sidebar( $index )
 		}
 	}
 	
-	// fail if we have widgets on this page 
-	// or if there are no defaults for this sidebar
-	if ($twc_has_displayed) return false;
-	if (!isset($twc_default_sidebar_widgets[$index])) return false;
-	$twc_isDefault = true;
+	//either fail or display the originals
+	if ($twc_has_displayed) return false; // fail if we have widgets on this page 
+	if (!isset($twc_default_sidebar_widgets[$index])) // or if there are no defaults for this sidebar
+	{
+		do_action('twc_empty_sidebar', $index);
+		return false;
+	}
 	
+	//display the dynamic defaults
+	$twc_isDefault = true;
 	foreach ((array)$twc_default_sidebar_widgets[$index] as $id => $widget)
 	{
 		if ( !isset($wp_registered_widgets[$id]) ) continue;
@@ -610,7 +601,7 @@ function twc_display_the_sidebar( $params )
 function twc_display_the_widget( $instance = null, $widget_id, $args = null, $force = false )
 {
 	//initializing variables
-	global $wp_query, $wp_registered_sidebars, $twc_has_displayed;
+	global $wp_query, $wp_registered_sidebars, $twc_has_displayed, $twc_isDefault;
 	
 	if (is_object($widget_id))
 	{
@@ -626,7 +617,7 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	
 	//reasons to fail
 	$display = apply_filters('twc_display_widget', $display, $widget);
-	if (!$display && !$force) return false;
+	if (!$twc_isDefault && !$display && !$force) return false;
 	
 	//initializing variables
 	$args = $wp_registered_sidebars[$widget['sidebar_id']];
@@ -1113,6 +1104,7 @@ function twc_initialize()
 	add_action('wp','twc_set_object_url');
 	add_action('loop_start','twc_display_before_loop');
 	add_action('loop_end','twc_display_after_loop');
+	add_action('twc_empty_sidebar','twc_sidebar_originals', 20, 1);
 	
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
@@ -1581,7 +1573,7 @@ function twc_save_default_sidebar( $fields, $new_instance, $old_instance, $widge
 {
 	//initializing variables
 	$fields = wp_parse_args( $fields, $old_instance );
-	$request = $_POST['widget-'.$widget->id_base][$widget->number];
+	$request = wp_parse_args((array)$_POST['widget-'.$widget->id_base][$widget->number], $_REQUEST);
 	
 	if (array_key_exists('twcp_default_sidebar', $request))
 		$fields['twcp_default_sidebar'] = $request['twcp_default_sidebar'];
@@ -1835,6 +1827,25 @@ function twc_show_object_id()
 	if ( TWC_CURRENT_USER_CANNOT ) return false;
 	if (!$debug_locations) return false;
 	echo '<div style="position:absolute;top:0px;left:0px;background:#fff;padding:5px;">'.twc_get_object_id().'</div>';
+}
+
+/**
+ * function is responsible for displaying the original widgets
+ *
+ * @return null
+ */
+function twc_sidebar_originals( $sidebar_id )
+{
+	//initializing variables
+	$originals = get_option('twc_first_activate', false);
+	
+	//reasons to fail
+	if (!$originals[$sidebar_id]) return false;
+	
+	foreach ($originals[$sidebar_id] as $sidebar_id => $widget_id)
+	{
+		twc_display_the_widget(null, $widget_id, null, true);
+	}
 }
 
 /**
