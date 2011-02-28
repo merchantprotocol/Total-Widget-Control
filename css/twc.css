@@ -85,7 +85,7 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #griddler_ii a {color: #004363;text-decoration: none;}
 #griddler_ii ul, #griddler_ii ol, #griddler_ii li {	list-style: none;	}
 #griddler_ii {padding: 0 0 40px 0; width: 665px;font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px;color: #363636;}
-#griddler_ii aside {padding-top: 120px; width: 125px;float: left;text-align: right;}
+#griddler_ii aside {padding-top: 120px; width: 145px;float: left;text-align: right;}
 #griddler_ii aside li {	line-height: 50px; font-size: 14px; text-align: right;	}
 #griddler_ii .sections {	float: right; width: 500px;	}
 #griddler_ii article {float: left;text-align: center;background-color: #fff;-moz-box-shadow: 0 1px 1px rgba(0,0,0,0.5);-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.5);box-shadow: 0 1px 1px rgba(0,0,0,0.5);}

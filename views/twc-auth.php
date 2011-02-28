@@ -22,7 +22,6 @@ $uniqueID = get_option('twc_unique_registration_key', create_guid());
 $parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
 $domain=$parts["host"];
 $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
-	
 
 ?>
 <div class="twc_auth_wrapper">
@@ -50,6 +49,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 		<li>Display By Page</li>
 		<li>Admin Quick Edit</li>
 		<li>Static Defaults</li>
+		<li>Query Posts Widget</li>
 		<li>Dynamic Defaults</li>
 		<li>Display By Role</li>
 		<li>Publish Status</li>
@@ -78,6 +78,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header> 
 	<section>
 	<ul>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
@@ -112,6 +113,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
@@ -215,6 +217,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
