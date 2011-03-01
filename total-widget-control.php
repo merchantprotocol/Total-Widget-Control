@@ -490,7 +490,14 @@ function twc_default_sidebar( $index )
 		$callback = $wp_registered_widgets[$id]['callback'];
 		
 		if ( is_callable($callback) ) {
-			call_user_func_array($callback, $params);
+			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
+			{
+				twc_display_the_widget(null, $id, null);
+			}
+			else
+			{
+				call_user_func_array($callback, $params);
+			}
 			$did_one = true;
 		}
 	}
@@ -598,7 +605,6 @@ function twc_display_the_sidebar( $params )
 		$wp_registered_widgets[$widget_id]['callback'][0] = new twcEmptyWidgetClass();
 		$wp_registered_widgets[$widget_id]['callback'][1] = 'twc_empty_callback';
 	}
-	
 	return $params;
 }
 
@@ -619,7 +625,7 @@ function twc_display_the_sidebar( $params )
 function twc_display_the_widget( $instance = null, $widget_id, $args = null, $force = false )
 {
 	//initializing variables
-	global $wp_query, $wp_registered_sidebars, $twc_has_displayed, $twc_isDefault;
+	global $wp_query, $wp_registered_sidebars, $wp_registered_widgets, $twc_has_displayed, $twc_isDefault;
 	
 	if (is_object($widget_id))
 	{
@@ -638,11 +644,37 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	if (!$twc_isDefault && !$display && !$force) return false;
 	
 	//initializing variables
-	$args = $wp_registered_sidebars[$widget['sidebar_id']];
+	$sidebar = $wp_registered_sidebars[$widget['sidebar_id']];
+	$callback = $widget['callback'];
+	
+	// Substitute HTML id and class attributes into before_widget
+	$classname_ = '';
+	foreach ( (array) $wp_registered_widgets[$widget_id]['classname'] as $cn ) {
+		if ( is_string($cn) )
+			$classname_ .= '_' . $cn;
+		elseif ( is_object($cn) )
+			$classname_ .= '_' . get_class($cn);
+	}
+	$classname_ = ltrim($classname_, '_');
+	$sidebar['before_widget'] = sprintf($sidebar['before_widget'], $widget_id, $classname_);
+	
+	$params = array_merge(
+		array( array_merge( $sidebar, array('widget_id' => $widget_id, 'widget_name' => $wp_registered_widgets[$widget_id]['name']) ) ),
+		(array) $wp_registered_widgets[$widget_id]['params']
+	);
 	
 	//load the widget into a variable
 	ob_start();
-	$widget['callback'][0]->widget($args, $instance);
+	if (is_callable($callback))
+	{
+		if ( !$widget['multiwidget'] ) {
+			call_user_func_array($callback, $params);
+		}
+		else 
+		{
+			$widget['callback'][0]->widget($sidebar, $instance);
+		}
+	}
 	$display = ob_get_clean();
 	
 	//displaying the widget
@@ -805,7 +837,7 @@ function twc_dynamic_sidebar( $index = 1 )
 			}
 		}
 	}
-
+	
 	//initializing variables
 	$count = twc_count_sidebar_widgets($index);
 	$sidebars_widgets = wp_get_sidebars_widgets();
@@ -843,11 +875,18 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		if ( is_callable($callback) )
 		{
-			call_user_func_array($callback, $params);
+			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
+			{
+				twc_display_the_widget(null, $id, null);
+			}
+			else
+			{
+				call_user_func_array($callback, $params);
+			}
 			$did_one = true;
 		}
 	}
-
+	
 	return $did_one;
 }
 
@@ -961,6 +1000,12 @@ function &twc_get_widget_by_id( $widget_id )
 	{
 		$params = $widget['callback'][0]->get_settings();
 		$widget['p'] = $params[$widget['number']];
+	}
+	elseif ( !$widget['multiwidget'] )
+	{
+		//take the data handling into our own hands if this is not a multiwidget
+		$singles = get_option('twc_single_widget_data', array());
+		$widget['p'] = $singles[$widget['id']];
 	}
 	
 	$twc_registered_widgets[$widget_id] = $widget;
@@ -1124,6 +1169,7 @@ function twc_initialize()
 	add_action('wp','twc_set_object_url');
 	add_action('twc_empty_sidebar','twc_sidebar_originals', 20, 1);
 	
+	add_filter('twc-save-widget-fields','twc_save_menu_items',20,1);
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
@@ -1527,8 +1573,9 @@ function twc_registration()
 	{
 		if (!headers_sent())
 		{
-			$twc_paypal = trim(str_replace("\r\n",'', $twc_paypal));
-			header('Location: '.$twc_paypal);
+			$twc_paypal = trim(str_replace("\r\n", '', $twc_paypal));
+			if (substr($twc_paypal,0,7) != 'http://') echo $twc_paypal;
+			else wp_redirect($twc_paypal);
 			exit();
 		}
 	}
@@ -1962,7 +2009,7 @@ function twc_upgrade_button()
 
 /**
  * This function adds the view switches to the wordpress widget page
- *
+ * 
  * @return unknown
  */
 function twc_view_switch()

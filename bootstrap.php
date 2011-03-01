@@ -342,7 +342,7 @@ if (!class_exists("TwcPath")):
 	 */
 	function exists($path)
 	{
-		return is_dir(TwcPath::clean($path));
+		return @is_dir(TwcPath::clean($path));
 	}
 
 	/**
@@ -369,7 +369,7 @@ if (!class_exists("TwcPath")):
 			$nested++;
 			if (($nested > 20) || ($parent == $path))
 			{
-				trigger_error(
+				error_log(
 					'BFolder::create: '.'Infinite loop detected', E_USER_WARNING
 				);
 				$nested--;
@@ -427,7 +427,7 @@ if (!class_exists("TwcPath")):
 			if ($inBaseDir == false)
 			{
 				// Return false for BFolder::create because the path to be created is not in open_basedir
-				trigger_error(
+				error_log(
 					'TwcPath::create: '.'Path not in open_basedir paths', E_USER_WARNING
 				);
 				return false;
@@ -441,7 +441,7 @@ if (!class_exists("TwcPath")):
 		if (!$ret = @mkdir($path, $mode))
 		{
 			@umask($origmask);
-			trigger_error(
+			error_log(
 				'Path::create: ' . 'Could not create directory '
 				.'Path: ' . $path, E_USER_WARNING
 			);
@@ -467,7 +467,7 @@ if (!class_exists("TwcPath")):
 		if (!$path)
 		{
 			// Bad programmer! Bad Bad programmer!
-			trigger_error('Path::delete: ' . 'Attempt to delete base directory' );
+			error_log('Path::delete: ' . 'Attempt to delete base directory' );
 			return false;
 		}
 
@@ -479,7 +479,7 @@ if (!class_exists("TwcPath")):
 		// Is this really a folder?
 		if (!is_dir($path))
 		{
-			trigger_error('Path::delete: ' . 'Path is not a folder '.'Path: ' . $path);
+			error_log('Path::delete: ' . 'Path is not a folder '.'Path: ' . $path);
 			return false;
 		}
 
@@ -523,7 +523,7 @@ if (!class_exists("TwcPath")):
 		}
 		else
 		{
-			trigger_error(
+			error_log(
 				'BFolder::delete: ' . 'Could not delete folder '
 				.'Path: ' . $path, E_USER_WARNING
 			);
@@ -556,7 +556,7 @@ if (!class_exists("TwcPath")):
 		// Is the path a folder?
 		if (!is_dir($path))
 		{
-			trigger_error('BFolder::folder: ' . 'Path is not a folder '.'Path: ' . $path);
+			error_log('BFolder::folder: ' . 'Path is not a folder '.'Path: ' . $path);
 			return false;
 		}
 
