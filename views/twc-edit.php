@@ -18,7 +18,7 @@ global $widget;
  
 ?>
 <div class="head_space"></div>
-<div id="nav-menus-frame" class="<?php echo $widget['id_base']; ?>">
+<div id="nav-menus-frame" class="widget-<?php echo $widget['id_base']; ?>">
 	<div id="menu-settings-column" class="metabox-holder">
 		<?php do_action('twc_nav_menu_list'); ?>
 	</div>
