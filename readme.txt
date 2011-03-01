@@ -4,14 +4,21 @@ Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 
 Rebuilding Wordpess Widget management from the ground up. 
 
 == Description ==
 
-Total Widget Control is the first plugin to revolutionize wordpress widget management. Now you can dynamically assign widgets to any page, post category, or custom listing type, change the order widgets display in, decide which users can see which widgets, and/or quickly change the style of a widget entirely. That's not all, there is whole lot more flexibility now available to you. Here is a list of just some of the features you can have with TWC:
+Total Widget Control is the first plugin to revolutionize wordpress widget management. Now you can dynamically assign widgets to any page, post category, or custom listing type, change the order widgets display in, decide which users can see which widgets, and/or quickly change the style of a widget entirely. That's not all, there is whole lot more flexibility now available to you. 
 
+= Quick Installation and getting started tutorial =
+[youtube http://www.youtube.com/watch?v=WNZ0cfAgWu4]
+
+= Check out individual widget styles, then create your own! =
+[youtube http://www.youtube.com/watch?v=NNQCHT1Mb1I]
+
+Here is a list of just some of the features you can have with TWC:
 * "Dynamic Sidebars" apply widgets to any page, post, category, or custom listing type.
 * "Widget Themes" Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
 * "Widget Positions" use TWC to place and order widgets throughout your site
@@ -21,9 +28,6 @@ Total Widget Control is the first plugin to revolutionize wordpress widget manag
 * "Search, Sort, Filter" your widgets on demand.
 * "Future Publish Dates" set a date in the future for your widget to automatically be published. 
 * "Bulk actions" update multiple widgets at once using bulk options.
-
-= Check it out! =
-[youtube http://www.youtube.com/watch?v=NNQCHT1Mb1I]
 
 = TRY THE DEMO =
 [Total Widget Control Demo Site](http://demo.5twentystudios.com/)
