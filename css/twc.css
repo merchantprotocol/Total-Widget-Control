@@ -33,17 +33,29 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 .twc_auth .button-primary {position:relative;float:right;margin:15px 0;}
 .twc_auth .button-secondary {position:relative;float:right;margin:15px;}
 .twc_auth p {width:560px;margin-left:20px;}
-.twc-third {width:32%;position:relative;float:left;}
+.twc-third {width:49%;position:relative;float:left;}
 
 #twc-widget-wrap {margin-bottom:100px;}
+#wpbody-content #twc-widget-wrap .metabox-holder {padding-top: 0px;}
+#twc-widget-wrap .twc_tax_query {padding-left:20px;}
+#twc-widget-wrap .twc_meta_query {padding-left:20px;}
+#twc-widget-wrap #query_view_params p {clear:both;display:block;line-height: 20px;}
+#twc-widget-wrap #menu-management-liquid #post_form .inside label {font-size:14px;}
+#twc-widget-wrap #menu-management-liquid #post_form .inside input {font-size:14px;}
+#twc-widget-wrap #menu-management-liquid .inside .twc_checkbox,
+#twc-widget-wrap #menu-management-liquid .inside .twc_select {position: relative;float: right;margin-right: 450px;}
+#twc-widget-wrap #menu-management-liquid #post_form .inside .description {font-size:10px;}
+#twc-widget-wrap #menu-management-liquid #post_form .inside li {border:none !important;display:block;list-style:none;}
+#twc-widget-wrap .widget-twc-widget-query-posts h2 {margin: 30px 0 0;padding: 0;color: #777;font-size: 20px;line-height: 20px;}
+#twc-widget-wrap .widget-twc-widget-query-posts hr {border: none;border-top: 1px solid #AAA;}
+#twc-widget-wrap .widget-twc-widget-query-posts #menu-management-liquid #post_form .inside input {position: relative;float: right;width: 50%;}
 #twc-widget-wrap .twc_toc {font-size:11px;color:#21759B;text-align: center;}
 #twc-widget-wrap #titlewrap {margin-bottom:35px;}
-#twc-widget-wrap .twc_upgrade_button {position:relative;z-index:100;float:right;margin-right:20px !important;}
+#twc-widget-wrap .twc_upgrade_button {margin-top: -25px;position:relative;z-index:100;float:right;margin-right:20px !important;}
 #twc-widget-wrap .checkspace {margin:0 0 5px 0;display: block;}
 #post-status-display, #post-visibility-display {text-transform:capitalize;}
 #twc-widget-wrap .widget {border:none;}
 #twc-widget-wrap .buy_option {margin:10px 0;margin-left:30px;}
-#twc-widget-wrap #post-body li {border:none !important;display:inline-block;list-style:none;}
 #twc-widget-wrap .major-publishing-actions h3 {margin:0;padding: 5px 0;}
 #twc-widget-wrap #post-body-content {padding-left: 15px!important;}
 #twc-widget-wrap .head_space {width:100%;clear:both;height:27px;line-height:27px;}
@@ -73,7 +85,7 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #griddler_ii a {color: #004363;text-decoration: none;}
 #griddler_ii ul, #griddler_ii ol, #griddler_ii li {	list-style: none;	}
 #griddler_ii {padding: 0 0 40px 0; width: 665px;font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px;color: #363636;}
-#griddler_ii aside {padding-top: 120px; width: 125px;float: left;text-align: right;}
+#griddler_ii aside {padding-top: 120px; width: 145px;float: left;text-align: right;}
 #griddler_ii aside li {	line-height: 50px; font-size: 14px; text-align: right;	}
 #griddler_ii .sections {	float: right; width: 500px;	}
 #griddler_ii article {float: left;text-align: center;background-color: #fff;-moz-box-shadow: 0 1px 1px rgba(0,0,0,0.5);-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.5);box-shadow: 0 1px 1px rgba(0,0,0,0.5);}

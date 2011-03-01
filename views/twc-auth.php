@@ -22,7 +22,6 @@ $uniqueID = get_option('twc_unique_registration_key', create_guid());
 $parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
 $domain=$parts["host"];
 $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
-	
 
 ?>
 <div class="twc_auth_wrapper">
@@ -50,6 +49,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 		<li>Display By Page</li>
 		<li>Admin Quick Edit</li>
 		<li>Static Defaults</li>
+		<li>Query Posts Widget</li>
 		<li>Dynamic Defaults</li>
 		<li>Display By Role</li>
 		<li>Publish Status</li>
@@ -78,6 +78,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header> 
 	<section>
 	<ul>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
@@ -112,6 +113,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
@@ -218,6 +220,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
 		<li><span class="check">Any Role</span></li>
 		<li><span class="check">Enable/Disable</span></li>
 		<li><span class="check">Date and Time</span></li>
@@ -249,3 +252,5 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 <?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 
 <p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px">5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.</p>
+
+<?php require_once( './admin-footer.php' ); exit(); ?>

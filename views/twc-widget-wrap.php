@@ -16,7 +16,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 //initializing variables
 $current_screen = twc_get_current_screen();
 wp_enqueue_style( 'twc' );
-	
 
 ?>
 <?php do_action('twc_before_wrapper'); ?>
