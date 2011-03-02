@@ -4,7 +4,7 @@ Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.5.7
+Stable tag: 1.5.8
 
 Rebuilding Wordpess Widget management from the ground up. 
 
@@ -14,9 +14,6 @@ Total Widget Control is the first plugin to revolutionize wordpress widget manag
 
 = Quick Installation and getting started tutorial =
 [youtube http://www.youtube.com/watch?v=WNZ0cfAgWu4]
-
-= Check out individual widget styles, then create your own! =
-[youtube http://www.youtube.com/watch?v=NNQCHT1Mb1I]
 
 Here is a list of just some of the features you can have with TWC:
 * "Dynamic Sidebars" apply widgets to any page, post, category, or custom listing type.
