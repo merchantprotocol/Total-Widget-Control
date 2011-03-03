@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is designed to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.5.8
+ * Version: 1.5.9
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
