@@ -1574,8 +1574,14 @@ function twc_registration()
 		if (!headers_sent())
 		{
 			$twc_paypal = trim(str_replace("\r\n", '', $twc_paypal));
-			if (substr($twc_paypal,0,7) != 'http://') echo $twc_paypal;
-			else wp_redirect($twc_paypal);
+			if (substr($twc_paypal,0,7) != 'http://' && substr($twc_paypal,0,8) != 'https://')
+			{
+				echo $twc_paypal;
+			}
+			else
+			{
+				wp_redirect($twc_paypal);
+			}
 			exit();
 		}
 	}

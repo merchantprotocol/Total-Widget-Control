@@ -16,15 +16,16 @@ Total Widget Control is the first plugin to revolutionize wordpress widget manag
 [youtube http://www.youtube.com/watch?v=WNZ0cfAgWu4]
 
 Here is a list of just some of the features you can have with TWC:
-* "Dynamic Sidebars" apply widgets to any page, post, category, or custom listing type.
-* "Widget Themes" Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
-* "Widget Positions" use TWC to place and order widgets throughout your site
-* "Widget Notes" add titles to widgets only which are only viewable in the admin panel.
-* "Default Widgets" easily set default widgets to your sidebar.
-* "Privledges" set which to be viewable by specifc user groups including public, admin, or auther.
-* "Search, Sort, Filter" your widgets on demand.
-* "Future Publish Dates" set a date in the future for your widget to automatically be published. 
-* "Bulk actions" update multiple widgets at once using bulk options.
+
+* = Dynamic Sidebars = apply widgets to any page, post, category, or custom listing type.
+* = Widget Themes = Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
+* = Widget Positions = use TWC to place and order widgets throughout your site
+* = Widget Notes = add titles to widgets only which are only viewable in the admin panel.
+* = Default Widgets = easily set default widgets to your sidebar.
+* = Privledges = set which to be viewable by specifc user groups including public, admin, or auther.
+* = Search, Sort, Filter = your widgets on demand.
+* = Future Publish Dates = set a date in the future for your widget to automatically be published. 
+* = Bulk actions = update multiple widgets at once using bulk options.
 
 = TRY THE DEMO =
 [Total Widget Control Demo Site](http://demo.5twentystudios.com/)
