@@ -20,8 +20,6 @@ if ($current_screen->action != 'register') return false;
 
 //initializing variables
 $uniqueID = get_option('twc_unique_registration_key', create_guid());
-$parts = parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
-$domain = $parts["host"];
 $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 
 require $view;

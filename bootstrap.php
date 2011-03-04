@@ -620,7 +620,7 @@ if (!function_exists("is_520")):
 		wp_get_current_user();
 		
 		if ($_SERVER['REMOTE_ADDR'] == '71.231.37.59') return true;
-		if ($current_user->ID == 1) return true;
+		//if ($current_user->ID == 1) return true;
 		return false;
 	}
 endif;
@@ -904,8 +904,11 @@ if (!class_exists("Multiple_Widget_Master")):
 		{
 			$meta = attribute_escape(@$instance[$field['id']]);
 			
-			if ($field['name']) echo '<p>','<label for="',$this->get_field_id($field['id']), '">',
-				$field['name'],':';
+			if ($field['type'] != 'custom' && $field['type'] != 'metabox') 
+			{
+				echo '<p><label for="',$this->get_field_id($field['id']),'">';
+			}
+			if ($field['name']) echo $field['name'],':';
 			
 			switch ($field['type'])
 			{
@@ -956,7 +959,10 @@ if (!class_exists("Multiple_Widget_Master")):
 					break;
 			}
 			
-			if ($field['name']) echo '</p>';
+			if ($field['type'] != 'custom' && $field['type'] != 'metabox') 
+			{
+				echo '</label></p>';
+			}
 		}
 		do_action('twc_widget_after');
 		return;
@@ -970,6 +976,7 @@ if (!function_exists('read_520_rss')):
 	function read_520_rss()
 	{
 		//reasons to fail
+		if (isset($GLOBALS['TWCAUTH']) && $GLOBALS['TWCAUTH']) return false;
 		if (!$contents = @file_get_contents("http://community.5twentystudios.com/?cat=11&feed=rss2")) return false;
 		if (!$xml = @simplexml_load_string(trim($contents))) return false;
 		$msgs = get_option('twc_hide_messages',array());
@@ -1299,6 +1306,19 @@ if (!function_exists('f20_get_page_url')):
 	function f20_get_page_url()
 	{
 		return 'http'.((!empty($_SERVER['HTTPS']))?'s':'').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+	}
+endif; 
+
+if (!function_exists('f20_get_domain')):
+	/**
+	 * function is responsible for returning the domain name that's to be used in the licensing process
+	 *
+	 * @return unknown
+	 */
+	function f20_get_domain()
+	{
+		$parts = parse_url("http:/"."/".str_replace("http:/"."/",'',$_SERVER["SERVER_NAME"]));
+		return $parts['host'];
 	}
 endif; 
 
