@@ -16,40 +16,36 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 //initializing variables
 $current_screen = twc_get_current_screen();
 
-//controller
+//reasons to fail
 if ($current_screen->action != 'auth') return false;
-$uniqueID = get_option('twc_unique_registration_key', create_guid());
-$parts=parse_url("http:/"."/".$_SERVER["SERVER_NAME"]);
-$domain=$parts["host"];
-$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 
 ?>
+<!--[if IE]>
+<script src="<?php echo plugin_dir_url(dirname(__file__)); ?>js/html5.js" type="text/javascript"></script>
+<![endif]-->
 <div class="twc_auth_wrapper">
 	<div class="twc_auth_right">
-		<div class="twc_auth_widget">
-			<h3><?php _e('Looking for support?','twc'); ?></h3>
-			<p><?php _e('If you would like to contact us for support inquiries, direct your emails to:','twc'); ?></p>
-			<p><a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>
-			<p><?php _e('If you can\'t wait for an answer, try our online resources.','twc'); ?></p>
-			<ul>
-				<li><a href="http://community.5twentystudios.com/kb/">Knowledge Base</a></li>
-				<li><a href="http://community.5twentystudios.com/community/">Support Forums</a></li>
-				<li><a href="http://www.5twentystudios.com/">5Twenty Studios</a></li>
-			</ul>
+		<div class="twc_auth_widget" style="text-align: center;">
+			<img src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/520logo.png" />
+			<div class="clear"></div>
+			5Twenty Studios, LLC
+			Portland, OR <br/>
+			Phone: (503) 268-1177 <br/>
+			Fax: (954) 867-1177 <br/>
 		</div>
-		<div class="twc_auth_widget">
-			<h3><?php _e('Register manually','twc'); ?></h3>
-			<p><?php _e('If you have already purchased a license for this domain, <a href="'.get_option('url').'/wp-admin/widgets.php?action=manual'.'">click here.</a>','twc'); ?></p>
+		<div class="twc_auth_widget" style="text-align: center;padding-top:20px;">
+			<a href="https://www.paypal.com/us/verified/pal=tylerbyrd%405twentystudios%2ecom" target="_blank" style="display:inline-block;">
+			<img src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/pp.png" border="0" alt="Official PayPal Seal">
+			</a>
+			<img src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/Money-Back-Guarantee1.png" width="105px" style="padding-left:20px;" border="0" alt="Official Money Back Guarantee">
 		</div>
 	</div>
 
-<div class="grid" id="griddler_ii" style="height: 529px;">
+<div class="grid" id="griddler_ii">
 <aside>
 	<ul>
 		<li>Display By Page</li>
 		<li>Admin Quick Edit</li>
-		<li>Static Defaults</li>
-		<li>Query Posts Widget</li>
 		<li>Dynamic Defaults</li>
 		<li>Display By Role</li>
 		<li>Publish Status</li>
@@ -70,7 +66,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 <article class="first"> 
 	<header> 
 		<hgroup class="plan">
-			<h1>Personal</h1>
+			<h1>Lite</h1>
 		</hgroup>
 		<hgroup class="price">
 			<h2>Free<em>License</em></h2>
@@ -78,8 +74,6 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header> 
 	<section>
 	<ul>
-		<li><span class="check">Yes</span></li>
-		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="no">No</span></li>
@@ -113,8 +107,6 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
-		<li><span class="check">Yes</span></li>
-		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li class="tooltip-holder"><span class="check">Dynamic</span>
@@ -202,7 +194,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</section>
 	<footer>
 		<a class="button" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=1">
-		<span>GO PRO!</span></a>
+		<span>$9.00</span></a>
 	</footer>
 </article>
 
@@ -217,8 +209,6 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</header>
 	<section>
 	<ul>
-		<li><span class="check">Yes</span></li>
-		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Any Role</span></li>
@@ -237,7 +227,7 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	</section>
 	<footer>
 	<a class="button" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=2">
-	<span>Enterprise</span></a>
+	<span>$147.00</span></a>
 	</footer>
 </article>
 

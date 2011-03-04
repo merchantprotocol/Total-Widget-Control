@@ -25,7 +25,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<p><?php _e('This process will attempt to download a license for you, then activate the software before redirecting you. Please be patient.','twc'); ?></p>
 	<p class="register_error" style="display:none;">
 	<?php _e('Looks like we\'re having problems communicating with the license server. You can click this link to download a license manually, then upload the license to the TWC plugin directory.', 'twc'); ?>
-	<a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode($domain); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a>
+	<a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode(f20_get_domain()); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a>
 	</p>
 </div>
 <script>
