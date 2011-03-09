@@ -4,7 +4,7 @@ Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.5.9
+Stable tag: 1.5.11
 
 Rebuilding Wordpess Widget management from the ground up. 
 
@@ -85,6 +85,10 @@ register_sidebar(array(
 
 These questions are focused towards new users, that have not yet used the Total Widget Control Plugin. For more indepth information or questions regarding the code and/or use of the Total Widget Control Plugin, please visit the support community website.
 
+= What if I have a problem with my installation? =
+
+That's why we're here. The tech support provided by 5Twenty Studios, a U.S.A based company, will overcome any issues that you may have with your installation. We've gone to great lengths to make our users happy, we'll do the same for you. Email us: support@5twentystudios.com ...just to say hi!
+
 = The free version of this software is designed for small websites =
 
 We are interested in providing excellent software solutions to this community, therefore we unlock the greatest TWC features with the purchase of a PRO license. The sales of the PRO license will help us to launch greater plugins in the days to come.
@@ -130,7 +134,9 @@ This is currently a beta release of TWC, we cannot guarantee that there will be 
 2. This is the Widget editing page. Because this plugin is designed for hundreds of widgets, you can easily loose track of the widget instances. Total Widget Control adds the admin title and displays that title in the widget listings page. You can also use the search feature to locate a widget by its title. This makes widget management quick and easy. In the publish area, notice the new features for displaying the widget to different kinds of users at and specifically defined time frames. In thw TWC Pro Settings meta box, you'll notice the addition of many new features for pro users, these features add an extra layer of useability to this system.
 3. Easily select which pages, posts, categories, or custom listing types your widget will appear on.
 4. Quickly choose where on the page your widget sets.
-
+5. The TWC allows you to manage your widgets while editing your pages, now there's no need to bounce around in wordpress just to work on a single page.
+6. The widget wrappers allow you to create your own widget styles that can be assigned to any widget instance.
+7. The options available to administrators are nearly endless. You can now manage your widgets with as much control as you can manage your pages with.
 
 == Changelog ==
 
@@ -144,6 +150,13 @@ This is currently a beta release of TWC, we cannot guarantee that there will be 
 * Fixed quick saving sidebar
 * Fixed add new button and page
 
+= 1.5.10 = 
+* Was able to fix bugs related to ancient widgets
+
+= 1.5.11 = 
+* Updated links
+* Added a last sidebar position to the select box
+* Stabilized some menu item code
 
 == Upgrade Notice ==
 
