@@ -23,123 +23,71 @@ $wrappers = twc_read_wrapper_files();
 	<h3 class="hndle">
 		<span><?php _e('TWC Pro Settings', 'twc'); ?></span>
 	</h3>
-	<div class="inside twcp">
-				<div class="twc-third">
-					<ul id="resourceschecklist-most-recent" class="categorychecklist form-no-clear">
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_default_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" value="default"
-							<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?>> 
-						<?php _e('Make it a Default Widget', 'twc'); ?>
-						</label>
-					</li>
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_inherit_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" value="inherit"
-							<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?>> 
-						<?php _e('Recurse to Child Objects', 'twc'); ?>
-						</label>
-					</li>
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_exclude_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" value="exclude"
-							<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?>> 
-						<?php _e('Exclude Checked Pages', 'twc'); ?>
-						</label>
-					</li>
-					</ul>
-				</div>
-				
-				<div class="twc-third">
-					<label><?php _e('Wrapper', 'twc'); ?> </label>
-					<select name="twcp_wrapper_file">
-					<option value=""> -- <?php _e('No Wrapper'); ?> -- </option>
-					<?php 
-					if (is_array($wrappers)) foreach ($wrappers as $file => $wrapper)
-					{
-						$selected = '';
-						if (isset($widget['p']['twcp_wrapper_file'])
-						&& $widget['p']['twcp_wrapper_file'] == $file)
-							$selected = ' selected="selected" ';
-										
-						echo '<option '.$selected.' value="'.$file.'">'.(($wrapper['wrapperTitle'])?$wrapper['wrapperTitle']:$file).'</option>';
-					}
-					?>
-					</select>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<?php twc_upgrade_button(); ?>	
+	<?php if (!function_exists('twc_widget_protitle')): ?>
+	<div class="inside">
+		<p>Upgrade to pro and you'll receive a lot more functionality!</p>
+		<ol style="margin-left:30px;">
+			<li>Dyamically set default sidebars</li>
+			<li>Ability to recursivly display a widget to all child pages</li>
+			<li>choose to exclude the widget from checked pages</li>
+			<li>Display widgets by user role</li>
+			<li>Enable and Disable widgets without loosing their sidebar locations</li>
+			<li>Set Specific publishing dates for widgets</li>
+			<li>Set administrative titles for every widget instance</li>
+			<li>Create your own widget wrappers to style widget instances individually</li>
+			<li>Get bulk action options in the widget list</li>
+			<li>Filter, Pagination and Search the widget list</li>
+		</ol>
+		<?php twc_upgrade_button(); ?>
 	</div>
-</div>
-
-
-
-<?php return; ?>
-<div id="menu-management" class="widget-control-settings postbox">
-	<div class="menu-edit">
-		<div id="nav-menu-header">
-			<div id="wrapper_head" class="submitbox">
-				<div class="major-publishing-actions secondary-publishing">
-					<h3><span><?php _e('TWC Pro Settings', 'twc'); ?></span></h3>
-				</div>
-			</div>
+	<?php endif; ?>
+	<div class="inside twcp">
+		<div class="twc-third">
+			<ul id="resourceschecklist-most-recent" class="categorychecklist form-no-clear">
+			<li>
+				<label class="menu-item-title">
+				<input type="hidden" name="twcp_default_sidebar" value="" />
+				<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" value="default"
+					<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?>> 
+				<?php _e('Make it a Default Widget', 'twc'); ?>
+				</label>
+			</li>
+			<li>
+				<label class="menu-item-title">
+				<input type="hidden" name="twcp_inherit_sidebar" value="" />
+				<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" value="inherit"
+					<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?>> 
+				<?php _e('Recurse to Child Objects', 'twc'); ?>
+				</label>
+			</li>
+			<li>
+				<label class="menu-item-title">
+				<input type="hidden" name="twcp_exclude_sidebar" value="" />
+				<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" value="exclude"
+				<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?>> 
+				<?php _e('Exclude Checked Pages', 'twc'); ?>
+				</label>
+			</li>
+			</ul>
 		</div>
-		<div id="post-body">
-			<div id="post-body-content" class="twcp">
-				
-				<div class="twc-third">
-					<ul id="resourceschecklist-most-recent" class="categorychecklist form-no-clear">
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_default_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_default_sidebar" value="default"
-							<?php echo ($widget['p']['twcp_default_sidebar'] == 'default')? 'checked="checked"' :''; ?>> 
-						<?php _e('Make it a Default Widget', 'twc'); ?>
-						</label>
-					</li>
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_inherit_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_inherit_sidebar" value="inherit"
-							<?php echo ($widget['p']['twcp_inherit_sidebar'] == 'inherit')? 'checked="checked"' :''; ?>> 
-						<?php _e('Recurse to Child Objects', 'twc'); ?>
-						</label>
-					</li>
-					<li>
-						<label class="menu-item-title">
-						<input type="hidden" name="twcp_exclude_sidebar" value="" />
-						<input type="checkbox" class="menu-item-checkbox" name="twcp_exclude_sidebar" value="exclude"
-							<?php echo ($widget['p']['twcp_exclude_sidebar'] == 'exclude')? 'checked="checked"' :''; ?>> 
-						<?php _e('Exclude Checked Pages', 'twc'); ?>
-						</label>
-					</li>
-					</ul>
-				</div>
-				
-				<div class="twc-third">
-					<label><?php _e('Wrapper', 'twc'); ?> </label>
-					<select name="twcp_wrapper_file">
-					<option value=""> -- <?php _e('No Wrapper'); ?> -- </option>
-					<?php 
-					if (is_array($wrappers)) foreach ($wrappers as $file => $wrapper)
-					{
-						$selected = '';
-						if (isset($widget['p']['twcp_wrapper_file'])
-						&& $widget['p']['twcp_wrapper_file'] == $file)
-							$selected = ' selected="selected" ';
-										
-						echo '<option '.$selected.' value="'.$file.'">'.(($wrapper['wrapperTitle'])?$wrapper['wrapperTitle']:$file).'</option>';
-					}
-					?>
-					</select>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<?php twc_upgrade_button(); ?>	
+		
+		<div class="twc-third">
+			<label><?php _e('Wrapper', 'twc'); ?> </label>
+			<select name="twcp_wrapper_file">
+			<option value=""> -- <?php _e('No Wrapper'); ?> -- </option>
+			<?php 
+			if (is_array($wrappers)) foreach ($wrappers as $file => $wrapper)
+			{
+				$selected = '';
+				if (isset($widget['p']['twcp_wrapper_file'])
+				&& $widget['p']['twcp_wrapper_file'] == $file)
+					$selected = ' selected="selected" ';
+								
+				echo '<option '.$selected.' value="'.$file.'">'.(($wrapper['wrapperTitle'])?$wrapper['wrapperTitle']:$file).'</option>';
+			}
+			?>
+			</select>
 		</div>
-	</div><!-- /.menu-edit -->
+		<div class="clear"></div>
+	</div>
 </div>

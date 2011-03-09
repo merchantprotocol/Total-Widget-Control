@@ -13,12 +13,9 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-//initializing variables
-$uniqueID = get_option('twc_unique_registration_key', create_guid());
-$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
-
 ?>
-<iframe style="background:transparent;" src="http://community.5twentystudios.com/5twenty-studios-tab/" width="100%" height="200px"></iframe>
+<h4><?php _e('Total Widget Control','twc');?> - <?php _e('Settings','twc');?></h4>
+<p><?php _e('This is the configurations area for the TWC. Any options to adjust the systems operation can be found here.','twc');?></p>
 <ul class="hot-to-twc">
 	<?php if (get_option('twc_first_activate', false)): ?>
 	<li><?php _e('Your original sidebar widgets are still displaying, <a href="'.get_bloginfo('url').'/wp-admin/widgets.php?twc_clear_originals">Click here if you want to clear out all of your originals.</a>', 'twc'); ?></li>
@@ -26,6 +23,25 @@ $headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 	
 	<li><?php _e('Access the licensing screen here: <a href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=auth">License Comparison</a>', 'twc'); ?></li>
 	<li><?php _e('Sometimes you may need to clear the current license, <a href="'.get_bloginfo('url').'/wp-admin/widgets.php?twc_clear_license">Click here</a>', 'twc'); ?></li>
-	<li><?php _e('Pro License holders can download their license here: ', 'twc'); ?><a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode(f20_get_domain()); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a></li>
+	<li><?php _e('Pro License holders can download their license here: ', 'twc'); ?><a href="<?php twc_get_license_link(); ?>">Click to download your pro license.</a></li>
 	<li><?php _e('Enable a license manually here: <a href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=manual">Manual License Activation</a>', 'twc'); ?></li>
 </ul>
+<hr class="twc-hr"/>
+<div class="twc-share">
+	<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.totalwidgetcontrol.com%2F&amp;layout=box_count&amp;show_faces=false&amp;width=50&amp;action=like&amp;colorscheme=light&amp;height=65" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:50px; height:65px;margin-bottom: -5px;" allowTransparency="true"></iframe>
+	<a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.totalwidgetcontrol.com" data-text="The WordPress Total Widget Control Plugin is an amazing plugin!" data-count="vertical" data-via="twcpro">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	<script type="text/javascript">
+	(function() {
+	var s = document.createElement('SCRIPT'), s1 = document.getElementsByTagName('SCRIPT')[0];
+	s.type = 'text/javascript';
+	s.async = true;
+	s.src = 'http://widgets.digg.com/buttons.js';
+	s1.parentNode.insertBefore(s, s1);
+	})();
+	</script>
+	<a class="DiggThisButton DiggMedium" href="http://digg.com/submit?url=http%3A%2F%2Fwww.totalwidgetcontrol.com&bodytext=Total%20Widget%20Control%20allows%20you%20to%20customize%20any%20and%20every%20page%20of%20your%20WordPress%20website.><img src="http://developers.diggstatic.com/sites/all/themes/about/img/digg-btn.jpg" alt="Digg Total Widget Control" title="Digg Total Widget Control" />Total Widget Control</a>
+</div>
+
+<img class="twc-avatar" src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/520logo.png" />
+<h4 style="margin:0px;"><?php _e('TWC Support','twc');?></h4>
+<p><?php _e('<a href="http://www.totalwidgetcontrol.com">This Plugin</a> is provided by 5Twenty Studios. Please support us, <br/>so that we can continue to support you.','twc');?></p>

@@ -267,6 +267,19 @@ function twc_clear_originals( $inside = false )
 }
 
 /**
+ * function inserts the contextual help
+ * This inserts a contextual expanding area.
+ *
+ * @param unknown_type $result
+ * @return unknown
+ */
+function twc_contextual_pro( $result )
+{
+	//twc_show_view('twc-pro-button');
+	return $result;
+}
+
+/**
  * Total Widget Controller
  * 
  * This function is responsible for determining which administrative page that we're
@@ -915,6 +928,57 @@ function twc_filter_list_for()
 	return $_REQUEST['twcp_filter'];
 }
 
+
+function twc_pro_button()
+{
+	echo 'Screen Options';
+	if (!$GLOBALS['TWCAUTH'] && !function_exists('twc_widget_protitle'))
+	{
+		?></a>
+		</div>
+		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
+			<a href="<?php get_bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=1" id="show-settings-link" class="contextual-pro">
+			Upgrade to Pro $9
+		<?php 
+	}
+}
+
+/* Function is responsible for branding wordpress a little :)
+ *
+ * @param unknown_type $text
+ * @return unknown
+ */
+function twc_gettext( $text )
+{
+	//initializing variables
+	static $once;
+	$current_screen = twc_get_current_screen(); 
+	$base = $current_screen->parent_base;
+	
+	if (!isset($once))
+	{
+		$once = array();
+	}
+	
+	$lan = array(
+		'themes' => array(
+			'Screen Options' => _('')
+		),
+	);
+	
+	if (isset($lan[$base]) && isset($lan[$base][$text]) && !isset($once[$lan[$base][$text]]))
+	{
+		twc_pro_button();
+		$text = $lan[$base][$text];
+		$once[$text] = true;
+	}
+	
+	return $text;
+}
+
+/**
+
+
 /**
  * Get the current page
  * 
@@ -951,6 +1015,23 @@ function twc_get_current_screen()
 	}
 	
 	return $current_screen;
+}
+
+/**
+ * function returns the link for downloading a license
+ *
+ * @return unknown
+ */
+function twc_get_license_link()
+{
+	//initializing variables
+	$uniqueID = get_option('twc_unique_registration_key', create_guid());
+	$headers = get_plugin_data( dirname(__file__).DS.'index.php' );
+	
+	echo $link = 'http://community.5twentystudios.com/?view=download-license'
+		."&redirect=true"
+		."&uniqueID=$uniqueID||".urlencode(f20_get_domain())
+		."&ver=twc-pro||".urlencode($headers['Version']);
 }
 
 /**
@@ -994,7 +1075,7 @@ function &twc_get_widget_by_id( $widget_id )
 	}
 	
 	//loading settings
-	if (is_callable( array($widget['callback'][0], 'get_settings') ))
+	if (is_object($widget['callback'][0]) && is_callable( array($widget['callback'][0], 'get_settings') ))
 	{
 		$params = $widget['callback'][0]->get_settings();
 		$widget['p'] = $params[$widget['number']];
@@ -1003,37 +1084,11 @@ function &twc_get_widget_by_id( $widget_id )
 	{
 		//take the data handling into our own hands if this is not a multiwidget
 		$singles = get_option('twc_single_widget_data', array());
-		$widget['p'] = $singles[$widget['id']];
+		$widget['p'] = @$singles[$widget['id']];
 	}
 	
 	$twc_registered_widgets[$widget_id] = $widget;
 	return $widget;
-}
-
-/**
- * Function is responsible for branding wordpress a little :)
- *
- * @param unknown_type $text
- * @return unknown
- */
-function twc_gettext( $text )
-{
-	//initializing variables
-	$current_screen = twc_get_current_screen(); 
-	$base = $current_screen->parent_base;
-	
-	$lan = array(
-		'themes' => array(
-			'Screen Options' => _('5Twenty Studios')
-		),
-	);
-	
-	if (isset($lan[$base]) && isset($lan[$base][$text]))
-	{
-		$text = $lan[$base][$text];
-	}
-	
-	return $text;
 }
 
 /**
@@ -1150,6 +1205,7 @@ function twc_initialize()
 	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
+	add_action("twc_init", "twc_add_help_text", 18);
 	add_action('twc_init', 'twc_admin_notices');
 	add_action('twc_init', 'twc_view_widget_wrap', 20);
 	add_action('twc_init', 'twc_destruct', 100);
@@ -1168,6 +1224,7 @@ function twc_initialize()
 	add_action('twc_empty_sidebar','twc_sidebar_originals', 20, 1);
 	
 	add_filter('twc-save-widget-fields','twc_save_menu_items',20,1);
+	add_filter('contextual_help_list', 'twc_contextual_pro');
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
@@ -1315,11 +1372,15 @@ function twc_position_select_box( $sidebar_id, $default )
 		$select .= "<option value='0'>0</option>";
 	}
 	
-	for ($i = 1; $i <= count($list); $i++)
+	$last = count($list);
+	for ($i = 1; $i <= $last; $i++)
 	{
 		$selected = '';
 		if ($default == ($i-1)) $selected = 'selected=selected';
 		$select .= "<option $selected value='".($i-1)."'>$i</option>";
+		
+		//create a last position
+		if ($i == $last) $select .= "<option $selected value='".($i)."'>Last</option>";
 	}
 	return $select.'</select>';
 }
@@ -1492,7 +1553,7 @@ function twc_register_placeholder_sidebar()
 {
 	// register the inactive_widgets area as sidebar
 	register_sidebar(array(
-		'name' => __('Inactive Widgets'),
+		'name' => __('Trashed Widgets'),
 		'id' => 'wp_inactive_widgets',
 		'description' => '',
 		'before_widget' => '',

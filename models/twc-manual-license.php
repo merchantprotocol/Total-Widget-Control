@@ -17,12 +17,8 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 //initializing variables
 $current_screen = twc_get_current_screen();
 
-//controller
+//reasons to fail
 if ($current_screen->action != 'manual') return false;
-
-//initializing variables
-$uniqueID = get_option('twc_unique_registration_key', create_guid());
-$headers = get_plugin_data( dirname(dirname(__file__)).DS.'index.php' );
 
 if (!empty($_FILES))
 {

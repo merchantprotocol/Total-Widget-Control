@@ -48,8 +48,9 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				<input type="hidden" name="widget-id" class="widget-id" value="<?php echo $widget['id']; ?>" />
 				
 				<?php echo $sidebar_args['after_widget']; ?>
-
+		<div class="clear"></div>
 	</div>
+	<div class="clear"></div>
 </div>
 
 

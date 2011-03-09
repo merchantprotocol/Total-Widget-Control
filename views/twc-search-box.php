@@ -13,6 +13,7 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
+//reasons to fail
 if (twc_inactive_list()) return false;
 
 ?>
@@ -21,4 +22,3 @@ if (twc_inactive_list()) return false;
 	<input type="text" id="post-search-input" name="twcp_search_input" value="">
 	<input type="submit" value="<?php _e('Search Widgets','twc');?>" name="twcp_submit" class="button" onClick="javascript:this.form.submit();">
 </p>
-<?php twc_upgrade_button(); ?>
