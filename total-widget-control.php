@@ -58,7 +58,7 @@ function twc_add_action_links( $orig_links )
 	$links = array();
 	$links['deactivate'] = $orig_links['deactivate'];
 	
-	$links['load'] = '<a href="'.get_bloginfo('url').'/wp-admin/widgets.php?list_style=twc" title="'.__('Open the Total Widget Control System','twc').'" class="edit">'.__('Manage Widgets').'</a>';
+	$links['load'] = '<a href="'.get_admin_url().'widgets.php?list_style=twc" title="'.__('Open the Total Widget Control System','twc').'" class="edit">'.__('Manage Widgets').'</a>';
 	return $links;
 }
 
@@ -246,7 +246,7 @@ function twc_clear_license( $inside = false )
 	$licenses[f20_get_domain()] = '';
 	update_option('twc_licenses',$licenses);
 	
-	wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
+	wp_redirect(get_admin_url().'widgets.php');
 	exit();
 }
 
@@ -262,7 +262,7 @@ function twc_clear_originals( $inside = false )
 	
 	update_option('twc_first_activate',array());
 	
-	wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
+	wp_redirect(get_admin_url().'widgets.php');
 	exit();
 }
 
@@ -937,7 +937,7 @@ function twc_pro_button()
 		?></a>
 		</div>
 		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
-			<a href="<?php get_bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=1" id="show-settings-link" class="contextual-pro">
+			<a href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=1" id="show-settings-link" class="contextual-pro">
 			Upgrade to Pro $9
 		<?php 
 	}
@@ -1157,7 +1157,7 @@ function twc_h2_add_new()
 	$current_screen = twc_get_current_screen();
 	if ($current_screen->action != '') return;
 	
-	echo '<a href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=add" class="button add-new-h2">'.__('Add New','twc').'</a>';
+	echo '<a href="'.get_admin_url().'widgets.php?action=add" class="button add-new-h2">'.__('Add New','twc').'</a>';
 }
 
 /**
@@ -1205,6 +1205,7 @@ function twc_initialize()
 	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
+	add_action('init', 'twc_show_ajax', 500);
 	add_action("twc_init", "twc_add_help_text", 18);
 	add_action('twc_init', 'twc_admin_notices');
 	add_action('twc_init', 'twc_view_widget_wrap', 20);
@@ -1789,7 +1790,7 @@ function twc_save_widget_fields( $widget_id, $post )
 	//initializing variables
 	if (!$widget_id || !current_user_can('activate_plugins'))
 	{
-		wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php?message=0');
+		wp_redirect(get_admin_url().'widgets.php?message=0');
 		exit;
 	}
 	
@@ -2072,7 +2073,7 @@ function twc_trigger_sidebar( $widget_shell )
 function twc_upgrade_button()
 {
 	if (function_exists('twc_widget_protitle')) return;
-	echo '<a class="twc_upgrade_button button-primary" href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=register&license=1">'.__('Upgrade to Pro $9','twc').'</a>';
+	echo '<a class="twc_upgrade_button button-primary" href="'.get_admin_url().'widgets.php?action=register&license=1">'.__('Upgrade to Pro $9','twc').'</a>';
 }
 
 /**

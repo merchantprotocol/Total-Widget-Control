@@ -44,20 +44,20 @@ if ($current_screen->action != 'auth') return false;
 <div class="grid" id="griddler_ii">
 <aside>
 	<ul>
-		<li>Display By Page</li>
-		<li>Admin Quick Edit</li>
-		<li>Dynamic Defaults</li>
-		<li>Display By Role</li>
-		<li>Publish Status</li>
-		<li>Publish Date</li>
-		<li>Custom Titles</li>
-		<li>Custom Styles</li>
-		<li>Bulk Actions</li>
-		<li>Filtering</li>
-		<li>Searching</li>
-		<li>Pagination</li>
-		<li>Ad Free</li>
-		<li>Branding Free</li>
+		<li><?php _e('Display By Page','twc'); ?></li>
+		<li><?php _e('Admin Quick Edit','twc'); ?></li>
+		<li><?php _e('Dynamic Defaults','twc'); ?></li>
+		<li><?php _e('Display By Role','twc'); ?></li>
+		<li><?php _e('Publish Status','twc'); ?></li>
+		<li><?php _e('Publish Date','twc'); ?></li>
+		<li><?php _e('Custom Titles','twc'); ?></li>
+		<li><?php _e('Custom Styles','twc'); ?></li>
+		<li><?php _e('Bulk Actions','twc'); ?></li>
+		<li><?php _e('Filtering','twc'); ?></li>
+		<li><?php _e('Searching','twc'); ?></li>
+		<li><?php _e('Pagination','twc'); ?></li>
+		<li><?php _e('Ad Free','twc'); ?></li>
+		<li><?php _e('Branding Free','twc'); ?></li>
 	</ul>
 </aside>
 <div class="sections col5">
@@ -66,10 +66,10 @@ if ($current_screen->action != 'auth') return false;
 <article class="first"> 
 	<header> 
 		<hgroup class="plan">
-			<h1>Lite</h1>
+			<h1><?php _e('Lite','twc'); ?></h1>
 		</hgroup>
 		<hgroup class="price">
-			<h2>Free<em>License</em></h2>
+			<h2><?php _e('Free<em>License</em>','twc'); ?></h2>
 		</hgroup> 
 	</header> 
 	<section>
@@ -91,7 +91,7 @@ if ($current_screen->action != 'auth') return false;
 	</ul>
 	</section> 
 	<footer> 
-		<a class="button" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=0">
+		<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=0">
 		<span>really?</span></a>
 	</footer>
 </article>
@@ -99,9 +99,9 @@ if ($current_screen->action != 'auth') return false;
 <article>
 	<header>
 		<hgroup class="plan">
-			<h1>Professional</h1>
+			<h1><?php _e('Professional','twc'); ?></h1>
 		</hgroup> <hgroup class="price">
-			<h2>$9<em>License</em></h2>
+			<h2><?php _e('$9<em>License</em>','twc'); ?></h2>
 			<h4 class="label">Best Value</h4>
 		</hgroup>
 	</header>
@@ -109,81 +109,81 @@ if ($current_screen->action != 'auth') return false;
 	<ul>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
-		<li class="tooltip-holder"><span class="check">Dynamic</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('Dynamic','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Dynamic Default Sidebars</h3>
-					<p>When no widgets are set to display, then your default widgets
+					<h3><?php _e('Dynamic Default Sidebars','twc'); ?></h3>
+					<p><?php _e('When no widgets are set to display, then your default widgets
 					will display. No more needing to hard code sidebars that will
-					display when there are no active widgets.</p>
+					display when there are no active widgets.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">Any Role</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('Any Role','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Display Widgets by Role</h3>
-					<p>Display ads to only guests and display user menus to anybody that's
-					logged in, it's your choice now.</p>
+					<h3><?php _e('Display Widgets by Role','twc'); ?></h3>
+					<p><?php _e('Display ads to only guests and display user menus to anybody that\'s
+					logged in, it\'s your choice now.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">Enable/Disable</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('Enable/Disable','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Turn Widgets On and Off</h3>
-					<p>Now, you can do this without losing any of your widget settings,
-					or even the widgets sidebar and position data.</p>
+					<h3><?php _e('Turn Widgets On and Off','twc'); ?></h3>
+					<p><?php _e('Now, you can do this without losing any of your widget settings,
+					or even the widgets sidebar and position data.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">Date and Time</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('Date and Time','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Just Like Posts</h3>
-					<p>By default, widgets display immediately, or you can choose the
-					exact date and time for a widget to publish itself.</p>
+					<h3><?php _e('Just Like Posts','twc'); ?></h3>
+					<p><?php _e('By default, widgets display immediately, or you can choose the
+					exact date and time for a widget to publish itself.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">For Admins Only</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('For Admins Only','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Custom Admin Titles</h3>
-					<p>By default, titles are handled by the widget developers. 
+					<h3><?php _e('Custom Admin Titles','twc'); ?></h3>
+					<p><?php _e('By default, titles are handled by the widget developers. 
 					Unfortunately, these titles will also display to your users.</p>
 					<p>With TWC Pro, you can now create your own titles that can be
 					used to differentiate between the hundreds of widget instances
-					that you're now able to manage with ease.</p>
+					that you\'re now able to manage with ease.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">Create Your Own</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('Create Your Own','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Style Widgets Instances!</h3>
-					<p>This is what separates TWC from any other widget management 
-					system that you've ever considered. You can now create style 
+					<h3><?php _e('Style Widgets Instances!','twc'); ?></h3>
+					<p><?php _e('This is what separates TWC from any other widget management 
+					system that you\'ve ever considered. You can now create style 
 					wrappers for your widgets that will allow you to change the complete
-					look and feel of each widget instance.</p>
-					<p>With ease!</p>
+					look and feel of each widget instance.','twc'); ?></p>
+					<p><?php _e('With ease!','twc'); ?></p>
 				</div>
 			</div>
 		</li>
 		<li><span class="check">Yes</span></li>
-		<li class="tooltip-holder"><span class="check">By Sidebar</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('By Sidebar','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>Makes Hunting Easier</h3>
-					<p>Allows you to list widgets from a specific location on your site.</p>
+					<h3><?php _e('Makes Hunting Easier','twc'); ?></h3>
+					<p><?php _e('Allows you to list widgets from a specific location on your site.','twc'); ?></p>
 				</div>
 			</div>
 		</li>
-		<li class="tooltip-holder"><span class="check">By Title</span>
+		<li class="tooltip-holder"><span class="check"><?php _e('By Title','twc'); ?></span>
 			<div class="tooltip">
 				<div>
-					<h3>So Nice!</h3>
-					<p>Can't find the widget that you just created? EASY, just search.</p>
+					<h3><?php _e('So Nice!','twc'); ?></h3>
+					<p><?php _e("Can't find the widget that you just created? EASY, just search.",'twc'); ?></p>
 				</div>
 			</div>
 		</li>
@@ -193,7 +193,7 @@ if ($current_screen->action != 'auth') return false;
 	</ul>
 	</section>
 	<footer>
-		<a class="button" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=1">
+		<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=1">
 		<span>$9.00</span></a>
 	</footer>
 </article>
@@ -201,32 +201,32 @@ if ($current_screen->action != 'auth') return false;
 <article class="last">
 	<header>
 		<hgroup class="plan">
-			<h1>Enterprise</h1>
+			<h1><?php _e('Enterprise','twc'); ?></h1>
 		</hgroup>
 		<hgroup class="price">
-			<h2>$147<em>License</em></h2>
+			<h2><?php _e('$147<em>License</em>','twc'); ?></h2>
 		</hgroup>
 	</header>
 	<section>
 	<ul>
 		<li><span class="check">Yes</span></li>
 		<li><span class="check">Yes</span></li>
-		<li><span class="check">Any Role</span></li>
-		<li><span class="check">Enable/Disable</span></li>
-		<li><span class="check">Date and Time</span></li>
-		<li><span class="check">Dynamic</span></li>
-		<li><span class="check">For Admins Only</span></li>
-		<li><span class="check">Create Your Own</span></li>
-		<li><span class="check">Trash</span></li>
-		<li><span class="check">By Sidebar</span></li>
-		<li><span class="check">By Title</span></li>
-		<li><span class="check">20 Per Page</span></li>
 		<li><span class="check">Yes</span></li>
-		<li><span class="check">No</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
+		<li><span class="check">Yes</span></li>
 	</ul>
 	</section>
 	<footer>
-	<a class="button" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=2">
+	<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=2">
 	<span>$147.00</span></a>
 	</footer>
 </article>
@@ -241,6 +241,6 @@ if ($current_screen->action != 'auth') return false;
 <div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions/" target="_blank">
 <?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 
-<p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px">5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.</p>
+<p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px"><?php _e('5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.','twc'); ?></p>
 
 <?php require_once( './admin-footer.php' ); exit(); ?>

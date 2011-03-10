@@ -22,6 +22,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<p><strong style="color:#555;"><?php _e('Frequently Asked Questions:'); ?></strong></p>
 	<ul class="hot-to-twc">
 	<li><?php _e('I don\'t see the "Add" button next to the widget titles.','twc'); ?> 
-	<a href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?widgets-access=on&action=add"><?php _e('Click here to enable accessibility mode.','twc'); ?></a></li>
+	<a href="<?php echo get_admin_url(); ?>widgets.php?widgets-access=on&action=add"><?php _e('Click here to enable accessibility mode.','twc'); ?></a></li>
 	</ul>
 </div>

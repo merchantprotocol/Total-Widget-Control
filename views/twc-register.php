@@ -25,7 +25,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<p><?php _e('This process will attempt to download a license for you, then activate the software before redirecting you. Please be patient.','twc'); ?></p>
 	<p class="register_error" style="display:none;">
 	<?php _e('Looks like we\'re having problems communicating with the license server. You can click this link to download a license manually, then upload the license to the TWC plugin directory.', 'twc'); ?>
-	<a href="http://community.5twentystudios.com/?view=download-license&uniqueID=<?php echo $uniqueID; ?>||<?php echo urlencode(f20_get_domain()); ?>&ver=twc-pro||<?php echo urlencode($headers['Version']); ?>">Click to download your pro license.</a>
+	<a href="<?php twc_get_license_link(); ?>"><?php _e('Click to download your pro license.','twc'); ?></a>
 	</p>
 </div>
 <script>
@@ -44,7 +44,7 @@ function twc_register_check_license()
 			{
 				jQuery('#register_spinner').css('display','none');
 				jQuery('#register_redirect').css('display','inline-block');
-				window.location.href = '<?php bloginfo('url'); ?>/wp-admin/widgets.php?list_style=twc&ver=<?php echo substr(create_guid(),0,4); ?>';
+				window.location.href = '<?php echo get_admin_url(); ?>widgets.php?list_style=twc&ver=<?php echo substr(create_guid(),0,4); ?>';
 			}
 			else
 			{

@@ -25,18 +25,18 @@ $wrappers = twc_read_wrapper_files();
 	</h3>
 	<?php if (!function_exists('twc_widget_protitle')): ?>
 	<div class="inside">
-		<p>Upgrade to pro and you'll receive a lot more functionality!</p>
+		<p><?php _e('Upgrade to pro and you\'ll receive a lot more functionality!','twc'); ?></p>
 		<ol style="margin-left:30px;">
-			<li>Dyamically set default sidebars</li>
-			<li>Ability to recursivly display a widget to all child pages</li>
-			<li>choose to exclude the widget from checked pages</li>
-			<li>Display widgets by user role</li>
-			<li>Enable and Disable widgets without loosing their sidebar locations</li>
-			<li>Set Specific publishing dates for widgets</li>
-			<li>Set administrative titles for every widget instance</li>
-			<li>Create your own widget wrappers to style widget instances individually</li>
-			<li>Get bulk action options in the widget list</li>
-			<li>Filter, Pagination and Search the widget list</li>
+			<li><?php _e('Dyamically set default sidebars','twc'); ?></li>
+			<li><?php _e('Ability to recursivly display a widget to all child pages','twc'); ?></li>
+			<li><?php _e('choose to exclude the widget from checked pages','twc'); ?></li>
+			<li><?php _e('Display widgets by user role','twc'); ?></li>
+			<li><?php _e('Enable and Disable widgets without loosing their sidebar locations','twc'); ?></li>
+			<li><?php _e('Set Specific publishing dates for widgets','twc'); ?></li>
+			<li><?php _e('Set administrative titles for every widget instance','twc'); ?></li>
+			<li><?php _e('Create your own widget wrappers to style widget instances individually','twc'); ?></li>
+			<li><?php _e('Get bulk action options in the widget list','twc'); ?></li>
+			<li><?php _e('Filter, Pagination and Search the widget list','twc'); ?></li>
 		</ol>
 		<?php twc_upgrade_button(); ?>
 	</div>

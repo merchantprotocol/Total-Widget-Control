@@ -26,7 +26,7 @@ if (!empty($_FILES))
 	$licenses[f20_get_domain()] = @file_get_contents($_FILES['license']['tmp_name']);
 	update_option('twc_licenses',$licenses);
 	
-	wp_redirect(get_option('url').'/wp-admin/widgets.php?list_style=twc');
+	wp_redirect(get_admin_url().'widgets.php?list_style=twc');
 	exit();
 }
 

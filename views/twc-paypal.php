@@ -18,7 +18,7 @@ global $twc_paypal;
 
 ?>
 <div class="twc_auth">
-	<h1>Pro Purchase</h1>
+	<h1><?php _e('Pro Purchase','twc'); ?></h1>
 	<p><?php _e('We just checked and couldn\'t find a license for this domain. To purchase a license, click the link below.','twc'); ?></p>
-	<p><a href="<?php echo $twc_paypal; ?>" target="_blank">Purchase through Paypal</a></p>
+	<p><a href="<?php echo $twc_paypal; ?>" target="_blank"><?php _e('Purchase through Paypal','twc'); ?></a></p>
 </div>

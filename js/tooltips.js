@@ -35,14 +35,18 @@
  
  
 jQuery(document).ready(function(){
+	if (jQuery('#title').length)
 	jQuery('#title').focus(function(){
 		jQuery('#title-prompt-text').css('display', 'none');
 	});
+	
+	if (jQuery('#title').length)
 	jQuery('#title').blur(function(){
 		if (jQuery('#title').val()) return;	
 		jQuery('#title-prompt-text').css('display', 'block');
 	});
 	
+	if (jQuery('.qtipTwc').length)
 	jQuery('.qtipTwc').qtip({
 		 position: {
 			corner: {
@@ -63,6 +67,7 @@ jQuery(document).ready(function(){
 		 }
 	});
 
+	if (jQuery('.add').length)
 	jQuery('.add:first').qtip({
 		content: { text: jQuery('#twcAdd').attr('tooltip') },
 		show: { when: { target: jQuery('#twcAdd') } },
@@ -84,6 +89,7 @@ jQuery(document).ready(function(){
 		}
 	});
 
+	if (jQuery('.sidebar-name:first h3').length)
 	jQuery('.sidebar-name:first h3').qtip({
 		content: { text: jQuery('#twcAvailableWidgets').attr('tooltip') },
 		show: { when: { target: jQuery('#twcAvailableWidgets') } },
@@ -105,6 +111,7 @@ jQuery(document).ready(function(){
 		}
 	});
 
+	if (jQuery('.widget-options').length)
 	jQuery('.widget-options:first').qtip({
 		content: { text: jQuery('#twcWidgetsOptions').attr('tooltip') },
 		show: { when: { target: jQuery('#twcWidgetsOptions') } },
@@ -126,6 +133,7 @@ jQuery(document).ready(function(){
 		}
 	});
 
+	if (jQuery('#menu-settings-column').length)
 	jQuery('#menu-settings-column').qtip({
 		content: { text: jQuery('#twcNavMenu').attr('tooltip') },
 		show: { when: { target: jQuery('#twcNavMenu') } },
@@ -147,6 +155,7 @@ jQuery(document).ready(function(){
 		}
 	});
 
+	if (jQuery('.widget-control-settings').length)
 	jQuery('.widget-control-settings:first').qtip({
 		content: { text: jQuery('#twcWidgetControl').attr('tooltip') },
 		show: { when: { target: jQuery('#twcWidgetControl') } },
@@ -168,6 +177,7 @@ jQuery(document).ready(function(){
 		}
 	});
 
+	if (jQuery('input[name=default_sidebar]').length)
 	jQuery('input[name=default_sidebar]:first').qtip({
 		content: { text: jQuery('#qtipDefaultWidget').attr('tooltip') },
 		show: { when: { target: jQuery('#qtipDefaultWidget') } },
@@ -189,30 +199,29 @@ jQuery(document).ready(function(){
 		}
 	});
 	
-	if (jQuery('#qtipDisplayMetaBox span:first').length)
-	{
-		jQuery('#qtipDisplayMetaBox').qtip({
-			content: jQuery('#qtipDisplayMetaBox span:first').html(),
-			show: { when: { target: jQuery('#qtipDisplayMetaBox') } },
-			hide: { when: { target: jQuery('#qtipDisplayMetaBox'), event: 'mouseout' } },
-			position: {
-				corner: {
-				   target: 'bottomMiddle',
-				   tooltip: 'topMiddle'
-				}
-			},
-			style: {
-				name: 'dark',
-				padding: '7px 13px',
-				width: {
-				   max: 626,
-				   min: 0
-				},
-				tip: true
+	if (jQuery('#qtipDisplayMetaBox span').length)
+	jQuery('#qtipDisplayMetaBox').qtip({
+		content: jQuery('#qtipDisplayMetaBox span:first').html(),
+		show: { when: { target: jQuery('#qtipDisplayMetaBox') } },
+		hide: { when: { target: jQuery('#qtipDisplayMetaBox'), event: 'mouseout' } },
+		position: {
+			corner: {
+			   target: 'bottomMiddle',
+			   tooltip: 'topMiddle'
 			}
-		});
-	}
-	
+		},
+		style: {
+			name: 'dark',
+			padding: '7px 13px',
+			width: {
+			   max: 626,
+			   min: 0
+			},
+			tip: true
+		}
+	});
+
+	if (jQuery('.qtipTopMiddel').length)
 	jQuery('.qtipTopMiddle').qtip({
 		 position: {
 			corner: {
@@ -231,6 +240,116 @@ jQuery(document).ready(function(){
 		 }
 	});
 
+	if (jQuery('.twc_sidebar_select_box').length)
+	jQuery('.twc_sidebar_select_box:first').qtip({
+		content: { text: jQuery('#qtipChooseSidebar').attr('tooltip') },
+		show: { when: { target: jQuery('#qtipChooseSidebar') } },
+	    hide: { when: { target: jQuery('#qtipChooseSidebar'), event: 'mouseout' } },
+	    position: {
+	        corner: {
+	           target: 'topMiddle',
+	           tooltip: 'bottomMiddle'
+	        }
+	     },
+	     style: {
+	        name: 'dark',
+	        padding: '7px 13px',
+	        width: {
+	           max: 210,
+	           min: 0
+	        },
+	        tip: true
+	     }
+	});
+	
+	if (jQuery('.row-title').length)
+	jQuery('.row-title:first').qtip({
+		content: { text: jQuery('#qtipEditWidget').attr('tooltip') },
+		show: { when: { target: jQuery('#qtipEditWidget') } },
+	    hide: { when: { target: jQuery('#qtipEditWidget'), event: 'mouseout' } },
+	    position: {
+	        corner: {
+	           target: 'rightMiddle',
+	           tooltip: 'leftMiddle'
+	        }
+	     },
+	     style: {
+	        name: 'dark',
+	        padding: '7px 13px',
+	        width: {
+	           max: 210,
+	           min: 0
+	        },
+	        tip: true
+	     }
+	});
+
+	if (jQuery('#view-switch-excerpt').length)
+	jQuery('#view-switch-excerpt').qtip({
+		content: { text: jQuery('#qtipSwitchView').attr('tooltip') },
+		show: { when: { target: jQuery('#qtipSwitchView') } },
+	    hide: { when: { target: jQuery('#qtipSwitchView'), event: 'mouseout' } },
+	    position: {
+	        corner: {
+	           target: 'topMiddle',
+	           tooltip: 'bottomRight'
+	        }
+	     },
+	     style: {
+	        name: 'dark',
+	        padding: '7px 13px',
+	        width: {
+	           max: 210,
+	           min: 0
+	        },
+	        tip: true
+	     }
+	});
+
+	if (jQuery('.add-new-h2').length)
+	jQuery('.add-new-h2:first').qtip({
+		content: { text: jQuery('#qtipNewWidget').attr('tooltip') },
+		show: { when: { target: jQuery('#qtipNewWidget') } },
+	    hide: { when: { target: jQuery('#qtipNewWidget'), event: 'mouseout' } },
+	    position: {
+	        corner: {
+	           target: 'topMiddle',
+	           tooltip: 'bottomLeft'
+	        }
+	     },
+	     style: {
+	        name: 'dark',
+	        padding: '7px 13px',
+	        width: {
+	           max: 210,
+	           min: 0
+	        },
+	        tip: true
+	     }
+	});
+
+	if (jQuery('#twcInactiveWidgetsArea').length)
+	jQuery('#twcInactiveWidgetsArea').qtip({
+		content: { text: jQuery('#qtipInactiveWidgets').attr('tooltip') },
+		show: { when: { target: jQuery('#qtipInactiveWidgets') } },
+	    hide: { when: { target: jQuery('#qtipInactiveWidgets'), event: 'mouseout' } },
+	    position: {
+	        corner: {
+	           target: 'topMiddle',
+	           tooltip: 'bottomMiddle'
+	        }
+	     },
+	     style: {
+	        name: 'dark',
+	        padding: '7px 13px',
+	        width: {
+	           max: 210,
+	           min: 0
+	        },
+	        tip: true
+	     }
+	});
+	
 	jQuery('.twcp_toggler_visibility').click(function(){twc_update_visiblity();jQuery('#post-visibility-select').slideToggle();});
 	jQuery('.twcp_toggler_visibility_cancel').click(function(){twc_cancel_visiblity();jQuery('#post-visibility-select').slideToggle();});
 	jQuery('.edit-post-status:first').click(function(){jQuery('#post-status-select').slideToggle();});
@@ -240,5 +359,5 @@ jQuery(document).ready(function(){
 	jQuery('.twcp_toggler_status_cancel').click(function(){twc_cancel_status();jQuery('#post-status-select').slideToggle();});
 	jQuery('.twcp_toggler_time').click(function(){twc_update_timestamp();jQuery('#timestampdiv').slideToggle();});
 	jQuery('.twcp_toggler_time_cancel').click(function(){twc_cancel_timestamp();jQuery('#timestampdiv').slideToggle();});
+
 });
- 
