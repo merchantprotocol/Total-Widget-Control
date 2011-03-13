@@ -123,13 +123,13 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 		<div id="major-publishing-actions">
 			<div id="delete-action">
-				<a class="submitdelete deletion" href="<?php echo get_admin_url(); ?>widgets.php?action=delete&widget_id=<?php echo $widget['id']; ?>">
+				<a class="submitdelete deletion" href="<?php echo admin_url('widgets.php?action=delete&widget_id='.$widget['id']); ?>">
 				<?php _e('Move to Trash', 'twc'); ?></a>
 			</div>
 			
 			<div id="publishing-action">
 				<img src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" id="ajax-feedback" class="ajax-feedback"/>
-				<input type="submit" class="button-primary" onClick="javascript:jQuery('#twc-redirect').val('<?php echo get_admin_url();?>widgets.php'); return twc_save_widget_edit();" id="twc-save-continue" value="<?php _e('Save and Continue', 'twc'); ?>" />
+				<input type="submit" class="button-primary" onClick="javascript:jQuery('#twc-redirect').val('<?php echo admin_url('widgets.php');?>'); return twc_save_widget_edit();" id="twc-save-continue" value="<?php _e('Save and Continue', 'twc'); ?>" />
 			</div>
 			<div class="clear"></div>
 		</div>

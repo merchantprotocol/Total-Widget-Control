@@ -36,6 +36,15 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 defined("DS") or define("DS", DIRECTORY_SEPARATOR);
 
 /**
+ * Initializing 
+ * 
+ * The directory separator is different between linux and microsoft servers.
+ * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
+ * to use.
+ */
+defined("TWC_VERSION") or define("TWC_VERSION", '1.5.11');
+
+/**
  * Startup
  * 
  * This block of functions is only preloading a set of functions that I've prebuilt
@@ -116,4 +125,13 @@ defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can("edit_them
 set_controller_path( dirname( __FILE__ ) );
 require_once dirname(__file__).DS."auth.php";
 twc_initialize();
+
+/**
+ * Initializing 
+ * 
+ * The directory separator is different between linux and microsoft servers.
+ * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
+ * to use.
+ */
+defined("TWC_LICENSE") or define("TWC_LICENSE", 'lite');
 

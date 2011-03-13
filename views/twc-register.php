@@ -28,7 +28,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<a href="<?php twc_get_license_link(); ?>"><?php _e('Click to download your pro license.','twc'); ?></a>
 	</p>
 </div>
-<script>
+<script type="text/javascript">
 var twcp_count = 0;
 function twc_register_check_license()
 {
@@ -44,7 +44,7 @@ function twc_register_check_license()
 			{
 				jQuery('#register_spinner').css('display','none');
 				jQuery('#register_redirect').css('display','inline-block');
-				window.location.href = '<?php echo get_admin_url(); ?>widgets.php?list_style=twc&ver=<?php echo substr(create_guid(),0,4); ?>';
+				window.location.href = '<?php echo admin_url('widgets.php?list_style=twc&ver='.substr(create_guid(),0,4)); ?>';
 			}
 			else
 			{
@@ -63,6 +63,37 @@ function twc_register_check_license()
 jQuery(document).ready(function(){
 	twc_register_check_license();
 });
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-351858-35']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+  _gaq.push(['_setCustomVar', 1, 'WP Version', '<?php echo $wp_version; ?>', 2]);
+
+  <?php if ($first): ?>
+  _gaq.push(['_addTrans',
+             '<?php echo $uniqueID; ?>',           // order ID - required
+             '<?php echo f20_get_domain(); ?>',  // affiliation or store name
+             '<?php echo $price; ?>',          // total - required
+           ]);
+  _gaq.push(['_addItem',
+             '<?php echo $uniqueID; ?>',           // order ID - required
+             '<?php echo $type; ?>',           // SKU/code - required
+             '<?php echo $type; ?>',        // product name
+             'Plugin Activation',   // category or variation
+             '<?php echo $price; ?>',          // unit price - required
+             '1'               // quantity - required
+           ]);
+           _gaq.push(['_trackTrans']); //submits transaction to the Analytics servers
+  <?php endif; ?>
+  
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
 </script>
 
 <?php require_once( './admin-footer.php' ); exit(); ?>

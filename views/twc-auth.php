@@ -15,6 +15,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
 $current_screen = twc_get_current_screen();
+global $wp_version;
 
 //reasons to fail
 if ($current_screen->action != 'auth') return false;
@@ -91,7 +92,7 @@ if ($current_screen->action != 'auth') return false;
 	</ul>
 	</section> 
 	<footer> 
-		<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=0">
+		<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=0'); ?>">
 		<span>really?</span></a>
 	</footer>
 </article>
@@ -193,7 +194,7 @@ if ($current_screen->action != 'auth') return false;
 	</ul>
 	</section>
 	<footer>
-		<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=1">
+		<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>">
 		<span>$9.00</span></a>
 	</footer>
 </article>
@@ -226,7 +227,7 @@ if ($current_screen->action != 'auth') return false;
 	</ul>
 	</section>
 	<footer>
-	<a class="button" href="<?php echo get_admin_url(); ?>widgets.php?action=register&license=2">
+	<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=2'); ?>">
 	<span>$147.00</span></a>
 	</footer>
 </article>
@@ -241,6 +242,25 @@ if ($current_screen->action != 'auth') return false;
 <div class="twc_toc"><a href="http://community.5twentystudios.com/twc-terms-and-conditions/" target="_blank">
 <?php _e('By choosing a plan, you agree to the Terms of Use.','twc'); ?></a></div>
 
-<p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px"><?php _e('5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.','twc'); ?></p>
+<p style="padding-top:10px;border-top:1px solid #ccc;color:#666666;font-size:11px">
+	<?php _e('5Twenty Studios values your privacy. At no time has 5Twenty Studios made your email address available to any other 5Twenty Studios user without your permission. &copy;2011, 5Twenty Studios Corporation.','twc'); ?>
+</p>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-351858-35']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+  _gaq.push(['_setCustomVar', 1, 'WP Version', '<?php echo $wp_version; ?>', 2]);
+  
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 
 <?php require_once( './admin-footer.php' ); exit(); ?>

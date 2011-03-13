@@ -27,7 +27,7 @@ global $twc_table_type;
 	
 	<td class="widget-title column-title">
 		<strong>
-			<a class="row-title" href="<?php echo get_admin_url(); ?>widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
+			<a class="row-title" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
 				<?php echo $widget['name']; ?>
 			</a>
 			
@@ -37,7 +37,7 @@ global $twc_table_type;
 		</strong>
 		<br/><?php echo $widget['callback'][0]->widget_options['description']; ?>
 		<div class="row-actions">
-			<span class="edit"><a title="<?php _e('Edit this item','twc'); ?>" href="<?php echo get_admin_url(); ?>widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>">
+			<span class="edit"><a title="<?php _e('Edit this item','twc'); ?>" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>">
 			<?php _e('Edit','twc');?></a> | </span>
 			
 			<?php if (!twc_inactive_list()): ?>

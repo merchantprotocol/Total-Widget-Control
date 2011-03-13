@@ -25,7 +25,7 @@ twc_delete_widget_instance($widget_id, $delete_permanently);
 
 if (!isset($_REQUEST['view']))
 {
-	wp_redirect(get_admin_url().'widgets.php');
+	wp_redirect( admin_url('widgets.php') );
 	exit();
 }
 
