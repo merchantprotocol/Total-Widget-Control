@@ -37,7 +37,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	</tfoot>
 
 	<tbody>
-	<?php twc_show_view('twc-table-row'); ?>
+	<?php do_action('twc-table-rows'); ?>
 	</tbody>
 </table>
 

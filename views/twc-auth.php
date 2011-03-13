@@ -205,7 +205,7 @@ if ($current_screen->action != 'auth') return false;
 			<h1><?php _e('Enterprise','twc'); ?></h1>
 		</hgroup>
 		<hgroup class="price">
-			<h2><?php _e('$147<em>License</em>','twc'); ?></h2>
+			<h2><?php _e('$19.99<em>License</em>','twc'); ?></h2>
 		</hgroup>
 	</header>
 	<section>
@@ -228,7 +228,7 @@ if ($current_screen->action != 'auth') return false;
 	</section>
 	<footer>
 	<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=2'); ?>">
-	<span>$147.00</span></a>
+	<span>$19.99</span></a>
 	</footer>
 </article>
 

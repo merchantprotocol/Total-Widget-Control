@@ -618,11 +618,15 @@ function twc_delete_widget_sidebar( $widget_id, $sidebar_id )
  * function is responsible for hijacking the dynamic_sidebar function. 
  * This function will always return false to the dynamic sidebar
  *
+ * @param array $params
+ * @return array
  */
 function twc_display_the_sidebar( $params )
 {
 	//initializing variables
 	global $wp_registered_widgets, $twc_wp_registered_widgets, $twc_default_sidebar_widgets;
+	$sidebars_widgets = wp_get_sidebars_widgets();
+	$sidebar_id = $params[0]['id'];
 	
 	if (!isset($twc_wp_registered_widgets))
 	{
@@ -630,7 +634,8 @@ function twc_display_the_sidebar( $params )
 	}
 	
 	//clean the registered_widgets global
-	foreach ((array)$wp_registered_widgets as $widget_id => $widget)
+	//foreach ((array)$wp_registered_widgets as $widget_id => $widget)
+	foreach ((array)$sidebars_widgets[$sidebar_id] as $widget_id)
 	{
 		if (is_a($wp_registered_widgets[$widget_id]['callback'][0], 'twcEmptyWidgetClass')) 
 			break;
@@ -918,7 +923,7 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		$callback = $wp_registered_widgets[$id]['callback'];
 		
-		if ( is_callable($callback) )
+		if ( is_callable($callback) && !is_admin() )
 		{
 			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
 			{
@@ -1195,6 +1200,28 @@ function twc_h2_add_new()
 }
 
 /**
+ * function is responsible for checking to see if a widget has a wrapper
+ *
+ * @param string|array $widget
+ */
+function twc_has_wrapper( $widget )
+{
+	if (is_string($widget) && $widget)
+	{
+		$widget = twc_get_widget_by_id($widget);
+	}
+	
+	//initializing variables
+	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
+	$wrapper = $widget['p']['twcp_wrapper_file'];
+	
+	//reasons to return
+	if ($hasWrapper && $wrapper && is_file($wrapper) && file_exists($wrapper)) 
+		return true;
+	return false;
+}
+
+/**
  * This does our checking to see if the current view is for active of 
  * inactive widgets
  *
@@ -1249,6 +1276,8 @@ function twc_initialize()
 	add_action('twc_display_admin', 'twc_manual_license');
 	add_action('twc-register', 'twc_register');
 	add_action('twc-table', 'twc_rows', 10);
+	add_action('twc-table-rows','twc_table_row');
+	add_action('twc-table-rows','twc_table_row_empty');
 	add_action('widgets_init', 'init_registered_widgets', 1);
 	add_action('twc-free-registration', 'twc_activation' );
 	add_action('admin_menu', 'f20_add_metaboxes');
@@ -1265,6 +1294,8 @@ function twc_initialize()
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
 	add_filter('twc_widget_display', 'twc_sortable_wrapper', 1000, 2);
 
+	function twc_table_row(){ twc_show_view('twc-table-row'); }
+	function twc_table_row_empty(){ twc_show_view('twc-table-empty'); }
 	function twc_manual_license(){twc_show_view('twc-manual-license');}
 	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
@@ -2209,12 +2240,10 @@ function twcp_widget_wrapper( $display, $widget )
 {
 	//initializing variables
 	global $twc_widget_to_wrap, $twc_widget;
-	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
 	$wrapper = $widget['p']['twcp_wrapper_file'];
 	
 	//reasons to return
-	if (!$hasWrapper || !$wrapper || !is_file($wrapper) || !file_exists($wrapper)) 
-		return $display;
+	if (!twc_has_wrapper( $widget )) return $display;
 	
 	//initializing variables
 	$twc_widget_to_wrap = $display;

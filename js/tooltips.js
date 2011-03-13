@@ -51,7 +51,7 @@ jQuery(document).ready(function(){
 		 position: {
 			corner: {
 			   target: 'bottomMiddle',
-			   tooltip: 'topMiddle'
+			   tooltip: 'topRight'
 			}
 		 },
 		 show: { when: { target: jQuery('.widget-liquid-left:first') } },
@@ -220,26 +220,33 @@ jQuery(document).ready(function(){
 			tip: true
 		}
 	});
-
-	if (jQuery('.qtipTopMiddel').length)
-	jQuery('.qtipTopMiddle').qtip({
-		 position: {
-			corner: {
-			   target: 'bottomMiddle',
-			   tooltip: 'topRight'
-			}
-		 },
-		 style: {
-			name: 'dark',
-			padding: '7px 13px',
-			width: {
-			   max: 210,
-			   min: 0
-			},
-			tip: true
-		 }
-	});
-
+	
+	if (jQuery('.qtipTopMiddle').length)
+	{
+		jQuery('.qtipTopMiddle').each(function(key, value){
+			jQuery(value).qtip({
+				content: { text: jQuery(value).attr('alt') },
+				show: { when: { target: jQuery(value) } },
+			    hide: { when: { target: jQuery(value), event: 'mouseout' } },
+			    position: {
+					corner: {
+					   target: 'bottomMiddle',
+					   tooltip: 'topRight'
+					}
+				 },
+				 style: {
+					name: 'dark',
+					padding: '7px 13px',
+					width: {
+					   max: 210,
+					   min: 0
+					},
+					tip: true
+				 }
+			});
+		});
+	}
+	
 	if (jQuery('.twc_sidebar_select_box').length)
 	jQuery('.twc_sidebar_select_box:first').qtip({
 		content: { text: jQuery('#qtipChooseSidebar').attr('tooltip') },
