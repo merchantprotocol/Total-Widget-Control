@@ -15,7 +15,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <div class="postbox">
-	<div class="handlediv" title="Click to toggle"><br></div>
+	<div class="handlediv" title="<?php _e('Click to toggle','twc'); ?>"><br></div>
 	<h3 class="hndle">
 		<span><?php _e('Widget Control Settings','twc');?></span>
 	</h3>

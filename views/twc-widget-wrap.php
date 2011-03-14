@@ -14,6 +14,7 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
+global $wp_version;
 $current_screen = twc_get_current_screen();
 wp_enqueue_style( 'twc' );
 
@@ -31,7 +32,8 @@ wp_enqueue_style( 'twc' );
 	<?php do_action('twc_display_admin'); ?>
 	</form>
 	
-</div>
+</div> 
+<?php //if (!is_520()): ?>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -39,7 +41,13 @@ wp_enqueue_style( 'twc' );
   _gaq.push(['_setDomainName', 'none']);
   _gaq.push(['_setAllowLinker', true]);
   _gaq.push(['_trackPageview']);
-
+  _gaq.push(['_setCustomVar', 1, 'WP Version', '<?php echo $wp_version; ?>', 2]);
+  _gaq.push(['_setCustomVar', 2, 'TWC Version', '<?php echo TWC_VERSION; ?>', 2]);
+  _gaq.push(['_setCustomVar', 3, 'TWC License', '<?php echo TWC_LICENSE; ?>', 2]);
+  _gaq.push(['_setCustomVar', 4, 'Sidebars Used', '<?php echo twc_count_sidebars()-1; ?>', 2]);
+  _gaq.push(['_setCustomVar', 5, 'Widgets Used', '<?php echo twc_count_active_widgets(); ?>', 2]);
+  _gaq.push(['_setCustomVar', 6, 'WP Multisites', '<?php echo (MULTISITE)?'true':'false'; ?>', 2]);
+  
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -47,4 +55,5 @@ wp_enqueue_style( 'twc' );
   })();
 
 </script>
+<?php //endif; ?>
 <?php require_once( './admin-footer.php' ); ?>

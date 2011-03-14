@@ -32,8 +32,20 @@ function twc_activation( )
  */
 function twc_activate_plugin()
 {
-	//reasons to fail
+	//sometimes this needs to be turned on twice before it will work
+	set_user_setting( 'widgets_access', 'on' );
+	
+	//resetting the widgets
+	$widgets_sidebars = get_option('twc_saved_sidebars', false);
+	if (isset($widgets_sidebars[date('Y-m-d',time())]))
+	{
+		wp_set_sidebars_widgets($widgets_sidebars[date('Y-m-d',time())]);
+	}
+	
+	//Only on first activation
 	if (get_option('twc_first_activate', false)) return false;
+	
+	//loading the original widgets for later use as defaults
 	update_option('twc_first_activate', wp_get_sidebars_widgets());
 }
 
@@ -43,6 +55,10 @@ function twc_activate_plugin()
  */
 function twc_deactivate_plugin()
 {
+	//saving the widgets in their positions
+	update_option('twc_saved_sidebars', array(date('Y-m-d',time()) => wp_get_sidebars_widgets()));
+	
+	//shutting off the little used accessibility option
 	set_user_setting( 'widgets_access', 'off' );
 }
 
@@ -58,7 +74,7 @@ function twc_add_action_links( $orig_links )
 	$links = array();
 	$links['deactivate'] = $orig_links['deactivate'];
 	
-	$links['load'] = '<a href="'.get_bloginfo('url').'/wp-admin/widgets.php?list_style=twc" title="'.__('Open the Total Widget Control System','twc').'" class="edit">'.__('Manage Widgets').'</a>';
+	$links['load'] = '<a href="'.admin_url('widgets.php?list_style=twc').'" title="'.__('Open the Total Widget Control System','twc').'" class="edit">'.__('Manage Widgets').'</a>';
 	return $links;
 }
 
@@ -220,9 +236,10 @@ function twc_clear( $wp = null )
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
 			
 			$widget = twc_get_widget_by_id( $widget_slug );	
-			if (!$widget)
+			if (!$widget || !isset($widget['p']) || empty($widget['p']))
 			{
 				unset($sidebars_widgets[$sidebar_slug]);
+				twc_delete_widget_instance( $widget['p'], $delete_permanently = true );
 			}
 			
 		endforeach;
@@ -246,7 +263,7 @@ function twc_clear_license( $inside = false )
 	$licenses[f20_get_domain()] = '';
 	update_option('twc_licenses',$licenses);
 	
-	wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
+	wp_redirect( admin_url('widgets.php') );
 	exit();
 }
 
@@ -262,7 +279,7 @@ function twc_clear_originals( $inside = false )
 	
 	update_option('twc_first_activate',array());
 	
-	wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php');
+	wp_redirect( admin_url('widgets.php') );
 	exit();
 }
 
@@ -351,6 +368,23 @@ function twc_count_active_widgets()
 			$count++;
 		}
 		$count = $count - twc_count_inactive_widgets();
+	}
+	return $count;
+}
+
+/**
+ * returns the number of sidebars
+ * 
+ * @return integer
+ */
+function twc_count_sidebars()
+{
+	//initializing variables
+	static $count;
+	if (!isset($count))
+	{
+		$sidebars_widgets = twc_wp_get_sidebars_widgets();
+		$count = count($sidebars_widgets);
 	}
 	return $count;
 }
@@ -584,11 +618,15 @@ function twc_delete_widget_sidebar( $widget_id, $sidebar_id )
  * function is responsible for hijacking the dynamic_sidebar function. 
  * This function will always return false to the dynamic sidebar
  *
+ * @param array $params
+ * @return array
  */
 function twc_display_the_sidebar( $params )
 {
 	//initializing variables
 	global $wp_registered_widgets, $twc_wp_registered_widgets, $twc_default_sidebar_widgets;
+	$sidebars_widgets = wp_get_sidebars_widgets();
+	$sidebar_id = $params[0]['id'];
 	
 	if (!isset($twc_wp_registered_widgets))
 	{
@@ -596,7 +634,8 @@ function twc_display_the_sidebar( $params )
 	}
 	
 	//clean the registered_widgets global
-	foreach ((array)$wp_registered_widgets as $widget_id => $widget)
+	//foreach ((array)$wp_registered_widgets as $widget_id => $widget)
+	foreach ((array)$sidebars_widgets[$sidebar_id] as $widget_id)
 	{
 		if (is_a($wp_registered_widgets[$widget_id]['callback'][0], 'twcEmptyWidgetClass')) 
 			break;
@@ -884,7 +923,7 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		$callback = $wp_registered_widgets[$id]['callback'];
 		
-		if ( is_callable($callback) )
+		if ( is_callable($callback) && !is_admin() )
 		{
 			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
 			{
@@ -937,7 +976,7 @@ function twc_pro_button()
 		?></a>
 		</div>
 		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
-			<a href="<?php get_bloginfo('url'); ?>/wp-admin/widgets.php?action=register&license=1" id="show-settings-link" class="contextual-pro">
+			<a href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>" id="show-settings-link" class="contextual-pro">
 			Upgrade to Pro $9
 		<?php 
 	}
@@ -1157,7 +1196,29 @@ function twc_h2_add_new()
 	$current_screen = twc_get_current_screen();
 	if ($current_screen->action != '') return;
 	
-	echo '<a href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=add" class="button add-new-h2">'.__('Add New','twc').'</a>';
+	echo '<a href="'.admin_url('widgets.php?action=add').'" class="button add-new-h2">'.__('Add New','twc').'</a>';
+}
+
+/**
+ * function is responsible for checking to see if a widget has a wrapper
+ *
+ * @param string|array $widget
+ */
+function twc_has_wrapper( $widget )
+{
+	if (is_string($widget) && $widget)
+	{
+		$widget = twc_get_widget_by_id($widget);
+	}
+	
+	//initializing variables
+	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
+	$wrapper = $widget['p']['twcp_wrapper_file'];
+	
+	//reasons to return
+	if ($hasWrapper && $wrapper && is_file($wrapper) && file_exists($wrapper)) 
+		return true;
+	return false;
 }
 
 /**
@@ -1205,6 +1266,7 @@ function twc_initialize()
 	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
+	add_action('init', 'twc_show_ajax', 500);
 	add_action("twc_init", "twc_add_help_text", 18);
 	add_action('twc_init', 'twc_admin_notices');
 	add_action('twc_init', 'twc_view_widget_wrap', 20);
@@ -1214,6 +1276,8 @@ function twc_initialize()
 	add_action('twc_display_admin', 'twc_manual_license');
 	add_action('twc-register', 'twc_register');
 	add_action('twc-table', 'twc_rows', 10);
+	add_action('twc-table-rows','twc_table_row');
+	add_action('twc-table-rows','twc_table_row_empty');
 	add_action('widgets_init', 'init_registered_widgets', 1);
 	add_action('twc-free-registration', 'twc_activation' );
 	add_action('admin_menu', 'f20_add_metaboxes');
@@ -1230,6 +1294,8 @@ function twc_initialize()
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
 	add_filter('twc_widget_display', 'twc_sortable_wrapper', 1000, 2);
 
+	function twc_table_row(){ twc_show_view('twc-table-row'); }
+	function twc_table_row_empty(){ twc_show_view('twc-table-empty'); }
 	function twc_manual_license(){twc_show_view('twc-manual-license');}
 	function twc_register(){ twc_show_view('twc-register'); }
 	function twc_init(){ if (!twc_list_style_twc()) return; do_action('twc_init'); }
@@ -1242,6 +1308,7 @@ function twc_initialize()
 	function twc_view_widget_wrap(){ twc_show_view('twc-widget-wrap'); }
 	function twc_view_auth(){ twc_show_view('twc-auth'); }
 	if (!array_key_exists('TWCAUTH', $GLOBALS)) $GLOBALS['TWCAUTH'] = true;
+	if (function_exists('twc_widget_protitle')) define("TWC_LICENSE", 'pro');
 	
 	f20_register_metabox(array(
 	    'id' => 'my-meta-box',
@@ -1473,28 +1540,18 @@ function twc_rows( $action = 'default' )
 					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
 					continue;
 				}
+				if (twc_inactive_list()) continue;
+				
 				
 				//show filtered items
-				if (twc_filter_list_for() && twc_filter_list_for() != $sidebar_slug)
+				if (twc_filter_list_for() == $sidebar_slug)
 				{
 					$twcp_pagi['total']++;
 					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
 					continue;
 				}
+				if (twc_filter_list_for()) continue;
 				
-				//show searched for items
-				if (twc_search_list_for() && $search = twc_search_list_for())
-				{
-					$widget = twc_get_widget_by_id( $widget_slug );
-					$title = apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget);
-					
-					if (strpos(strtolower($title),strtolower($search)) !== false)
-					{
-						$twcp_pagi['total']++;
-						$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
-					}
-					continue;
-				}
 				
 				//show only active items
 				if (!twc_inactive_list() && $sidebar_slug != 'wp_inactive_widgets')
@@ -1506,6 +1563,35 @@ function twc_rows( $action = 'default' )
 				break;
 			}
 			
+		endforeach;
+	endforeach;
+	
+	if ($search = twc_search_list_for())
+	foreach ($twc_rows as $sidebar_slug => $sidebar):
+	
+		if (is_array($sidebar))
+		foreach ($sidebar as $position => $widget):
+			foreach ($widget as $widget_slug => $widget):
+			
+				switch ($action)
+				{
+					case 'on-page': break; //no searching built into the edit page metabox
+					default:
+					$match = false;
+						
+					//show searched for items
+					$title = apply_filters('twc_widget_title', ((isset($widget['p']['title'])) ?$widget['p']['title'] :''), $widget);
+					
+					if (isset($widget['p']['title']) && strpos(strtolower($widget['p']['title']), strtolower($search)) !== false) $match = true;
+					if (strpos(strtolower($widget_slug),strtolower($search)) !== false) $match = true;
+					if (strpos(strtolower($title),strtolower($search)) !== false) $match = true;
+					if ($match) continue;
+					
+					$twcp_pagi['total']--;
+					unset($twc_rows[$sidebar_slug][$position][$widget_slug]);
+				}
+				
+			endforeach;
 		endforeach;
 	endforeach;
 	
@@ -1789,7 +1875,7 @@ function twc_save_widget_fields( $widget_id, $post )
 	//initializing variables
 	if (!$widget_id || !current_user_can('activate_plugins'))
 	{
-		wp_redirect(get_bloginfo('url').'/wp-admin/widgets.php?message=0');
+		wp_redirect( admin_url('widgets.php?message=0') );
 		exit;
 	}
 	
@@ -2072,7 +2158,7 @@ function twc_trigger_sidebar( $widget_shell )
 function twc_upgrade_button()
 {
 	if (function_exists('twc_widget_protitle')) return;
-	echo '<a class="twc_upgrade_button button-primary" href="'.get_bloginfo('url').'/wp-admin/widgets.php?action=register&license=1">'.__('Upgrade to Pro $9','twc').'</a>';
+	echo '<a class="twc_upgrade_button button-primary" href="'.admin_url('widgets.php?action=register&license=1').'">'.__('Upgrade to Pro $9','twc').'</a>';
 }
 
 /**
@@ -2154,12 +2240,10 @@ function twcp_widget_wrapper( $display, $widget )
 {
 	//initializing variables
 	global $twc_widget_to_wrap, $twc_widget;
-	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
 	$wrapper = $widget['p']['twcp_wrapper_file'];
 	
 	//reasons to return
-	if (!$hasWrapper || !$wrapper || !is_file($wrapper) || !file_exists($wrapper)) 
-		return $display;
+	if (!twc_has_wrapper( $widget )) return $display;
 	
 	//initializing variables
 	$twc_widget_to_wrap = $display;

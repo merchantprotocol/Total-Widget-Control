@@ -16,7 +16,8 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 ?>
 <div class="head_space">
 	<div class="back_button">
-		<a class="button-secondary" id="twc-go-back" href="javascript:history.go(-1);"><?php _e('Go Back', 'twc'); ?></a>
+		<a class="button-secondary" id="twc-go-back" href="javascript:history.go(-1);">
+		<?php _e('Go Back', 'twc'); ?></a>
 	</div>
 </div>
 <div class="widget-liquid-left">

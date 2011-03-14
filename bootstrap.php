@@ -80,7 +80,17 @@ if (!function_exists("twc_show_view")):
 	}
 endif;
 
+/**
+ * Deprecated
+ */
 if (!function_exists("show_ajax")):
+	function show_ajax()
+	{
+		twc_show_ajax();
+	}
+endif;
+
+if (!function_exists("twc_show_ajax")):
 	
 	/**
 	 * Show the Ajax
@@ -90,7 +100,7 @@ if (!function_exists("show_ajax")):
 	 * 
 	 * 
 	 */
-	function show_ajax() 
+	function twc_show_ajax() 
 	{
 		if(!$_REQUEST['view']) return false;
 		
@@ -140,7 +150,7 @@ if (!function_exists("get_theme_path")):
 	 */
 	function get_theme_path()
 	{
-		$templateurl = ABSPATH."wp-content/themes/".get_option('template');
+		$templateurl = ABSPATH."wp-content".DS."themes".DS.get_option('template');
 		
 		return $templateurl;
 	}

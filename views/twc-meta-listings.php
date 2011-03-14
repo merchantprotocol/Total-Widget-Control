@@ -21,7 +21,6 @@ $twc_table_type = 'simple';
 //initializing
 twc_rows('on-page');
 
-
 ?>
 <link rel='stylesheet' href='<?php echo plugin_dir_url(dirname(__file__)); ?>css/twc.css' type='text/css' media='all' /> 
 <script src="<?php echo plugin_dir_url(dirname(__file__)); ?>js/twc.js"></script>
@@ -39,12 +38,7 @@ twc_rows('on-page');
 	<?php if ($twc_rows): ?>
 		<?php twc_show_view('twc-table-row'); ?>
 	<?php else: ?>
-		<tr id="twc_no_rows"><td colspan="100"><br/><p>There are no widgets set to display on this page. The defaults will display instead.</p></td></tr>
+		<tr id="twc_no_rows"><td colspan="100"><br/><p><?php _e('There are no widgets set to display on this page. The defaults will display instead.','twc'); ?></p></td></tr>
 	<?php endif; ?>
 	</tbody>
 </table>
-
-<div>
-	
-</div>
-

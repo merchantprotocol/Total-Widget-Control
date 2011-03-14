@@ -20,6 +20,9 @@ $count = 0;
 $list_type = 'active';
 if (twc_inactive_list()) $list_type = 'inactive';
 
+//reasons to fail
+if (empty($twc_rows)) return false;
+
 //load only a single row if this is an undo request
 if ($current_screen->action == 'undo')
 {

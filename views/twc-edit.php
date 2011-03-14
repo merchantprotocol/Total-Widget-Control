@@ -32,7 +32,7 @@ global $widget;
 <?php return; ?>
 
 <div id="postexcerpt" class="postbox">
-	<div class="handlediv" title="Click to toggle"><br></div>
+	<div class="handlediv" title="<?php _e('Click to toggle','twc'); ?>"><br></div>
 	<h3 class="hndle">
 		<span><?php echo $widget['name']; ?></span>
 		<div class="clear"></div>

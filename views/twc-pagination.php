@@ -26,7 +26,7 @@ $under = $over = false;
 	<span class="displaying-num"><?php _e('Displaying','twc');?> <?php echo $start; ?>-<?php echo $stop; ?> <?php _e('of','twc');?> <?php echo $total; ?></span>
 	
 	<?php if ($page > 1 && $pages > 5): ?>
-	<a class="next page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $prev.$inactive; ?>">&laquo;</a>
+	<a class="next page-numbers" href="<?php echo admin_url('widgets.php?pa='.$prev.$inactive); ?>">&laquo;</a>
 	<?php endif; ?>
 	
 	<?php for ($i=1; $i <= $pages; $i++): ?>
@@ -34,7 +34,7 @@ $under = $over = false;
 			<span class="page-numbers current"><?php echo $i; ?></span>
 			
 		<?php elseif ($i == 1 || $i == $pages): ?>
-			<a class="page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $i.$inactive; ?>"><?php echo $i; ?></a>
+			<a class="page-numbers" href="<?php echo admin_url('widgets.php?pa='.$i.$inactive); ?>"><?php echo $i; ?></a>
 			
 		<?php elseif ($i > 1 && $i < ($page-2)): ?>
 			<?php if (!$under): $under = true; ?>
@@ -47,12 +47,12 @@ $under = $over = false;
 			<?php endif; ?>
 			
 		<?php else: ?>
-			<a class="page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $i.$inactive; ?>"><?php echo $i; ?></a>
+			<a class="page-numbers" href="<?php echo admin_url('widgets.php?pa='.$i.$inactive); ?>"><?php echo $i; ?></a>
 		<?php endif; ?>
 		
 	<?php endfor; ?>
 	
 	<?php if ($page < $pages): ?>
-	<a class="next page-numbers" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?pa=<?php echo $next.$inactive; ?>">&raquo;</a>
+	<a class="next page-numbers" href="<?php echo admin_url('widgets.php?pa='.$next.$inactive); ?>">&raquo;</a>
 	<?php endif; ?>
 </div>

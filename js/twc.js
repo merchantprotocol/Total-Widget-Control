@@ -25,16 +25,19 @@ jQuery(document).ready(function(){
  */
 function twc_ongoing_selection()
 {
-	jQuery('#side-sortables').find('[type=checkbox][name^=menu-item]').each(function(){
-		if (twcSelectedIds.indexOf( jQuery(this).val() ) >= 0)
-		{
-			jQuery(this).attr('checked', true);
-		}
-		else
-		{
-			jQuery(this).attr('checked', false);
-		}
-	});
+	if ((typeof(twcSelectedIds) !== 'undefined') && twcSelectedIds.length >0)
+	{
+		jQuery('#side-sortables').find('[type=checkbox][name^=menu-item]').each(function(){
+			if (twcSelectedIds.indexOf( jQuery(this).val() ) >= 0)
+			{
+				jQuery(this).attr('checked', true);
+			}
+			else
+			{
+				jQuery(this).attr('checked', false);
+			}
+		});
+	}
 }
 
 /**
@@ -339,5 +342,14 @@ function twc_hide_messages( messageID )
 	 	}
 	});
 }
- 
 
+ if(!Array.indexOf){
+	    Array.prototype.indexOf = function(obj){
+	        for(var i=0; i<this.length; i++){
+	            if(this[i]==obj){
+	                return i;
+	            }
+	        }
+	        return -1;
+	    }
+	}

@@ -27,7 +27,7 @@ global $twc_table_type;
 	
 	<td class="widget-title column-title">
 		<strong>
-			<a class="row-title" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
+			<a class="row-title" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
 				<?php echo $widget['name']; ?>
 			</a>
 			
@@ -37,7 +37,7 @@ global $twc_table_type;
 		</strong>
 		<br/><?php echo $widget['callback'][0]->widget_options['description']; ?>
 		<div class="row-actions">
-			<span class="edit"><a title="<?php _e('Edit this item','twc'); ?>" href="<?php bloginfo('url'); ?>/wp-admin/widgets.php?action=edit&widget_id=<?php echo $widget['id']; ?>">
+			<span class="edit"><a title="<?php _e('Edit this item','twc'); ?>" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>">
 			<?php _e('Edit','twc');?></a> | </span>
 			
 			<?php if (!twc_inactive_list()): ?>
@@ -55,12 +55,6 @@ global $twc_table_type;
 				title="<?php _e('Delete it permanently','twc');?>" href="#"><?php _e('Delete Permanently','twc');?></a>
 			</span>
 			<?php endif; ?>
-			
-		<?php /*?>
-			<span class="approve"><a href="comment.php?action=approvecomment&amp;p=138&amp;c=2&amp;_wpnonce=ef58137324" class="dim:the-comment-list:comment-2:unapproved:e7e7d3:e7e7d3:new=approved vim-a" title="Enable this widget">Enable</a> | </span>
-			<span class="unapprove"><a href="comment.php?action=unapprovecomment&amp;p=138&amp;c=2&amp;_wpnonce=ef58137324" class="dim:the-comment-list:comment-2:unapproved:e7e7d3:e7e7d3:new=unapproved vim-u" title="Disable this widget">Disable</a> | </span>
-			<span class="view"><a href="<?php bloginfo('url'); ?>" title="View <?php echo $widget['name']; ?>" rel="permalink">View</a></span>
-		<?php */?>
 		</div>
 	</td>
 	<td class="" style="white-space: nowrap;overflow: visible;">

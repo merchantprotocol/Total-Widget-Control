@@ -33,6 +33,7 @@ register_multiwidget(array(
 		'id' => 'textarea',
 		'type' => 'textarea',
 		'std' => 'Default value 2'
+		
 	),
 	array(
 		'name' => 'Select box',
@@ -770,7 +771,4 @@ register_multiwidget(array(
 	
 	)
 ));
-
-
-
 

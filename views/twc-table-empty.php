@@ -13,9 +13,13 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-//initializing
-$widget_id = $_REQUEST['widget_id'];
-twc_delete_widget_instance($widget_id);
+//initializing variables
+global $twc_rows;
 
-wp_redirect( admin_url('widgets.php') );
-exit();
+//reasons to fail
+if (!empty($twc_rows)) return false;
+
+?>
+<tr>
+<td colspan="100"><p>You currently do not have any widgets set to any sidebars. Try checking in the trash for inactive widgets.</p></td>
+</tr>

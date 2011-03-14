@@ -15,9 +15,9 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <div class="twc_auth">
-	<h1>Manual License Upload</h1>
+	<h1><?php _e('Manual License Upload','twc'); ?></h1>
 	<p><?php _e('If you have already purchased a license for this domain, then you can click the link below to download it directly.','twc'); ?></p>
-	<p><a href="<?php twc_get_license_link(); ?>">Click to download your pro license.</a></p>
+	<p><a href="<?php twc_get_license_link(); ?>"><?php _e('Click to download your pro license.','twc'); ?></a></p>
 	<p><?php _e('Choose a license file to upload:','twc'); ?> 
 	<input name="license" type="file" /><br />
 	<input type="submit" value="Upload File" onClick="javascript:jQuery('#twc-widget-wrap').unbind('submit');jQuery('#twc-widget-wrap').submit();return true;" />
