@@ -1992,12 +1992,12 @@ function twc_set_object_id()
 	//reasons to fail
 	if (isset($twc_menu_item_object_id)) return $twc_menu_item_object_id;
 	
-	if (!isset($wp_query) && is_admin())
+	if (!isset($wp_query))
 	{
 		wp_reset_query();
 	}
 	
-	if (!$wp_query->have_posts())
+	if (!$wp_query->have_posts() && is_admin())
 	{
 		//this is used for the admin area
 		if (isset($_REQUEST['post']) && $post = get_post($_REQUEST['post']))
