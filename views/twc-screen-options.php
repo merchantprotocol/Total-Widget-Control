@@ -17,10 +17,6 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 <h4><?php _e('Total Widget Control','twc');?> - <?php _e('Settings','twc');?></h4>
 <p><?php _e('This is the configurations area for the TWC. Any options to adjust the systems operation can be found here.','twc');?></p>
 <ul class="hot-to-twc">
-	<?php if (get_option('twc_first_activate', false)): ?>
-	<li><?php _e('Your original sidebar widgets are still displaying, <a href="'.admin_url('widgets.php?twc_clear_originals').'">Click here if you want to clear out all of your originals.</a>', 'twc'); ?></li>
-	<?php endif; ?>
-	
 	<li><?php _e('Access the licensing screen here: <a href="'.admin_url('widgets.php?action=auth').'">License Comparison</a>', 'twc'); ?></li>
 	<li><?php _e('Sometimes you may need to clear the current license, <a href="'.admin_url('widgets.php?twc_clear_license').'">Click here</a>', 'twc'); ?></li>
 	<li><?php _e('Pro License holders can download their license here: ', 'twc'); ?><a href="<?php twc_get_license_link(); ?>"><?php _e('Click to download your pro license.','twc'); ?></a></li>

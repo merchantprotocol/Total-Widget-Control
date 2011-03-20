@@ -68,6 +68,7 @@ function twc_save_widget_edit()
 		var menu_item_id = re.exec(this.name);
 		var menu_item_id = menu_item_id[1];
 		values['menu-item['+menu_item_id+'][menu-item-url]'] = jQuery(".menu-item-url[name*="+menu_item_id+"]").val();
+		values['menu-item['+menu_item_id+'][menu-item-object]'] = jQuery(".menu-item-object[name*="+menu_item_id+"]").val();
 	});
 	var radio = jQuery('#menu-management-liquid').find('input[type=radio]:checked');
 	radio.each(function() {values[this.name] = jQuery(this).val();});
