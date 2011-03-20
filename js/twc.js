@@ -14,7 +14,7 @@
  * 
  */
 jQuery(document).ready(function(){
-	jQuery('.twc_sidebar_select_box').change(sidebar_select_box);
+	jQuery('.twc_sidebar_select_box:first').change(sidebar_select_box);
 	jQuery('#twc-widget-wrap').submit(twc_save_widget_edit);
 	twc_ongoing_selection();
 });

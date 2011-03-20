@@ -490,11 +490,7 @@ function twc_default_sidebar( $index )
 	//either fail or display the originals
 	if ($current_screen->parent_file == 'widgets.php') return false;
 	if ($twc_has_displayed) return false; // fail if we have widgets on this page 
-	if (!isset($twc_default_sidebar_widgets[$index])) // or if there are no defaults for this sidebar
-	{
-		do_action('twc_empty_sidebar', $index);
-		return false;
-	}
+	if (!isset($twc_default_sidebar_widgets[$index])) return false;
 	
 	//display the dynamic defaults
 	$twc_isDefault = true;
