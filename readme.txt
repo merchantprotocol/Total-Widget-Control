@@ -4,7 +4,7 @@ Donate link: http://community.5twentystudios.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.5.11
+Stable tag: 1.5.12
 
 Rebuilding Wordpess Widget management from the ground up. 
 
@@ -157,6 +157,12 @@ This is currently a beta release of TWC, we cannot guarantee that there will be 
 * Updated links
 * Added a last sidebar position to the select box
 * Stabilized some menu item code
+
+= 1.5.12 = 
+* Activation and deactivation remembering has been removed due to errors
+* Changed how default displays work
+* Upgraded inherited displays to include all taxonomies
+* Adjusted the positions select box to autoupdate on changed sidebar
 
 == Upgrade Notice ==
 

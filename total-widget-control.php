@@ -1455,7 +1455,7 @@ function twc_position_select_box( $sidebar_id, $default )
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$list = $sidebars_widgets[$sidebar_id];
 	
-	$select = '<select id="'.$sidebar_id.'_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
+	$select = '<select id="sidebar_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
 	
 	if (count($list) == 0)
 	{
@@ -2102,6 +2102,7 @@ function twc_sidebar_select_box( $default = 'wp_inactive_widgets', $widget = nul
 	$sidebars = $wp_registered_sidebars;
 	$class = array('','selected="true"');
 	$select_filter = '';
+	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	
 	if (!is_null($name))
 	{
@@ -2122,9 +2123,10 @@ function twc_sidebar_select_box( $default = 'wp_inactive_widgets', $widget = nul
 	
 	foreach ($sidebars as $slug => $sidebar)
 	{
+		$positions = count($sidebars_widgets[$slug]);
 		$selected = 0;
 		if ($default == $slug) $selected = 1;
-		$select .= "<option {$class[$selected]} value='$slug'>{$sidebar['name']}</option>";
+		$select .= "<option {$class[$selected]} positions='$positions' value='$slug'>{$sidebar['name']}</option>";
 	}
 	
 	return $select.'</select>';
