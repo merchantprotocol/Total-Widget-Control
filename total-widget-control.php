@@ -255,22 +255,6 @@ function twc_clear_license( $inside = false )
 }
 
 /**
- * Function is responsible for clearing the current license
- *
- * @return null
- */
-function twc_clear_originals( $inside = false )
-{
-	if (!$inside && !array_key_exists('twc_clear_originals', $_REQUEST)) return false;
-	if (TWC_CURRENT_USER_CANNOT) return false;
-	
-	update_option('twc_first_activate',array());
-	
-	wp_redirect( admin_url('widgets.php') );
-	exit();
-}
-
-/**
  * function inserts the contextual help
  * This inserts a contextual expanding area.
  *
@@ -2008,7 +1992,7 @@ function twc_set_object_id()
 	//reasons to fail
 	if (isset($twc_menu_item_object_id)) return $twc_menu_item_object_id;
 	
-	if (!isset($wp_query))
+	if (!isset($wp_query) && is_admin())
 	{
 		wp_reset_query();
 	}
