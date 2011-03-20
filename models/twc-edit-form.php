@@ -19,7 +19,7 @@ $sidebars_widgets = twc_wp_get_sidebars_widgets();
 
 if (!$widget)
 {
-	wp_redirect( admin_url('widgets.php') );
+	wp_redirect(get_admin_url().'widgets.php');
 	exit();
 }
 

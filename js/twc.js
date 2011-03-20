@@ -14,10 +14,33 @@
  * 
  */
 jQuery(document).ready(function(){
-	jQuery('.twc_sidebar_select_box').change(sidebar_select_box);
+	jQuery('.twc_sidebar_select_box:first').change(sidebar_select_box);
 	jQuery('#twc-widget-wrap').submit(twc_save_widget_edit);
 	twc_ongoing_selection();
 });
+
+
+function twc_update_positions_select( sidebar_select )
+{
+	//initializing variables
+	var sidebar_id = sidebar_select.val();
+	var positions;
+	sidebar_select.find('option[value='+ sidebar_id +']').each(function(k,v){
+		positions = jQuery(v).attr('positions');
+	});
+	var positions_select = jQuery('#sidebar_position');
+	
+	//reasons to fail
+	if ( !positions_select ) return false;
+	
+	jQuery('option', positions_select).remove();
+	
+	for (i=0; i < positions; i++)
+	{
+		positions_select.append( new Option(i+1, i) );
+	}
+	positions_select.append( new Option('Last', i+1) );
+}
 
 /**
  * Make the proper selections
@@ -46,6 +69,7 @@ function twc_ongoing_selection()
  */
 function sidebar_select_box(){
 	var widget_id = jQuery(this).attr('id').replace("twc_sidebar_select_box_","");
+	twc_update_positions_select( jQuery(this) );
 	twc_save_sidebar(widget_id);
 }
 
@@ -68,6 +92,7 @@ function twc_save_widget_edit()
 		var menu_item_id = re.exec(this.name);
 		var menu_item_id = menu_item_id[1];
 		values['menu-item['+menu_item_id+'][menu-item-url]'] = jQuery(".menu-item-url[name*="+menu_item_id+"]").val();
+		values['menu-item['+menu_item_id+'][menu-item-object]'] = jQuery(".menu-item-object[name*="+menu_item_id+"]").val();
 	});
 	var radio = jQuery('#menu-management-liquid').find('input[type=radio]:checked');
 	radio.each(function() {values[this.name] = jQuery(this).val();});
@@ -77,7 +102,7 @@ function twc_save_widget_edit()
 	
 	jQuery.ajax({
 		type : 'POST',
-		url: '?view=twc-save-edit',
+		url: userSettings.url+'?view=twc-save-edit',
 		data: values,
 		success: function( result ){
 			//alert(result);
@@ -113,7 +138,7 @@ function twc_save_widget_edit()
  	
  	jQuery.ajax({
  		type : 'POST',
- 		url: '?view=twc-save-qedit&widget_id='+widget_id,
+ 		url: userSettings.url+'?view=twc-save-qedit&widget_id='+widget_id,
  		data: values,
  		success: function( result ){
  			//alert(result);
@@ -125,7 +150,7 @@ function twc_save_widget_edit()
  				
  				//twc-table-qedit-activated
  				jQuery.ajax({
- 					url: '?view=twc-table-qedit-activated&widget_id='+widget_id,
+ 					url: userSettings.url+'?view=twc-table-qedit-activated&widget_id='+widget_id,
  					success: function( result ){
  						jQuery('#edit-'+widget_id).fadeOut("fast", function() { jQuery(this).remove(); } );
  						jQuery('#tr_row_widget-'+widget_id).html(result);
@@ -174,7 +199,7 @@ function twc_save_sidebar( widget_id )
 	if (sidebar_id != 'wp_inactive_widgets')
 	{
 		jQuery.ajax({
-			url: "/?view=twc-save-sidebar",
+			url: userSettings.url+"?view=twc-save-sidebar",
 			data: {
 				'twc_data[widget_id]' : widget_id,
 				'twc_data[position]' : position,
@@ -190,7 +215,7 @@ function twc_save_sidebar( widget_id )
 					
 					//twc-table-qedit-activated
 					jQuery.ajax({
-						url: '?view=twc-table-qedit-activated&widget_id='+widget_id,
+						url: userSettings.url+'?view=twc-table-qedit-activated&widget_id='+widget_id,
 						success: function( result ){
 							jQuery('#edit-'+widget_id).fadeOut("fast", function() { jQuery(this).remove(); } );
 							jQuery('#tr_row_widget-'+widget_id).html(result);
@@ -219,7 +244,7 @@ function twc_save_sidebar( widget_id )
 function twc_load_qedit( widget_id )
 {
 	jQuery.ajax({
-		url: '?view=twc-table-qedit&widget_id='+widget_id,
+		url: userSettings.url+'?view=twc-table-qedit&widget_id='+widget_id,
 		success: function( result ){
 			var next = jQuery('#tr_row_widget-'+widget_id).next();
 			if (next.attr('id') == 'edit-'+widget_id) return;
@@ -250,7 +275,7 @@ function twc_trash_widget( widget_id )
 	var old_sidebar_id = jQuery('#twc_sidebar_select_box_'+widget_id).val();
 	 
 	jQuery.ajax({
-		url: '?view=twc-trash-instance&old_sidebar_id='+old_sidebar_id+'&widget_id='+widget_id,
+		url: userSettings.url+'?view=twc-trash-instance&old_sidebar_id='+old_sidebar_id+'&widget_id='+widget_id,
 		success: function( result ){
 			jQuery('#tr_row_widget-'+widget_id).html(result);
 	 	}
@@ -269,7 +294,7 @@ function twc_delete_permanently( widget_id )
 	jQuery('#tr_row_widget-'+widget_id).find('.ajax-feedback:first').css('visibility','visible');
 	 
 	jQuery.ajax({
-		url: '?view=twc-trash-instance&delete_confirmation=1&widget_id='+widget_id,
+		url: userSettings.url+'?view=twc-trash-instance&delete_confirmation=1&widget_id='+widget_id,
 		success: function( result ){
 			jQuery('#tr_row_widget-'+widget_id).fadeOut("fast", function() { jQuery(this).remove(); } );
 		
@@ -336,7 +361,7 @@ function twc_get_form_vars( inputs )
 function twc_hide_messages( messageID )
 {
 	jQuery.ajax({
-		url: '?view=twc-hide-message&hide_ID='+messageID,
+		url: userSettings.url+'?view=twc-hide-message&hide_ID='+messageID,
 		success: function( result ){
 			jQuery('.message'+messageID).fadeOut("fast", function() { jQuery(this).remove(); } );
 	 	}

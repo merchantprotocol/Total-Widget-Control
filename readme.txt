@@ -158,6 +158,12 @@ This is currently a beta release of TWC, we cannot guarantee that there will be 
 * Added a last sidebar position to the select box
 * Stabilized some menu item code
 
+= 1.5.12 = 
+* Activation and deactivation remembering has been removed due to errors
+* Changed how default displays work
+* Upgraded inherited displays to include all taxonomies
+* Adjusted the positions select box to autoupdate on changed sidebar
+
 == Upgrade Notice ==
 
 = 1.5.3 =

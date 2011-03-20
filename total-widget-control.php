@@ -34,19 +34,6 @@ function twc_activate_plugin()
 {
 	//sometimes this needs to be turned on twice before it will work
 	set_user_setting( 'widgets_access', 'on' );
-	
-	//resetting the widgets
-	$widgets_sidebars = get_option('twc_saved_sidebars', false);
-	if (isset($widgets_sidebars[date('Y-m-d',time())]))
-	{
-		wp_set_sidebars_widgets($widgets_sidebars[date('Y-m-d',time())]);
-	}
-	
-	//Only on first activation
-	if (get_option('twc_first_activate', false)) return false;
-	
-	//loading the original widgets for later use as defaults
-	update_option('twc_first_activate', wp_get_sidebars_widgets());
 }
 
 /**
@@ -55,9 +42,6 @@ function twc_activate_plugin()
  */
 function twc_deactivate_plugin()
 {
-	//saving the widgets in their positions
-	update_option('twc_saved_sidebars', array(date('Y-m-d',time()) => wp_get_sidebars_widgets()));
-	
 	//shutting off the little used accessibility option
 	set_user_setting( 'widgets_access', 'off' );
 }
@@ -235,11 +219,14 @@ function twc_clear( $wp = null )
 		if (is_array($sidebars_widgets[$sidebar_slug]))
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
 			
-			$widget = twc_get_widget_by_id( $widget_slug );	
-			if (!$widget || !isset($widget['p']) || empty($widget['p']))
+			if ($sidebar_slug == 'wp_inactive_widgets')
 			{
-				unset($sidebars_widgets[$sidebar_slug]);
-				twc_delete_widget_instance( $widget['p'], $delete_permanently = true );
+				$widget = twc_get_widget_by_id( $widget_slug );	
+				if (!$widget || !isset($widget['p']) || empty($widget['p']))
+				{
+					unset($sidebars_widgets[$sidebar_slug]);
+					twc_delete_widget_instance( $widget['p'], $delete_permanently = true );
+				}
 			}
 			
 		endforeach;
@@ -503,11 +490,7 @@ function twc_default_sidebar( $index )
 	//either fail or display the originals
 	if ($current_screen->parent_file == 'widgets.php') return false;
 	if ($twc_has_displayed) return false; // fail if we have widgets on this page 
-	if (!isset($twc_default_sidebar_widgets[$index])) // or if there are no defaults for this sidebar
-	{
-		do_action('twc_empty_sidebar', $index);
-		return false;
-	}
+	if (!isset($twc_default_sidebar_widgets[$index])) return false;
 	
 	//display the dynamic defaults
 	$twc_isDefault = true;
@@ -746,7 +729,7 @@ function twc_display_if_excluded( $current, $widget )
 	global $twc_isDefault;
 	
 	//check to see if we're even going to load this widget
-	$isExclude = (isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude');
+	$isExclude = ( isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude' );
 	
 	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
 		return false;
@@ -1337,36 +1320,72 @@ function twc_initialize()
 function twc_is_widget_displaying( $widget )
 {
 	//initializing variables
-	if (is_string($widget))
+	static $widgets_displaying;
+	if (is_string($widget)) $widget = twc_get_widget_by_id($widget);
+	
+	if (!isset($widgets_displaying))
 	{
-		$widget = twc_get_widget_by_id($widget);
+		$widgets_displaying = array();
 	}
 	
-	//is active for current page
-	if (twc_get_object_id())
+	//RETURN IF WE HAVE ALREADY BEEN HERE, DONE THIS
+	if ( isset($widgets_displaying[$widget['id']]) ) return $widgets_displaying[$widget['id']];
+	
+	//initializing variables
+	global $twc_menu_item_object;
+	$object_id = twc_get_object_id();
+	
+	
+	//IF THE WIDGET IS BRAND NEW, JUST SHOW IT
+	$menu_item_object_id = ( isset($widget['p']) && array_key_exists('menu_item_object_id', $widget['p']) );
+	if ( !$menu_item_object_id ) return $widgets_displaying[$widget['id']] = true; 
+	
+	
+	//THIS SECTION IS FOR EXACT MATCHES USING THE OBJECT IDS
+	if ($object_id) //is active for current page
 	{
-		$display = (is_array($widget['p']['menu_item_object_id']) && in_array(twc_get_object_id(), (array)$widget['p']['menu_item_object_id']));
-	}
-	else 
-	{
-		$display = (is_array($widget['p']['menu_item_urls']) && in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
+		$object = (is_array($widget['p']['menu_item_object']) && isset($widget['p']['menu_item_object'][$object_id])) ?$widget['p']['menu_item_object'][$object_id]: '';
+		$objectIdMatch = (is_array($widget['p']['menu_item_object_id']) && in_array($object_id, (array)$widget['p']['menu_item_object_id']));
+		
+		//the object type and the object id's match
+		if ( $object == $twc_menu_item_object && $objectIdMatch) return $widgets_displaying[$widget['id']] = true;
 	}
 	
-	//is active for parent
-	if (!$display && $widget['p']['twcp_inherit_sidebar'] == 'inherit')
+	
+	//THIS IS FOR EXACT URL MATCHES
+	$urlMatch = (is_array($widget['p']['menu_item_urls']) && in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
+	if ($urlMatch) return $widgets_displaying[$widget['id']] = true;
+	
+	
+	//THIS NEXT SECTION IS FOR INHERITED DISPLAY SETTINGS
+	if ($object_id && $twc_menu_item_object && isset($widget['p']['twcp_inherit_sidebar']) && $widget['p']['twcp_inherit_sidebar'] == 'inherit')
 	{
-		if ($id = twc_get_object_id()) if ($parents = get_post_ancestors($id))
+		// for pages
+		if ( $twc_menu_item_object == 'page' )
 		{
-			foreach ((array)$parents as $parent_id)
+			if ($parents = get_post_ancestors($object_id))
 			{
-				if (!in_array($parent_id, $widget['p']['menu_item_object_id'])) continue;
-				$display = true;
-				break;
+				foreach ((array)$parents as $parent_id)
+				{
+					if (!in_array($parent_id, $widget['p']['menu_item_object_id'])) continue;
+					return $widgets_displaying[$widget['id']] = true;
+				}
+			}
+		}
+		// for taxonomies
+		elseif ( taxonomy_exists($twc_menu_item_object) && isset($widget['p']['menu_item_object']) )
+		{
+			foreach ($widget['p']['menu_item_object'] as $menu_id => $menu_type)
+			{
+				if ( $menu_type != $twc_menu_item_object ) continue;
+				if ( !cat_is_ancestor_of( $menu_id, $object_id ) ) continue;
+				return $widgets_displaying[$widget['id']] = true;
 			}
 		}
 	}
 	
-	return $display;
+	//WE DIDN'T MATCH ANYTHING
+	return $widgets_displaying[$widget['id']] = false;
 }
 
 /**
@@ -1432,7 +1451,7 @@ function twc_position_select_box( $sidebar_id, $default )
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$list = $sidebars_widgets[$sidebar_id];
 	
-	$select = '<select id="'.$sidebar_id.'_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
+	$select = '<select id="sidebar_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
 	
 	if (count($list) == 0)
 	{
@@ -1814,12 +1833,19 @@ function twc_save_menu_items( $fields )
 	if (!array_key_exists('menu-item', $_REQUEST)) return $fields;
 	
 	//initializing variables
+	$objects = array();
 	$object_ids = array();
 	$menu_item_urls = array();
 	
 	foreach ((array)$_REQUEST['menu-item'] as $item) 
 		foreach ((array)$item as $menu_item => $id)
 		{
+			//saving the object ID
+			if ($menu_item == 'menu-item-object-id') 
+			{
+				$menu_id = $object_ids[$id] = $id;
+			}
+			
 			//saving the menu item url
 			if ($menu_item == 'menu-item-url')
 			{
@@ -1827,12 +1853,13 @@ function twc_save_menu_items( $fields )
 			}
 			
 			//saving the object ID
-			if ($menu_item == 'menu-item-object-id') 
+			if ($menu_item == 'menu-item-object') 
 			{
-				$object_ids[$id] = $id;
+				$objects[$menu_id] = $id;
 			}
 		}
 	
+	$fields['menu_item_object'] = $objects;
 	$fields['menu_item_object_id'] = $object_ids;
 	$fields['menu_item_urls'] = $menu_item_urls;
 	return $fields;
@@ -1975,7 +2002,7 @@ function twc_set_object_url()
 function twc_set_object_id()
 {
 	//initializing variables
-	global $wp_query;
+	global $wp_query, $twc_menu_item_object;
 	static $twc_menu_item_object_id;
 	
 	//reasons to fail
@@ -2006,6 +2033,20 @@ function twc_set_object_id()
 	//now that the wp_query is setup, we get the object id
 	$wp_query->get_queried_object();
 	$twc_menu_item_object_id = $wp_query->queried_object_id;
+	
+	//getting the object type
+	if (isset($wp_query->queried_object))
+	{
+		if (isset($wp_query->queried_object->term_id))
+		{
+			$twc_menu_item_object = 'category';
+		}
+		elseif (isset($wp_query->queried_object->post_type))
+		{
+			$twc_menu_item_object = $wp_query->queried_object->post_type;
+		}
+	}
+	
 	return $twc_menu_item_object_id;
 }
 
@@ -2057,6 +2098,7 @@ function twc_sidebar_select_box( $default = 'wp_inactive_widgets', $widget = nul
 	$sidebars = $wp_registered_sidebars;
 	$class = array('','selected="true"');
 	$select_filter = '';
+	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	
 	if (!is_null($name))
 	{
@@ -2077,9 +2119,10 @@ function twc_sidebar_select_box( $default = 'wp_inactive_widgets', $widget = nul
 	
 	foreach ($sidebars as $slug => $sidebar)
 	{
+		$positions = count($sidebars_widgets[$slug]);
 		$selected = 0;
 		if ($default == $slug) $selected = 1;
-		$select .= "<option {$class[$selected]} value='$slug'>{$sidebar['name']}</option>";
+		$select .= "<option {$class[$selected]} positions='$positions' value='$slug'>{$sidebar['name']}</option>";
 	}
 	
 	return $select.'</select>';

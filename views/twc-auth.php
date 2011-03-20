@@ -93,16 +93,16 @@ if ($current_screen->action != 'auth') return false;
 	</section> 
 	<footer> 
 		<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=0'); ?>">
-		<span>Get it!</span></a>
+		<span>really?</span></a>
 	</footer>
 </article>
 
 <article>
 	<header>
 		<hgroup class="plan">
-			<h1><?php _e('Branded','twc'); ?></h1>
+			<h1><?php _e('Professional','twc'); ?></h1>
 		</hgroup> <hgroup class="price">
-			<h2><?php _e('$9.99<em>License</em>','twc'); ?></h2>
+			<h2><?php _e('$9<em>License</em>','twc'); ?></h2>
 			<h4 class="label">Best Value</h4>
 		</hgroup>
 	</header>
@@ -195,14 +195,14 @@ if ($current_screen->action != 'auth') return false;
 	</section>
 	<footer>
 		<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>">
-		<span>$9.99</span></a>
+		<span>$9.00</span></a>
 	</footer>
 </article>
 
 <article class="last">
 	<header>
 		<hgroup class="plan">
-			<h1><?php _e('Professional','twc'); ?></h1>
+			<h1><?php _e('Enterprise','twc'); ?></h1>
 		</hgroup>
 		<hgroup class="price">
 			<h2><?php _e('$19.99<em>License</em>','twc'); ?></h2>
