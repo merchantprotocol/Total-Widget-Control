@@ -237,6 +237,15 @@ function twc_clear( $wp = null )
 }
 
 /**
+ * Deprecated
+ *
+ */
+function twc_clear_originals()
+{
+	
+}
+
+/**
  * Function is responsible for clearing the current license
  *
  * @return null
