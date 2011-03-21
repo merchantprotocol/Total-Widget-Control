@@ -34,6 +34,7 @@ function twc_activate_plugin()
 {
 	//sometimes this needs to be turned on twice before it will work
 	set_user_setting( 'widgets_access', 'on' );
+	delete_option('twc_first_activate');
 }
 
 /**
@@ -255,19 +256,13 @@ function twc_clear_license( $inside = false )
 }
 
 /**
- * Function is responsible for clearing the current license
+ * Function is responsible for clearing the widget cache
  *
  * @return null
  */
 function twc_clear_originals( $inside = false )
 {
-	if (!$inside && !array_key_exists('twc_clear_originals', $_REQUEST)) return false;
-	if (TWC_CURRENT_USER_CANNOT) return false;
-	
-	update_option('twc_first_activate',array());
-	
-	wp_redirect( admin_url('widgets.php') );
-	exit();
+	//Deprecated 1.5.17
 }
 
 /**
@@ -466,7 +461,7 @@ function twc_create_new_widget()
  * This function displays the widgets that are dynamic sidebar widgets
  * 
  * @TODO Test to see if this can be called directly
- *
+ * 
  * @param unknown_type $sidebar_id
  */
 function twc_default_sidebar( $index )
@@ -598,6 +593,18 @@ function twc_delete_widget_sidebar( $widget_id, $sidebar_id )
 }
 
 /**
+ * function is responsible for displaying the debug data
+ *
+ * @param unknown_type $message
+ */
+function twc_display_debug( $message )
+{
+	if ( ! array_key_exists('twc_debug', $_REQUEST) ) return false;
+	
+	echo '<div style="border:1px solid red;">'.$message.'</div>';
+}
+
+/**
  * function is responsible for hijacking the dynamic_sidebar function. 
  * This function will always return false to the dynamic sidebar
  *
@@ -665,7 +672,8 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 		$widget_id = $widget_id->id;
 	}
 	$widget = twc_get_widget_by_id($widget_id);
-	$display = twc_is_widget_displaying($widget);
+	$display = twc_is_widget_displaying( $widget, $debug = (isset($_REQUEST['twc_debug'])) );
+	$display = apply_filters('twc_display_widget', $display, $widget);
 	
 	if (is_null($instance))
 	{
@@ -673,7 +681,6 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	}
 	
 	//reasons to fail
-	$display = apply_filters('twc_display_widget', $display, $widget);
 	if (!$twc_isDefault && !$display && !$force) return false;
 	
 	//initializing variables
@@ -682,7 +689,8 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	
 	// Substitute HTML id and class attributes into before_widget
 	$classname_ = '';
-	foreach ( (array) $wp_registered_widgets[$widget_id]['classname'] as $cn ) {
+	foreach ( (array) $wp_registered_widgets[$widget_id]['classname'] as $cn )
+	{
 		if ( is_string($cn) )
 			$classname_ .= '_' . $cn;
 		elseif ( is_object($cn) )
@@ -695,6 +703,13 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 		array( array_merge( $sidebar, array('widget_id' => $widget_id, 'widget_name' => $wp_registered_widgets[$widget_id]['name']) ) ),
 		(array) $wp_registered_widgets[$widget_id]['params']
 	);
+	
+	//debug bit
+	if (isset($_REQUEST['twc_debug'])) 
+	{
+		echo '<div style="border:1px solid red;"><b>'.$widget_id.'</b>';
+	}
+	
 	
 	//load the widget into a variable
 	ob_start();
@@ -713,6 +728,15 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	//displaying the widget
 	$twc_has_displayed = true;
 	echo apply_filters('twc_widget_display', $display, $widget);
+	
+	
+	//debug bit
+	if (isset($_REQUEST['twc_debug'])) 
+	{
+		echo '</div>';
+	}
+	
+	//displaying the default sidebar
 	return apply_filters('twc_wordpress_default_sidebar', false, $instance);
 }
 
@@ -732,8 +756,12 @@ function twc_display_if_excluded( $current, $widget )
 	$isExclude = ( isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude' );
 	
 	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
+	{
+		twc_display_debug('exclude false');
 		return false;
+	}
 	
+	twc_display_debug('exclude true');
 	return true;
 }
 
@@ -751,8 +779,13 @@ function twc_display_if_default( $display, $widget )
 	$isDefault = (isset($widget['p']['twcp_default_sidebar']) && $widget['p']['twcp_default_sidebar'] == 'default');
 	
 	//reasons to return
-	if ($twc_isDefault && $isDefault) return true;
+	if ($twc_isDefault && $isDefault)
+	{
+		twc_display_debug('default widget true');
+		return true;
+	}
 	
+	twc_display_debug('default widget '.(($display)?'true':'false') );
 	return $display;
 }
 
@@ -766,12 +799,15 @@ function twc_display_if_default( $display, $widget )
 function twc_display_if_status( $display, $widget )
 {
 	//initializing variables
-	global $twc_widgetlistings_type;
+	$disabled = ( @$widget['p']['twcp_status'] == 'disabled' );
 	
 	//reasons to fail
-	if ($twc_widgetlistings_type == 'admin') return $display;
-	if (!$display) return false;
-	if ($widget['p']['twcp_status'] != 'enabled') return false;
+	if (is_admin() || !$display) return $display;
+	if ($disabled)
+	{
+		twc_display_debug('widget disabled');
+		return false;
+	}
 	
 	return true;
 }
@@ -786,13 +822,15 @@ function twc_display_if_status( $display, $widget )
 function twc_display_if_timestamp( $display, $widget )
 {
 	//initializing variables
-	global $twc_widgetlistings_type;
-	$widget_time = $widget['p']['twcp_publish_time'];
+	$notTime = ( !$display || @$widget['p']['twcp_publish_time'] > time() );
 	
 	//reasons to fail
-	if ($twc_widgetlistings_type == 'admin') return $display;
-	if (!$display) return false;
-	if ($widget_time > time()) return false;
+	if (is_admin() || !$display) return $display;
+	if ( $notTime )
+	{
+		twc_display_debug('publishing date '.date('Y-m-d H:i:s',$widget['p']['twcp_publish_time']));
+		return false;
+	}
 	
 	return true;
 }
@@ -806,12 +844,8 @@ function twc_display_if_timestamp( $display, $widget )
  */
 function twc_display_if_visiblity( $display, $widget )
 {
-	//initializing variables
-	global $twc_widgetlistings_type;
-	
 	//reasons to fail
-	if ($twc_widgetlistings_type == 'admin') return $display;
-	if (!$display) return $display;
+	if (is_admin() || !$display) return $display;
 	if (!isset($widget['p']['twcp_visibility'])) return $display;
 	
 	//initializing variables
@@ -839,9 +873,9 @@ function twc_display_if_visiblity( $display, $widget )
 	//setting matches
 	$matchedRole = ($user_role == $widget['p']['twcp_visibility']);
 	
-	if ($matchedRole) return true;
-	if (!$visibleParent && $isParent) return true;
+	if ($matchedRole || !$visibleParent && $isParent) return true;\
 	
+	twc_display_debug('user does not have permission');
 	return false;
 }
 
@@ -938,6 +972,43 @@ class twcEmptyWidgetClass
 }
 
 /**
+ * Function is responsible for catching fatal errors in TWC and doing what
+ * it can to correct them.
+ *
+ * @return null
+ */
+register_shutdown_function('twc_fatal_handler');
+function twc_fatal_handler()
+{
+	//initializing variables
+	$error = error_get_last();
+	if ( $error === NULL ) return false;
+	
+	//FATAL ERRORS IN THE LICENSE
+	if ( strpos($error['file'], 'auth.php') !== false )
+	{
+		twc_activation();
+		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
+	}
+	
+	//FATAL ERRORS IN THE MAIN FILE
+	if ( strpos($error['file'], 'total-widget-control') !== false )
+	{
+		$error_log = ini_get('error_log');
+		_e('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
+		
+		if ($error_log)
+		{
+			_e('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
+		}
+		else 
+		{
+			_e('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
+		}
+	}
+}
+
+/**
  * Checks for the search type
  *
  * @return unknown
@@ -960,7 +1031,7 @@ function twc_pro_button()
 		</div>
 		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
 			<a href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>" id="show-settings-link" class="contextual-pro">
-			Upgrade to Pro $9
+			Upgrade to Pro $9.99
 		<?php 
 	}
 }
@@ -1114,6 +1185,20 @@ function &twc_get_widget_by_id( $widget_id )
 }
 
 /**
+ * function is responsible for returning the complete sidebar info
+ *
+ */
+function twc_get_widget_sidebar()
+{
+	//initializing variables
+	global $wp_registered_sidebars;
+	$widget = twc_widget_object();
+	$sidebar_id = twc_get_widgets_sidebar($widget['id']);
+	
+	return $wp_registered_sidebars[$sidebar_id];
+}
+
+/**
  * function returns the position and the sidebar for a given widget
  * 
  * @TODO Need to create a separate function that will be called to return the position value
@@ -1200,7 +1285,10 @@ function twc_has_wrapper( $widget )
 	
 	//reasons to return
 	if ($hasWrapper && $wrapper && is_file($wrapper) && file_exists($wrapper)) 
+	{
+		twc_display_debug($widget['id'].' has wrapper');
 		return true;
+	}
 	return false;
 }
 
@@ -1315,9 +1403,10 @@ function twc_initialize()
  * function is responsible to determine if the widget will display on this page.
  *
  * @param string|object $widget
+ * @param boolean $debug
  * @return boolean
  */
-function twc_is_widget_displaying( $widget )
+function twc_is_widget_displaying( $widget, $debug = false )
 {
 	//initializing variables
 	static $widgets_displaying;
@@ -1329,7 +1418,7 @@ function twc_is_widget_displaying( $widget )
 	}
 	
 	//RETURN IF WE HAVE ALREADY BEEN HERE, DONE THIS
-	if ( isset($widgets_displaying[$widget['id']]) ) return $widgets_displaying[$widget['id']];
+	if ( !$debug && isset($widgets_displaying[$widget['id']]) ) return $widgets_displaying[$widget['id']];
 	
 	//initializing variables
 	global $twc_menu_item_object;
@@ -1337,24 +1426,29 @@ function twc_is_widget_displaying( $widget )
 	
 	
 	//IF THE WIDGET IS BRAND NEW, JUST SHOW IT
-	$menu_item_object_id = ( isset($widget['p']) && array_key_exists('menu_item_object_id', $widget['p']) );
-	if ( !$menu_item_object_id ) return $widgets_displaying[$widget['id']] = true; 
+	$brandNew = ( ! isset($widget['p']) || empty($widget['p']) );
+	if ( $debug && $brandNew ) twc_display_debug('display '.$widget['id'].' because its brand new');
+	if ( $brandNew ) return $widgets_displaying[$widget['id']] = true; 
 	
+
 	
 	//THIS SECTION IS FOR EXACT MATCHES USING THE OBJECT IDS
 	if ($object_id) //is active for current page
 	{
 		$object = (is_array($widget['p']['menu_item_object']) && isset($widget['p']['menu_item_object'][$object_id])) ?$widget['p']['menu_item_object'][$object_id]: '';
 		$objectIdMatch = (is_array($widget['p']['menu_item_object_id']) && in_array($object_id, (array)$widget['p']['menu_item_object_id']));
+		$objectMatch = ( $object == $twc_menu_item_object && $objectIdMatch );
 		
 		//the object type and the object id's match
-		if ( $object == $twc_menu_item_object && $objectIdMatch) return $widgets_displaying[$widget['id']] = true;
+		if ( $debug && $objectMatch ) twc_display_debug('display '.$widget['id'].' because its objects match');
+		if ( $objectMatch ) return $widgets_displaying[$widget['id']] = true;
 	}
 	
 	
 	//THIS IS FOR EXACT URL MATCHES
 	$urlMatch = (is_array($widget['p']['menu_item_urls']) && in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
-	if ($urlMatch) return $widgets_displaying[$widget['id']] = true;
+	if ( $debug && $urlMatch ) twc_display_debug('display '.$widget['id'].' because its urls match');
+	if ( $urlMatch ) return $widgets_displaying[$widget['id']] = true;
 	
 	
 	//THIS NEXT SECTION IS FOR INHERITED DISPLAY SETTINGS
@@ -1368,6 +1462,7 @@ function twc_is_widget_displaying( $widget )
 				foreach ((array)$parents as $parent_id)
 				{
 					if (!in_array($parent_id, $widget['p']['menu_item_object_id'])) continue;
+					if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited page');
 					return $widgets_displaying[$widget['id']] = true;
 				}
 			}
@@ -1379,12 +1474,14 @@ function twc_is_widget_displaying( $widget )
 			{
 				if ( $menu_type != $twc_menu_item_object ) continue;
 				if ( !cat_is_ancestor_of( $menu_id, $object_id ) ) continue;
+				if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited taxonomy');
 				return $widgets_displaying[$widget['id']] = true;
 			}
 		}
 	}
 	
 	//WE DIDN'T MATCH ANYTHING
+	if ( $debug ) twc_display_debug('don\'t display '.$widget['id'].' because nothing matched');
 	return $widgets_displaying[$widget['id']] = false;
 }
 
@@ -1991,6 +2088,8 @@ function twc_set_object_url()
 	//reasons to fail
 	if (isset($twc_menu_item_url)) return $twc_menu_item_url;
 	$twc_menu_item_url = f20_get_page_url();
+	$twc_menu_item_url = str_replace(array('?twc_debug','&twc_debug'), '', $twc_menu_item_url);
+	
 	return $twc_menu_item_url;
 }
 
@@ -2013,7 +2112,7 @@ function twc_set_object_id()
 		wp_reset_query();
 	}
 	
-	if (!$wp_query->have_posts())
+	if (is_admin() && !$wp_query->have_posts())
 	{
 		//this is used for the admin area
 		if (isset($_REQUEST['post']) && $post = get_post($_REQUEST['post']))
@@ -2071,18 +2170,9 @@ function twc_show_object_id()
  *
  * @return null
  */
-function twc_sidebar_originals( $sidebar_id )
+function twc_sidebar_originals()
 {
-	//initializing variables
-	$originals = get_option('twc_first_activate', false);
-	
-	//reasons to fail
-	if (!$originals[$sidebar_id]) return false;
-	
-	foreach ($originals[$sidebar_id] as $sidebar_id => $widget_id)
-	{
-		twc_display_the_widget(null, $widget_id, null, true);
-	}
+	//deprecated
 }
 
 /**
@@ -2294,7 +2384,11 @@ function twcp_widget_wrapper( $display, $widget )
 	
 	ob_start();
 	require $wrapper;
-	return ob_get_clean();
+	$wrapped = ob_get_clean();
+	
+	if (!$wrapped) twc_display_debug('Wrapper didn\'t return any results');
+	
+	return $wrapped;
 }
 
 /**
@@ -2306,20 +2400,6 @@ function twc_widget_object()
 	//initializing variables
 	global $twc_widget;
 	return $twc_widget;
-}
-
-/**
- * function is responsible for returning the complete sidebar info
- *
- */
-function twc_get_widget_sidebar()
-{
-	//initializing variables
-	global $wp_registered_sidebars;
-	$widget = twc_widget_object();
-	$sidebar_id = twc_get_widgets_sidebar($widget['id']);
-	
-	return $wp_registered_sidebars[$sidebar_id];
 }
 
 /**
