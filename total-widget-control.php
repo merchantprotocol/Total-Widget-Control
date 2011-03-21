@@ -972,6 +972,43 @@ class twcEmptyWidgetClass
 }
 
 /**
+ * Function is responsible for catching fatal errors in TWC and doing what
+ * it can to correct them.
+ *
+ * @return null
+ */
+register_shutdown_function('twc_fatal_handler');
+function twc_fatal_handler()
+{
+	//initializing variables
+	$error = error_get_last();
+	if ( $error === NULL ) return false;
+	
+	//FATAL ERRORS IN THE LICENSE
+	if ( strpos($error['file'], 'auth.php') !== false )
+	{
+		twc_activation();
+		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
+	}
+	
+	//FATAL ERRORS IN THE MAIN FILE
+	if ( strpos($error['file'], 'total-widget-control') !== false )
+	{
+		$error_log = ini_get('error_log');
+		_e('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
+		
+		if ($error_log)
+		{
+			_e('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
+		}
+		else 
+		{
+			_e('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
+		}
+	}
+}
+
+/**
  * Checks for the search type
  *
  * @return unknown
@@ -994,7 +1031,7 @@ function twc_pro_button()
 		</div>
 		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
 			<a href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>" id="show-settings-link" class="contextual-pro">
-			Upgrade to Pro $9
+			Upgrade to Pro $9.99
 		<?php 
 	}
 }
