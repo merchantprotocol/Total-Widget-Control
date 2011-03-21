@@ -1075,7 +1075,9 @@ if (!function_exists('f20_register_metabox')):
 	{
 		//initializing variables
 		$boxes = f20_register_metabox();
-		$post_id = @$_REQUEST['post'];
+		
+		//reasons to fail
+		if (!isset($_REQUEST['post']) || ! $post_id = $_REQUEST['post']) return $boxes;
 		
 		if (is_array($boxes))
 		{
