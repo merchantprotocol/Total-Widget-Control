@@ -237,15 +237,6 @@ function twc_clear( $wp = null )
 }
 
 /**
- * Deprecated
- *
- */
-function twc_clear_originals()
-{
-	
-}
-
-/**
  * Function is responsible for clearing the current license
  *
  * @return null
@@ -258,6 +249,22 @@ function twc_clear_license( $inside = false )
 	$licenses = get_option('twc_licenses',array());
 	$licenses[f20_get_domain()] = '';
 	update_option('twc_licenses',$licenses);
+	
+	wp_redirect( admin_url('widgets.php') );
+	exit();
+}
+
+/**
+ * Function is responsible for clearing the current license
+ *
+ * @return null
+ */
+function twc_clear_originals( $inside = false )
+{
+	if (!$inside && !array_key_exists('twc_clear_originals', $_REQUEST)) return false;
+	if (TWC_CURRENT_USER_CANNOT) return false;
+	
+	update_option('twc_first_activate',array());
 	
 	wp_redirect( admin_url('widgets.php') );
 	exit();
@@ -2006,7 +2013,7 @@ function twc_set_object_id()
 		wp_reset_query();
 	}
 	
-	if (!$wp_query->have_posts() && is_admin())
+	if (is_admin() && !$wp_query->have_posts())
 	{
 		//this is used for the admin area
 		if (isset($_REQUEST['post']) && $post = get_post($_REQUEST['post']))
