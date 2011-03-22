@@ -252,7 +252,7 @@ function twc_clear( $wp = null )
 	}
 	
 	foreach ($sidebars_widgets as $sidebar_slug => $sidebar_widgets): 
-		foreach ($sidebar_widgets as $position => $widget_slug):
+		foreach ((array)$sidebar_widgets as $position => $widget_slug):
 			if ( !isset($wp_registered_sidebars[$sidebar_slug]) && $sidebar_slug != 'wp_inactive_widgets' )
 			{
 				$lost_widgets[] = $widget_slug;
@@ -806,7 +806,9 @@ function twc_display_if_excluded( $current, $widget )
 	
 	//check to see if we're even going to load this widget
 	$isExclude = ( isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude' );
+	$brandNew = ( !isset($widget['p']) || !isset($widget['p']['twc_menu_item']) || !is_array($widget['p']['twc_menu_item']) );
 	
+	if ($brandNew) return $current;
 	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
 	{
 		twc_display_debug('exclude false');
@@ -1559,7 +1561,6 @@ function twc_is_widget_displaying( $widget, $debug = false )
 	
 	//THIS IS FOR EXACT URL MATCHES
 	$urlMatch = (is_array($objects['menu-item-url']) && in_array(twc_get_object_url(), $objects['menu-item-url']));
-	
 	if ( $debug && $urlMatch ) twc_display_debug('display '.$widget['id'].' because its urls match');
 	if ( $urlMatch ) return $widgets_displaying[$widget['id']] = true;
 	
