@@ -16,24 +16,38 @@
  * 
  */
 jQuery.noConflict();
-var totalWidgetControl;
+var twc;
 
 (function($) {
-	var api = totalWidgetControl = {
+	var api = twc = {
+			
+		url : userSettings.url + '?view=',
 			
 		/**
 		 * Method is fired upon document.ready
 		 * 
 		 */
-		init : function() {
+		init : function()
+		{
 			//loading
 			$('.submit-add-to-menu').val('Add Widget To Pages');
+		},
+		
+		delete_menu_item : function( widget_id, object_id )
+		{
+			params = {};
+			params['widget-id'] = widget_id;
+			params['object-id'] = object_id;
+				
+			$.post( twc.url+ 'twc-menu-item-delete', params, function(r) {
+				jQuery( '#object-'+ object_id ).fadeOut("fast", function() { jQuery(this).remove(); } );
+			});
 		}
 	
 	};
 
 	//firing the initialization class
-	$(document).ready(function($){ totalWidgetControl.init(); });
+	$(document).ready(function($){ twc.init(); });
 
 })(jQuery);
 
@@ -49,7 +63,6 @@ var totalWidgetControl;
 jQuery(document).ready(function(){
 	jQuery('.twc_sidebar_select_box:first').change(sidebar_select_box);
 	jQuery('#twc-widget-wrap').submit(twc_save_widget_edit);
-	twc_ongoing_selection();
 });
 
 
@@ -79,20 +92,23 @@ function twc_update_positions_select( sidebar_select )
  * Make the proper selections
  * @return
  */
-function twc_ongoing_selection()
+function twc_ongoing_selection( widget_id, object_id )
 {
-	if ((typeof(twcSelectedIds) !== 'undefined') && twcSelectedIds.length >0)
+	var $selected = false;
+	jQuery('#side-sortables').find('[type=checkbox][name*=menu-item-object-id]').each(function(){
+		if (jQuery(this).val() == object_id)
+		{
+			$selected = true;
+			jQuery(this).attr('checked', true);
+		}
+		else
+		{
+			jQuery(this).attr('checked', false);
+		}
+	});
+	if (!$selected)
 	{
-		jQuery('#side-sortables').find('[type=checkbox][name^=menu-item]').each(function(){
-			if (twcSelectedIds.indexOf( jQuery(this).val() ) >= 0)
-			{
-				jQuery(this).attr('checked', true);
-			}
-			else
-			{
-				jQuery(this).attr('checked', false);
-			}
-		});
+		twc.delete_menu_item(widget_id, object_id);
 	}
 }
 

@@ -47,52 +47,6 @@ var wpNavMenu;
 			this.initToggles();
 
 			this.initTabManager();
-			
-			this.twcSelectInitials();
-			
-			that = this;
-			jQuery('#side-sortables').find('[type=checkbox]').click(function(){
-					that.twcOnCheckBoxClick(this);
-			});
-		},
-		
-		twcOnCheckBoxClick : function( input )
-		{
-			if (jQuery(input).attr('checked'))
-			{
-				twcSelectedIds.push( jQuery(input).val() );
-			}
-			else
-			{
-				twcSelectedIds.splice(twcSelectedIds.indexOf( jQuery(input).val() ),1);
-			}
-			twc_ongoing_selection();
-		},
-		
-		twcSelectInitials : function()
-		{
-			jQuery('.select-all').click(function(){
-				var checkboxes = jQuery(this).closest('.inside').find('[type=checkbox]').length;
-				var checked = jQuery(this).closest('.inside').find('input[type=checkbox]:checked').length;
-				var allSelected = (checkboxes == checked);
-				
-				jQuery(this).closest('.inside').find('[type=checkbox]').each(function(){
-					if (allSelected)
-					{
-						jQuery(this).attr('checked', false);
-						twcSelectedIds.splice(twcSelectedIds.indexOf( jQuery(this).val() ),1);
-					}
-					else
-					{
-						jQuery(this).attr('checked', true);
-						twcSelectedIds.push( jQuery(this).val() );
-					}
-				});
-	
-				if (checkboxes == checked) return false;
-				//twc_save_menu_items();
-				return false;
-			});
 		},
 
 		jQueryExtensions : function() {

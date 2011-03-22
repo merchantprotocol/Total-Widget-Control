@@ -5,7 +5,7 @@
  * @Package Wordpress
  * @SubPackage Total Widget Control
  * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @Since 1.0
+ * @Since 1.6.0
  * 
  * 
  */
@@ -15,9 +15,37 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 
 ?>
-<li class="menu-item-li <?php twc_row_alternate(); ?>">
-	<div class="menu-item-name"><?php echo $menu_item['menu-item-object'].' '.$menu_item['menu-item-title']; ?></div>
-	<div class="menu-item-actions">
-		<span><a href="">Remove</a></span>
-	</div>
-</li>
+<tr id="object-<?php echo $menu_item['menu-item-object-id']; ?>" valign="top" class="<?php twc_row_alternate(); ?> author-other status-publish iedit">
+
+	<th scope="row" class="check-column"><input type="checkbox" name="twc_object_bulk[]" value="<?php echo $widget['id']; ?>"></th>
+	
+	<td class="widget-title column-title" colspan="2">
+	<?php if ( array_key_exists('menu-item-title', $menu_item) ): ?>
+		<strong>
+			<a class="row-title" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
+				<?php echo $menu_item['menu-item-object']; ?>
+			</a>
+			
+			<span id="the_title-<?php echo $widget['id']; ?>">
+				<?php echo $menu_item['menu-item-title']; ?>
+			</span>
+		</strong>
+		<br/><?php echo $menu_item['menu-item-url']; ?>
+		
+	<?php else: ?>
+		<strong>
+			<a href="#" onClick="javascript: twc_ongoing_selection('<?php echo $widget['id']; ?>', '<?php echo $menu_item['menu-item-object-id']; ?>'); return false;">Click To Fix This Object</a>
+		</strong>
+		<br/> This object needs to be fixed. Click above to reselect the checkbox, then click the "add widget to object" button.
+		
+	<?php endif; ?>
+	</td>
+	
+	<td style="text-align:right;">
+		<span class="trash">
+			<a id="trash-menu-item-<?php echo $menu_item['menu-item-object-id']; ?>" onClick="javascript: twc.delete_menu_item('<?php echo $widget['id']; ?>', '<?php echo $menu_item['menu-item-object-id']; ?>'); return false;"
+			title="<?php _e('Remove','twc');?>" href="#"><?php _e('Remove','twc');?></a>
+		</span>
+	</td>
+
+</tr>

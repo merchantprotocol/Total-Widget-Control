@@ -5,7 +5,7 @@
  * @Package Wordpress
  * @SubPackage Total Widget Control
  * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @Since 1.0
+ * @Since 1.6.0
  * 
  * 
  */
