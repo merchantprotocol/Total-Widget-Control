@@ -1436,9 +1436,9 @@ function twc_initialize()
 	wp_register_style( 'twc', plugin_dir_url(__file__).'css/twc.css', array(), TWC_VERSION, 'all');
 	wp_register_style( 'twc-sortables', plugin_dir_url(__file__).'css/twcSortables.css', array(), TWC_VERSION, 'all');
 	
-	add_shortcode('twc_show_widget', 'twc_shortcode_widget');
-	add_shortcode('twc_show_sidebar', 'twc_shortcode_sidebar');
-	
+	add_shortcode('widget', 'twc_shortcode_widget');
+	add_shortcode('sidebar', 'twc_shortcode_sidebar');
+		
 	add_action('activate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_activate_plugin');
 	add_action('deactivate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_deactivate_plugin');
 	add_action('sidebar_admin_setup', 'twc_init', 100);
@@ -2245,6 +2245,34 @@ function twc_set_object_id()
 	}
 	
 	return $twc_menu_item_object_id;
+}
+
+/**
+ * Function is responsible for display a widget via shortcode
+ *
+ * @param unknown_type $atts
+ * @param unknown_type $content
+ */
+function twc_shortcode_widget( $atts, $content = '' )
+{
+	extract(shortcode_atts(array(
+	      'id' => false,
+     ), $atts));
+	twc_widget($id, true);
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $atts
+ * @param unknown_type $content
+ */
+function twc_shortcode_sidebar( $atts, $content = '' )
+{
+	extract(shortcode_atts(array(
+	      'id' => false,
+     ), $atts));
+	twc_sidebar($id, true);
 }
 
 /**
