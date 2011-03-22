@@ -13,13 +13,11 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-// Load all the nav menu interface functions
-require_once( ABSPATH . 'wp-admin/includes/nav-menu.php' );
 
-wp_nav_menu_setup();
-wp_initial_nav_menu_meta_boxes();
-
-remove_meta_box( 'nav-menu-theme-locations', 'nav-menus', 'side' );
-remove_meta_box( 'add-custom-links', 'nav-menus', 'side' );
-
-do_meta_boxes( 'nav-menus', 'side', null ); 
+?>
+<li class="menu-item-li <?php twc_row_alternate(); ?>">
+	<div class="menu-item-name"><?php echo $menu_item['menu-item-object'].' '.$menu_item['menu-item-title']; ?></div>
+	<div class="menu-item-actions">
+		<span><a href="">Remove</a></span>
+	</div>
+</li>

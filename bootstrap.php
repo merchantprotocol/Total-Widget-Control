@@ -1075,18 +1075,20 @@ if (!function_exists('f20_register_metabox')):
 	{
 		//initializing variables
 		$boxes = f20_register_metabox();
-		$post_id = $_REQUEST['post'];
+		
+		//reasons to fail
+		if (!isset($_REQUEST['post']) || ! $post_id = $_REQUEST['post']) return $boxes;
 		
 		if (is_array($boxes))
 		{
 			foreach ($boxes as $key => $box)
 			{
 				//making sure that the includes and excludes are proper arrrays
-				if (!is_array($box['include']) && strlen(trim($box['include'])) > 0)
+				if (isset($box['include']) && !is_array($box['include']) && strlen(trim($box['include'])) > 0)
 				{
 					$boxes[$key]['include'] = $box['include'] = explode(',',$box['include']);
 				}
-				if (!is_array($box['exclude']) && strlen(trim($box['exclude'])) > 0)
+				if (isset($box['exclude']) && !is_array($box['exclude']) && strlen(trim($box['exclude'])) > 0)
 				{
 					$boxes[$key]['exclude'] = $box['exclude'] = explode(',',$box['exclude']);
 				}

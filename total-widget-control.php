@@ -35,6 +35,34 @@ function twc_activate_plugin()
 	//sometimes this needs to be turned on twice before it will work
 	set_user_setting( 'widgets_access', 'on' );
 	delete_option('twc_first_activate');
+	
+	global $wp_registered_sidebars, $sidebars_widgets;
+	
+	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
+		if (is_array($sidebars_widgets[$sidebar_slug]))
+		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug):
+			
+			$widget = twc_get_widget_by_id($widget_slug);
+			$request = array();
+			
+			if (!isset($widget['p']['menu_item_object_id'])) continue;
+			if (!is_array($widget['p']['menu_item_object_id'])) continue;
+			
+			foreach ($widget['p']['menu_item_object_id'] as $id)
+			{
+				$widget['p']['twc_menu_item'][$id]['menu-item-object-id'] = $id;
+				$widget['p']['twc_menu_item'][$id]['menu-item-object'] = $widget['p']['menu_item_object'][$id];
+			}
+			
+			$widget['p']['menu_item_object_id'] = array();
+			$widget['p']['menu_item_object'] = array();
+			$widget['p']['menu_item_urls'] = array();
+			
+			twc_save_widget_fields( $widget['id'], $widget['p'] );
+			
+		endforeach;
+	endforeach;
+	
 }
 
 /**
@@ -1005,6 +1033,8 @@ function twc_fatal_handler()
 		{
 			_e('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
 		}
+		
+		echo _520($error);
 	}
 }
 
@@ -1134,21 +1164,29 @@ function twc_get_license_link()
  * @param string $widget_id
  * @return static reference array $widget
  */
-function &twc_get_widget_by_id( $widget_id )
+function &twc_get_widget_by_id( $widget_id = null )
 {
 	//initializing variables
 	global $wp_registered_widgets;
 	static $twc_registered_widgets;
-	$widget = @$wp_registered_widgets[$widget_id];
+	$widget = $false = false;
+	
+	//reasons to fail
+	if (is_null($widget_id)) return $false;
 	
 	if (!isset($twc_registered_widgets))
 	{
 		$twc_registered_widgets = array();
 	}
 	
+	if (is_string($widget_id) && array_key_exists($widget_id, $wp_registered_widgets))
+	{
+		$widget = $wp_registered_widgets[$widget_id];
+	}
+	
 	//reasons to fail
 	if (isset($twc_registered_widgets[$widget_id])) return $twc_registered_widgets[$widget_id];
-	if (!$widget) return false;
+	if (!$widget) return $false;
 	
 	//initializing widget variables
 	$widget['id'] = $widget_id;
@@ -1914,6 +1952,9 @@ function twc_save_default_sidebar( $fields, $new_instance, $old_instance, $widge
 	if (array_key_exists('twcp_visible_parent', $request))
 		$fields['twcp_visible_parent'] = $request['twcp_visible_parent'];
 	
+	if (array_key_exists('twc_menu_item', $request))
+		$fields['twc_menu_item'] = $request['twc_menu_item'];
+		
 	return $fields;
 }
 
@@ -1926,6 +1967,7 @@ function twc_save_default_sidebar( $fields, $new_instance, $old_instance, $widge
  */
 function twc_save_menu_items( $fields )
 {
+	return $fields;
 	//reasons to fail
 	if (!array_key_exists('menu-item', $_REQUEST)) return $fields;
 	

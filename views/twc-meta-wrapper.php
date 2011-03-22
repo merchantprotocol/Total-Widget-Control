@@ -13,6 +13,8 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
+
+	
 ?>
 <div class="postbox">
 	<div class="handlediv" title="<?php _e('Click to toggle','twc'); ?>"><br></div>
@@ -20,20 +22,36 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		<span><?php _e('Widget Control Settings','twc');?></span>
 	</h3>
 	<div class="inside">
-
-				<div class="twc-third">
-					<label><?php _e('Sidebar','twc');?> </label>
-					<?php echo twc_sidebar_select_box($sidebar_id, $widget, true); ?>
-					<div class="clear"></div>
-				</div>
+		<div class="twc-third">
+			<label><?php _e('Sidebar','twc');?> </label>
+			<?php echo twc_sidebar_select_box($sidebar_id, $widget, true); ?>
+			<div class="clear"></div>
+		</div>
 				
-				<div class="twc-third">
-					<label><?php _e('Position','twc');?> </label>
-					<?php echo twc_position_select_box($sidebar_id, $position); ?>
-					<div class="clear"></div>
-				</div>
-				
-				<div class="clear"></div>
+		<div class="twc-third">
+			<label><?php _e('Position','twc');?> </label>
+			<?php echo twc_position_select_box($sidebar_id, $position); ?>
+			<div class="clear"></div>
+		</div>
+		<div class="clear"></div>
+		
+		<?php if (empty($widget['p']['twc_menu_item'])): ?>
+		<div id="menu-instructions" class="post-body-plain">
+			<p><?php _e('Select menu items (pages, categories, links) from the boxes at right to begin adding this widget to specific pages.','twc'); ?></p>
+		</div>
+		<?php endif; ?>
+		
+		<ul class="menu" id="menu-to-edit">
+		<?php 
+		$imploded = '';
+		if (!empty($widget['p']['twc_menu_item']))
+		{
+			echo twc_get_show_view('twc-menu-item', $widget['p']['twc_menu_item']);
+		}
+		?>
+		</ul>
+		
+		<div class="clear"></div>
 	</div>
 </div>
 

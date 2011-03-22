@@ -10,6 +10,39 @@
  */
 
 /**
+ * Total Widget Control
+ * 
+ * Javascript class to contain all of the elements needed for managing widgets.
+ * 
+ */
+jQuery.noConflict();
+var totalWidgetControl;
+
+(function($) {
+	var api = totalWidgetControl = {
+			
+		/**
+		 * Method is fired upon document.ready
+		 * 
+		 */
+		init : function() {
+			//loading
+			$('.submit-add-to-menu').val('Add Widget To Pages');
+		}
+	
+	};
+
+	//firing the initialization class
+	$(document).ready(function($){ totalWidgetControl.init(); });
+
+})(jQuery);
+
+
+
+
+
+
+/**
  * Fire some actions
  * 
  */
