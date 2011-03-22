@@ -223,34 +223,54 @@ function twc_bulk_trash( $widgets )
 function twc_clear( $wp = null )
 {
 	//intiailizing variables
-	global $wp_registered_widgets, $wp_registered_sidebars;
+	global $wp_registered_widgets, $wp_registered_sidebars, $sidebars_widgets;
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$lost_widgets = array();
 	
 	foreach ($wp_registered_widgets as $widget_id => $widget_class)
 	{
-		if (!$widget_id) continue;
+		if (!$widget_id)
+		{
+			unset($wp_registered_widgets[$widget_id]);
+			continue;
+		}
+		$widget = twc_get_widget_by_id( $widget_id );
+		if (!$widget)
+		{
+			unset($wp_registered_widgets[$widget_id]);
+			continue;
+		}
 		$sidebar_id = twc_get_widgets_sidebar($widget_id);
 		
 		if ($sidebar_id == 'wp_inactive_widgets')
 		{
 			if (substr($widget_id,-2) == '-1') continue;
 			if ((int)trim(substr($widget_id,-2)) == -1) continue;
+			
 			$lost_widgets[] = $widget_id;
 		}
 	}
 	
-	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
-		if (is_array($sidebars_widgets[$sidebar_slug]))
-		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
+	foreach ($sidebars_widgets as $sidebar_slug => $sidebar_widgets): 
+		foreach ($sidebar_widgets as $position => $widget_slug):
+			if ( !isset($wp_registered_sidebars[$sidebar_slug]) && $sidebar_slug != 'wp_inactive_widgets' )
+			{
+				$lost_widgets[] = $widget_slug;
+				unset($sidebars_widgets[$sidebar_slug][$position]);
+				twc_delete_widget_instance( $widget_slug, $delete_permanently = false );
+			}
+			
+			$widget = twc_get_widget_by_id($widget_slug);
+			if (!$widget)
+			{
+				twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
+			}
 			
 			if ($sidebar_slug == 'wp_inactive_widgets')
 			{
-				$widget = twc_get_widget_by_id( $widget_slug );	
 				if (!$widget || !isset($widget['p']) || empty($widget['p']))
 				{
-					unset($sidebars_widgets[$sidebar_slug]);
-					twc_delete_widget_instance( $widget['p'], $delete_permanently = true );
+					twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
 				}
 			}
 			
@@ -641,6 +661,7 @@ function twc_display_the_sidebar( $params )
 	global $wp_registered_widgets, $twc_wp_registered_widgets, $twc_default_sidebar_widgets;
 	$sidebars_widgets = wp_get_sidebars_widgets();
 	$sidebar_id = $params[0]['id'];
+	$count = twc_count_widgets( $sidebar_id );
 	
 	if (!isset($twc_wp_registered_widgets))
 	{
@@ -655,8 +676,7 @@ function twc_display_the_sidebar( $params )
 			break;
 		
 		// since we're running a loop already, then let's take this opportunity
-		// to create the defaults widgets array\
-		// @TODO This data needs to be sorted out just after the init function
+		// to create the defaults widgets array
 		$_widget = twc_get_widget_by_id($widget_id);
 		if ($_widget['p']['twcp_default_sidebar'] == 'default')
 		{
@@ -664,11 +684,19 @@ function twc_display_the_sidebar( $params )
 			$twc_default_sidebar_widgets[$default_sidebar_id][$widget_id] = $widget;
 		}
 		
-		//empty the registered_widgets array
-		$wp_registered_widgets[$widget_id]['callback'] = array();
-		$wp_registered_widgets[$widget_id]['callback'][0] = new twcEmptyWidgetClass();
-		$wp_registered_widgets[$widget_id]['callback'][1] = 'twc_empty_callback';
+		if ( $count || !empty($twc_default_sidebar_widgets[$sidebar_id]) )
+		{
+			//empty the registered_widgets array
+			$wp_registered_widgets[$widget_id]['callback'] = array();
+			$wp_registered_widgets[$widget_id]['callback'][0] = new twcEmptyWidgetClass();
+			$wp_registered_widgets[$widget_id]['callback'][1] = 'twc_empty_callback';
+		}
+		else
+		{
+			$wp_registered_widgets[$widget_id]['callback'] = false;
+		}
 	}
+	
 	return $params;
 }
 
@@ -966,6 +994,7 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		if ( is_callable($callback) && !is_admin() )
 		{
+			
 			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
 			{
 				twc_display_the_widget(null, $id, null);
@@ -1116,6 +1145,7 @@ function twc_get_widget_objects( $widget )
 	{
 		$instances = array();
 	}
+	
 	if (!isset($instances[$widget['id']]))
 	{
 		$instances[$widget['id']] = array();
@@ -1124,17 +1154,20 @@ function twc_get_widget_objects( $widget )
 		{
 			foreach ((array)$menu_items as $key => $value)
 			{
-				$instances[$widget['id']][$key][] = $value;
+				$instances[$widget['id']][$key][$menu_items['menu-item-object-id']] = $value;
 			}
 		}
 		
 		//Assists with backwards compatibilities
+		if (!isset($instances[$widget['id']]['menu-item-url']))
 		foreach ((array)$widget['p']['menu_item_urls'] as $url)
-			$instances[$widget['id']]['menu-item-urls'][] = $url;
+			$instances[$widget['id']]['menu-item-url'][] = $url;
 			
+		if (!isset($instances[$widget['id']]['menu-item-object-id']))
 		foreach ((array)$widget['p']['menu_item_object_id'] as $url)
 			$instances[$widget['id']]['menu-item-object-id'][] = $url;
 			
+		if (!isset($instances[$widget['id']]['menu-item-object']))
 		foreach ((array)$widget['p']['menu_item_object'] as $url)
 			$instances[$widget['id']]['menu-item-object'][] = $url;
 	}
@@ -1525,7 +1558,8 @@ function twc_is_widget_displaying( $widget, $debug = false )
 	
 	
 	//THIS IS FOR EXACT URL MATCHES
-	$urlMatch = (is_array($objects['menu-item-urls']) && in_array(twc_get_object_url(), $objects['menu-item-urls']));
+	$urlMatch = (is_array($objects['menu-item-url']) && in_array(twc_get_object_url(), $objects['menu-item-url']));
+	
 	if ( $debug && $urlMatch ) twc_display_debug('display '.$widget['id'].' because its urls match');
 	if ( $urlMatch ) return $widgets_displaying[$widget['id']] = true;
 	
@@ -1553,6 +1587,23 @@ function twc_is_widget_displaying( $widget, $debug = false )
 			{
 				if ( $menu_type != $twc_menu_item_object ) continue;
 				if ( !cat_is_ancestor_of( $menu_id, $object_id ) ) continue;
+				if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited taxonomy');
+				return $widgets_displaying[$widget['id']] = true;
+			}
+		}
+		// for posts
+		elseif ( $twc_menu_item_object == 'post' )
+		{
+			foreach ($objects['menu-item-object'] as $menu_id => $menu_type)
+			{
+				//reasons to continue
+				if ( $menu_type != 'post' && !taxonomy_exists($menu_type) ) continue;
+				
+				//initializing variables
+				$term_ids = wp_get_object_terms( $object_id, $menu_type, array('fields' => 'ids') );
+				
+				//reasons to continue
+				if ( !in_array( $menu_id, $term_ids ) ) continue;
 				if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited taxonomy');
 				return $widgets_displaying[$widget['id']] = true;
 			}
@@ -2170,8 +2221,9 @@ function twc_set_object_id()
 			{
 				$query = array('p' => $post->ID, 'post_type' => 'any');
 			}
+			$wp_query->query($query);
 		}
-		$wp_query->query($query);
+		
 	}
 	
 	//now that the wp_query is setup, we get the object id

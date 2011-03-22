@@ -56,7 +56,8 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #twc-widget-wrap .twc_meta_query {padding-left:20px;}
 #twc-widget-wrap #query_view_params p {clear:both;display:block;line-height: 20px;}
 #twc-widget-wrap .twc_table.menu {padding-top: 0px;border:none;}
-#twc-widget-wrap #menu-management-liquid .widget-title strong {margin:0;padding:0;text-transform:capitalize;display:block;width:100%;}
+#twc-widget-wrap #menu-management-liquid a.row-title {font-size:11px !important;}
+#twc-widget-wrap #menu-management-liquid .widget-title strong {margin:0;padding:4px 0 5px;text-transform:capitalize;display:block;width:100%;}
 #twc-widget-wrap #menu-management-liquid .widefat thead tr th {background:none;}
 #twc-widget-wrap #menu-management-liquid #post_form .inside label {font-size:14px;}
 #twc-widget-wrap #menu-management-liquid #post_form .inside input {font-size:14px;}

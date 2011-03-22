@@ -22,16 +22,18 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<td class="widget-title column-title" colspan="2">
 	<?php if ( array_key_exists('menu-item-title', $menu_item) ): ?>
 		<strong>
-			<a class="row-title" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
-				<?php echo $menu_item['menu-item-object']; ?>
-			</a>
-			
 			<span id="the_title-<?php echo $widget['id']; ?>">
+				<?php echo $menu_item['menu-item-object']; ?>	
+			</span>	
+			<a class="row-title" href="<?php echo admin_url('widgets.php?action=edit&widget_id='.$widget['id']); ?>" title="<?php _e('Edit','twc'); ?> <?php echo $widget['name']; ?>">
 				<?php echo $menu_item['menu-item-title']; ?>
-			</span>
+			</a>
 		</strong>
-		<br/><?php echo $menu_item['menu-item-url']; ?>
-		
+		<div class="row-actions">
+			<?php if (!empty($menu_item['menu-item-url'])) :?>
+			<a href="<?php echo $menu_item['menu-item-url']; ?>" target="_blank"><?php echo $menu_item['menu-item-url']; ?></a>
+			<?php endif; ?>
+		</div>
 	<?php else: ?>
 		<strong>
 			<a href="#" onClick="javascript: twc_ongoing_selection('<?php echo $widget['id']; ?>', '<?php echo $menu_item['menu-item-object-id']; ?>'); return false;">Click To Fix This Object</a>
@@ -42,10 +44,12 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	</td>
 	
 	<td style="text-align:right;">
-		<span class="trash">
-			<a id="trash-menu-item-<?php echo $menu_item['menu-item-object-id']; ?>" onClick="javascript: twc.delete_menu_item('<?php echo $widget['id']; ?>', '<?php echo $menu_item['menu-item-object-id']; ?>'); return false;"
-			title="<?php _e('Remove','twc');?>" href="#"><?php _e('Remove','twc');?></a>
-		</span>
+		<div class="row-actions">
+			<span class="trash">
+				<a id="trash-menu-item-<?php echo $menu_item['menu-item-object-id']; ?>" onClick="javascript: twc.delete_menu_item('<?php echo $widget['id']; ?>', '<?php echo $menu_item['menu-item-object-id']; ?>'); return false;"
+				title="<?php _e('Remove','twc');?>" href="#"><?php _e('Remove','twc');?></a>
+			</span>
+		</div>
 	</td>
 
 </tr>

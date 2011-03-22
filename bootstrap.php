@@ -102,7 +102,7 @@ if (!function_exists("twc_show_ajax")):
 	 */
 	function twc_show_ajax() 
 	{
-		if(!$_REQUEST['view']) return false;
+		if(!isset($_REQUEST['view']) || empty($_REQUEST['view'])) return false;
 		
 		//making sure that we load the template file
 		$functions = get_theme_root()."/".get_option('template').'/functions.php';
@@ -910,15 +910,28 @@ if (!class_exists("Multiple_Widget_Master")):
 		if (empty($this->widget['fields'])) return false;
 		do_action('twc_widget_before');
 		
+		$defaults = array(
+			'id' => '',
+			'name' => '',
+			'desc' => '',
+			'type' => '',
+			'options' => '',
+			'std' => '',
+		);
+		
 		foreach ($this->widget['fields'] as $field)
 		{
-			$meta = attribute_escape(@$instance[$field['id']]);
+			$field = wp_parse_args($field, $defaults);
+			
+			
+			if (isset($field['id']) && array_key_exists($field['id'], $instance))
+				$meta = attribute_escape($instance[$field['id']]);
 			
 			if ($field['type'] != 'custom' && $field['type'] != 'metabox') 
 			{
 				echo '<p><label for="',$this->get_field_id($field['id']),'">';
 			}
-			if ($field['name']) echo $field['name'],':';
+			if (isset($field['name']) && $field['name']) echo $field['name'],':';
 			
 			switch ($field['type'])
 			{
