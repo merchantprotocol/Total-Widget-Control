@@ -39,6 +39,8 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 .twc_auth .button-secondary {position:relative;float:right;margin:15px;}
 .twc_auth p {width:560px;margin-left:20px;}
 .twc-third {width:49%;position:relative;float:left;}
+.twc-80 {width:69%;position:relative;float:left;text-align:right;padding-bottom: 10px;}
+.twc-20 {width:29%;position:relative;float:left;text-align:right;padding-bottom: 10px;}
 .twc-hr {margin: 20px 0 10px;border: none;border-bottom: 1px dashed #CCC;}
 .twc-avatar {margin-right:20px;position:relative;float:left;width:100px;}
 .twc-share {position:relative;float:right;width:200px;}
@@ -53,6 +55,9 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #twc-widget-wrap .twc_tax_query {padding-left:20px;}
 #twc-widget-wrap .twc_meta_query {padding-left:20px;}
 #twc-widget-wrap #query_view_params p {clear:both;display:block;line-height: 20px;}
+#twc-widget-wrap .twc_table.menu {padding-top: 0px;border:none;}
+#twc-widget-wrap #menu-management-liquid .widget-title strong {margin:0;padding:0;text-transform:capitalize;display:block;width:100%;}
+#twc-widget-wrap #menu-management-liquid .widefat thead tr th {background:none;}
 #twc-widget-wrap #menu-management-liquid #post_form .inside label {font-size:14px;}
 #twc-widget-wrap #menu-management-liquid #post_form .inside input {font-size:14px;}
 #twc-widget-wrap #menu-management-liquid .inside .twc_checkbox,
@@ -84,7 +89,6 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 #twc-widget-wrap #menu-settings-column, #wpbody-content .metabox-holder, #menu-management
 #twc-widget-wrap .widget-control-settings {margin-bottom:20px;} 
 #twc-widget-wrap .back_button {position:relative;float:right;}
-#twc-widget-wrap .button-controls .button-secondary, #twc-widget-wrap #widgets-display-pages .add-menu-item-tabs{display:none;}
 #twc-widget-wrap .regular-text {width:97%;}
 #twc-widget-wrap div#widgets-left {margin-right: 0px;}
 #twc-widget-wrap .clear {width:100%;clear:both;display:block;}

@@ -35,6 +35,30 @@ function twc_activate_plugin()
 	//sometimes this needs to be turned on twice before it will work
 	set_user_setting( 'widgets_access', 'on' );
 	delete_option('twc_first_activate');
+	
+	global $wp_registered_sidebars, $sidebars_widgets;
+	
+	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
+		if (is_array($sidebars_widgets[$sidebar_slug]))
+		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug):
+			
+			$widget = twc_get_widget_by_id($widget_slug);
+			$request = array();
+			
+			if (!isset($widget['p']['menu_item_object_id'])) continue;
+			if (!is_array($widget['p']['menu_item_object_id'])) continue;
+			
+			foreach ($widget['p']['menu_item_object_id'] as $id)
+			{
+				$widget['p']['twc_menu_item'][$id]['menu-item-object-id'] = $id;
+				$widget['p']['twc_menu_item'][$id]['menu-item-object'] = $widget['p']['menu_item_object'][$id];
+			}
+			
+			twc_save_widget_fields( $widget['id'], $widget['p'] );
+			
+		endforeach;
+	endforeach;
+	
 }
 
 /**
@@ -1023,7 +1047,10 @@ function twc_filter_list_for()
 	return $_REQUEST['twcp_filter'];
 }
 
-
+/**
+ * function is responsible for displaying the pro button
+ *
+ */
 function twc_pro_button()
 {
 	echo 'Screen Options';
@@ -1038,7 +1065,8 @@ function twc_pro_button()
 	}
 }
 
-/* Function is responsible for branding wordpress a little :)
+/**
+ * Function is responsible for branding wordpress a little :)
  *
  * @param unknown_type $text
  * @return unknown
@@ -1072,7 +1100,47 @@ function twc_gettext( $text )
 }
 
 /**
+ * Function is responsible for compiling the menu item objects
+ * so that we can check against them in twc_is_widget_displaying
+ *
+ * @param string|object $widget
+ * @return array $instances
+ */
+function twc_get_widget_objects( $widget )
+{
+	//initializing variables
+	if (is_string($widget)) $widget = twc_get_widget_by_id($widget);
+	static $instances;
 
+	if (!isset($instances))
+	{
+		$instances = array();
+	}
+	if (!isset($instances[$widget['id']]))
+	{
+		$instances[$widget['id']] = array();
+		
+		foreach ((array)$widget['p']['twc_menu_item'] as $menu_items)
+		{
+			foreach ((array)$menu_items as $key => $value)
+			{
+				$instances[$widget['id']][$key][] = $value;
+			}
+		}
+		
+		//Assists with backwards compatibilities
+		foreach ((array)$widget['p']['menu_item_urls'] as $url)
+			$instances[$widget['id']]['menu-item-urls'][] = $url;
+			
+		foreach ((array)$widget['p']['menu_item_object_id'] as $url)
+			$instances[$widget['id']]['menu-item-object-id'][] = $url;
+			
+		foreach ((array)$widget['p']['menu_item_object'] as $url)
+			$instances[$widget['id']]['menu-item-object'][] = $url;
+	}
+	
+	return $instances[$widget['id']];
+}
 
 /**
  * Get the current page
@@ -1427,36 +1495,37 @@ function twc_is_widget_displaying( $widget, $debug = false )
 		$widgets_displaying = array();
 	}
 	
+	
 	//RETURN IF WE HAVE ALREADY BEEN HERE, DONE THIS
 	if ( !$debug && isset($widgets_displaying[$widget['id']]) ) return $widgets_displaying[$widget['id']];
+	
+	
+	//IF THE WIDGET IS BRAND NEW, JUST SHOW IT
+	$brandNew = ( ! isset($widget['p']) || !isset($widget['p']['twc_menu_item']) || !is_array($widget['p']['twc_menu_item']) );
+	if ( $debug && $brandNew ) twc_display_debug('display '.$widget['id'].' because its brand new');
+	if ( $brandNew ) return $widgets_displaying[$widget['id']] = true; 
+	
 	
 	//initializing variables
 	global $twc_menu_item_object;
 	$object_id = twc_get_object_id();
+	$objects = twc_get_widget_objects( $widget );
 	
-	
-	//IF THE WIDGET IS BRAND NEW, JUST SHOW IT
-	$brandNew = ( ! isset($widget['p']) || empty($widget['p']) );
-	if ( $debug && $brandNew ) twc_display_debug('display '.$widget['id'].' because its brand new');
-	if ( $brandNew ) return $widgets_displaying[$widget['id']] = true; 
-	
-
 	
 	//THIS SECTION IS FOR EXACT MATCHES USING THE OBJECT IDS
 	if ($object_id) //is active for current page
 	{
-		$object = (is_array($widget['p']['menu_item_object']) && isset($widget['p']['menu_item_object'][$object_id])) ?$widget['p']['menu_item_object'][$object_id]: '';
-		$objectIdMatch = (is_array($widget['p']['menu_item_object_id']) && in_array($object_id, (array)$widget['p']['menu_item_object_id']));
-		$objectMatch = ( $object == $twc_menu_item_object && $objectIdMatch );
+		$objectIdMatch = (is_array($objects['menu-item-object-id']) && in_array($object_id, (array)$objects['menu-item-object-id']));
+		$objectMatch = ( $widget['p']['twc_menu_item'][$object_id]['menu-item-object'] == $twc_menu_item_object );
 		
 		//the object type and the object id's match
-		if ( $debug && $objectMatch ) twc_display_debug('display '.$widget['id'].' because its objects match');
-		if ( $objectMatch ) return $widgets_displaying[$widget['id']] = true;
+		if ( $debug && $objectMatch && $objectIdMatch ) twc_display_debug('display '.$widget['id'].' because its objects match');
+		if ( $objectMatch && $objectIdMatch ) return $widgets_displaying[$widget['id']] = true;
 	}
 	
 	
 	//THIS IS FOR EXACT URL MATCHES
-	$urlMatch = (is_array($widget['p']['menu_item_urls']) && in_array(twc_get_object_url(), (array)$widget['p']['menu_item_urls']));
+	$urlMatch = (is_array($objects['menu-item-urls']) && in_array(twc_get_object_url(), $objects['menu-item-urls']));
 	if ( $debug && $urlMatch ) twc_display_debug('display '.$widget['id'].' because its urls match');
 	if ( $urlMatch ) return $widgets_displaying[$widget['id']] = true;
 	
@@ -1471,16 +1540,16 @@ function twc_is_widget_displaying( $widget, $debug = false )
 			{
 				foreach ((array)$parents as $parent_id)
 				{
-					if (!in_array($parent_id, $widget['p']['menu_item_object_id'])) continue;
+					if (!in_array($parent_id, $objects['menu-item-object-id'])) continue;
 					if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited page');
 					return $widgets_displaying[$widget['id']] = true;
 				}
 			}
 		}
 		// for taxonomies
-		elseif ( taxonomy_exists($twc_menu_item_object) && isset($widget['p']['menu_item_object']) )
+		elseif ( taxonomy_exists($twc_menu_item_object) && isset($objects['menu-item-object']) )
 		{
-			foreach ($widget['p']['menu_item_object'] as $menu_id => $menu_type)
+			foreach ($objects['menu-item-object'] as $menu_id => $menu_type)
 			{
 				if ( $menu_type != $twc_menu_item_object ) continue;
 				if ( !cat_is_ancestor_of( $menu_id, $object_id ) ) continue;
@@ -1924,51 +1993,17 @@ function twc_save_default_sidebar( $fields, $new_instance, $old_instance, $widge
 	if (array_key_exists('twcp_visible_parent', $request))
 		$fields['twcp_visible_parent'] = $request['twcp_visible_parent'];
 	
+	if (array_key_exists('twc_menu_item', $request))
+		$fields['twc_menu_item'] = $request['twc_menu_item'];
+		
 	return $fields;
 }
 
 /**
- * Function appends the menu item data to the instance fields
- * 
- * @TODO Need to also save the object type
- * @param array $fields
- * @return array $fields
+ * Deprecated since 1.6.0
  */
 function twc_save_menu_items( $fields )
 {
-	//reasons to fail
-	if (!array_key_exists('menu-item', $_REQUEST)) return $fields;
-	
-	//initializing variables
-	$objects = array();
-	$object_ids = array();
-	$menu_item_urls = array();
-	
-	foreach ((array)$_REQUEST['menu-item'] as $item) 
-		foreach ((array)$item as $menu_item => $id)
-		{
-			//saving the object ID
-			if ($menu_item == 'menu-item-object-id') 
-			{
-				$menu_id = $object_ids[$id] = $id;
-			}
-			
-			//saving the menu item url
-			if ($menu_item == 'menu-item-url')
-			{
-				$menu_item_urls[$id] = $id;
-			}
-			
-			//saving the object ID
-			if ($menu_item == 'menu-item-object') 
-			{
-				$objects[$menu_id] = $id;
-			}
-		}
-	
-	$fields['menu_item_object'] = $objects;
-	$fields['menu_item_object_id'] = $object_ids;
-	$fields['menu_item_urls'] = $menu_item_urls;
 	return $fields;
 }
 
