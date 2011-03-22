@@ -1,13 +1,11 @@
 /**
- * @Author	5Twenty Studios
- * @link http://www.5twentystudios.com
- * @Package Wordpress
- * @SubPackage Total Widget Control
- * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @Since 1.0
- * 
- * This files is a modification of the WordPress Administration Navigation Menu
+ * WordPress Administration Navigation Menu
  * Interface JS functions
+ *
+ * @version 2.0.0
+ *
+ * @package WordPress
+ * @subpackage Administration
  */
 
 var wpNavMenu;
@@ -43,6 +41,9 @@ var wpNavMenu;
 			this.attachTabsPanelListeners();
 
 			this.attachUnsavedChangesListener();
+
+			//if( api.menuList.length ) // If no menu, we're in the + tab.
+			//	this.initSortables();
 
 			this.initToggles();
 
@@ -180,13 +181,9 @@ var wpNavMenu;
 						i = fields.length;
 						while ( i-- ) {
 							if( itemType == 'menu-item' )
-							{
 								field = fields[i] + '[' + id + ']';
-							}
 							else if( itemType == 'add-menu-item' )
-							{
 								field = 'menu-item[' + id + '][' + fields[i] + ']';
-							}
 
 							if (
 								this.name &&
@@ -241,7 +238,7 @@ var wpNavMenu;
 			// hide fields
 			api.menuList.hideAdvancedMenuItemFields();
 		},
-		/*
+
 		initSortables : function() {
 			var currentDepth = 0, originalDepth, minDepth, maxDepth,
 				prev, next, prevBottom, nextThreshold, helperHeight, transport,
@@ -412,7 +409,7 @@ var wpNavMenu;
 				menuMaxDepth = newDepth;
 			}
 		},
-*/
+
 		attachMenuEditListeners : function() {
 			var that = this;
 			$('#update-nav-menu').bind('click', function(e) {
@@ -464,8 +461,6 @@ var wpNavMenu;
 			var loc = $('#nav-menu-theme-locations'), params = {};
 			params['action'] = 'menu-locations-save';
 			params['menu-settings-column-nonce'] = $('#menu-settings-column-nonce').val();
-			loc.find('input[type=submit]').css('display','none');
-			
 			loc.find('input[type=submit]').click(function() {
 				loc.find('select').each(function() {
 					params[this.name] = $(this).val();
@@ -476,7 +471,6 @@ var wpNavMenu;
 				});
 				return false;
 			});
-			
 		},
 
 		attachQuickSearchListeners : function() {
@@ -556,19 +550,18 @@ var wpNavMenu;
 		},
 
 		addItemToMenu : function(menuItem, processMethod, callback) {
-			var menu = $('#menu').val();
-			var inputs = jQuery('#menu-management-liquid').find(':input');
-			
+			var menu = $('#menu').val(),
+				nonce = $('#menu-settings-column-nonce').val();
+
 			processMethod = processMethod || function(){};
 			callback = callback || function(){};
-			
+
 			params = {
+				'action': 'add-menu-item',
 				'menu': menu,
-				'menu-item': menuItem,
-				'widget-id': $('[name=widget-id]').val()
+				'menu-settings-column-nonce': nonce,
+				'menu-item': menuItem
 			};
-			
-			ajaxurl = userSettings.url+'?view=twc-menu-item';
 
 			$.post( ajaxurl, params, function(menuMarkup) {
 				var ins = $('#menu-instructions');
@@ -586,11 +579,11 @@ var wpNavMenu;
 		 * @param object req The request arguments.
 		 */
 		addMenuItemToBottom : function( menuMarkup, req ) {
-			$(menuMarkup).appendTo( api.targetList );
+			$(menuMarkup).hideAdvancedMenuItemFields().appendTo( api.targetList );
 		},
 
 		addMenuItemToTop : function( menuMarkup, req ) {
-			$(menuMarkup).prependTo( api.targetList );
+			$(menuMarkup).hideAdvancedMenuItemFields().prependTo( api.targetList );
 		},
 
 		attachUnsavedChangesListener : function() {
@@ -625,10 +618,10 @@ var wpNavMenu;
 					else
 						return false;
 
-					wrapper = target.parents('.inside');
-					
+					wrapper = target.parents('.inside').first();
+
 					// upon changing tabs, we want to uncheck all checkboxes
-					//$('input', wrapper).removeAttr('checked');
+					$('input', wrapper).removeAttr('checked');
 
 					$('.tabs-panel-active', wrapper).removeClass('tabs-panel-active').addClass('tabs-panel-inactive');
 					$('#' + panelId, wrapper).removeClass('tabs-panel-inactive').addClass('tabs-panel-active');
@@ -645,9 +638,7 @@ var wpNavMenu;
 					if ( selectAreaMatch && selectAreaMatch[1] ) {
 						items = $('#' + selectAreaMatch[1] + ' .tabs-panel-active .menu-item-title input');
 						if( items.length === items.filter(':checked').length )
-						{
-							//items.removeAttr('checked');
-						}
+							items.removeAttr('checked');
 						else
 							items.attr('checked', 'checked');
 						return false;
@@ -900,22 +891,25 @@ var wpNavMenu;
 		 * @param jQuery panel The tabs panel we're searching in.
 		 */
 		processQuickSearchQueryResponse : function(resp, req, panel) {
-			var i, matched, newID,
+			var matched, newID,
 			takenIDs = {},
-			form = document.getElementById('twc-widget-wrap'),
+			form = document.getElementById('nav-menu-meta'),
 			pattern = new RegExp('menu-item\\[(\[^\\]\]*)', 'g'),
-			items = resp.match(/<li>.*<\/li>/g);
+			$items = $('<div>').html(resp).find('li'),
+			$item;
 
-			if( ! items ) {
-				$('.categorychecklist', panel).html( '<li><p>No Results Found.</p></li>' );
+			if( ! $items.length ) {
+				$('.categorychecklist', panel).html( '<li><p>' + navMenuL10n.noResultsFound + '</p></li>' );
 				$('img.waiting', panel).hide();
 				return;
 			}
 
-			i = items.length;
-			while( i-- ) {
+			$items.each(function(){
+				$item = $(this);
+
 				// make a unique DB ID number
-				matched = pattern.exec(items[i]);
+				matched = pattern.exec($item.html());
+
 				if ( matched && matched[1] ) {
 					newID = matched[1];
 					while( form.elements['menu-item[' + newID + '][menu-item-type]'] || takenIDs[ newID ] ) {
@@ -924,21 +918,16 @@ var wpNavMenu;
 
 					takenIDs[newID] = true;
 					if ( newID != matched[1] ) {
-						items[i] = items[i].replace(new RegExp('menu-item\\[' + matched[1] + '\\]', 'g'), 'menu-item[' + newID + ']');
+						$item.html( $item.html().replace(new RegExp(
+							'menu-item\\[' + matched[1] + '\\]', 'g'),
+							'menu-item[' + newID + ']'
+						) );
 					}
 				}
-			}
-
-			$('.categorychecklist', panel).html( items.join('') );
-			$('img.waiting', panel).hide();
-			
-			that = this;
-			$('.categorychecklist').find('[type=checkbox]').each(function(){
-				jQuery(this).click(function(){
-					that.twcOnCheckBoxClick(this);
-				});
 			});
-			twc_ongoing_selection();
+
+			$('.categorychecklist', panel).html( $items );
+			$('img.waiting', panel).hide();
 		},
 
 		removeMenuItem : function(el) {

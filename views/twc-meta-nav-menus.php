@@ -22,19 +22,4 @@ wp_initial_nav_menu_meta_boxes();
 remove_meta_box( 'nav-menu-theme-locations', 'nav-menus', 'side' );
 remove_meta_box( 'add-custom-links', 'nav-menus', 'side' );
 
-//inializing variables
-global $widget;
-$imploded = '';
-if (!empty($widget['p']['menu_item_object_id']))
-{
-	$imploded = "'".implode("','",(array)$widget['p']['menu_item_object_id'])."'";
-}
-
 do_meta_boxes( 'nav-menus', 'side', null ); 
- 
- 
-?>
-<script><?php echo "var twcSelectedIds = [$imploded];"; ?></script>
-
-
-

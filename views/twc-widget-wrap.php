@@ -33,7 +33,7 @@ wp_enqueue_style( 'twc' );
 	</form>
 	
 </div> 
-<?php //if (!is_520()): ?>
+
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -55,5 +55,5 @@ wp_enqueue_style( 'twc' );
   })();
 
 </script>
-<?php //endif; ?>
+
 <?php require_once( './admin-footer.php' ); ?>

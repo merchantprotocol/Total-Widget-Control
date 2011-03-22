@@ -18,7 +18,8 @@ global $widget;
 
 //recreate the time data
 $_REQUEST['twcp_publish_time'] = strtotime($_REQUEST['twcp_YY'].'-'.$_REQUEST['twcp_mm'].'-'.$_REQUEST['twcp_jj'].' '.$_REQUEST['twcp_hh'].':'.$_REQUEST['twcp_ii']);
-if (!isset($_REQUEST['menu-item'])) $_REQUEST['menu-item'] = array();
+//if (!isset($_REQUEST['menu-item'])) $_REQUEST['menu-item'] = array();
+unset($_REQUEST['menu-item']);
 
 //saving
 twc_save_widget_fields( $widget['id'], $_REQUEST );
