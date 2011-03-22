@@ -1428,13 +1428,13 @@ function twc_initialize()
 	$twc_table_type = $twc_widgetlistings_type = 'default';
 	$twc_has_displayed = false;
 	
-	wp_register_script( 'twc-nav-menu', plugin_dir_url(__file__).'js/twc-nav-menu.js');
-	wp_register_script( 'twc-base', plugin_dir_url(__file__).'js/twc.js');
-	wp_register_script( 'twc-qtip', plugin_dir_url(__file__).'js/tooltips.js');
-	wp_register_script( 'twc-sortables', plugin_dir_url(__file__).'js/sortables.js');
+	wp_register_script( 'twc-nav-menu', plugin_dir_url(__file__).'js/twc-nav-menu.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-base', plugin_dir_url(__file__).'js/twc.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-qtip', plugin_dir_url(__file__).'js/tooltips.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-sortables', plugin_dir_url(__file__).'js/sortables.js', array(), TWC_VERSION);
 	
-	wp_register_style( 'twc', plugin_dir_url(__file__).'css/twc.css');
-	wp_register_style( 'twc-sortables', plugin_dir_url(__file__).'css/twcSortables.css');
+	wp_register_style( 'twc', plugin_dir_url(__file__).'css/twc.css', array(), TWC_VERSION, 'all');
+	wp_register_style( 'twc-sortables', plugin_dir_url(__file__).'css/twcSortables.css', array(), TWC_VERSION, 'all');
 	
 	add_shortcode('twc_show_widget', 'twc_shortcode_widget');
 	add_shortcode('twc_show_sidebar', 'twc_shortcode_sidebar');
