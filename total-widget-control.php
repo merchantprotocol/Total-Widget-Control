@@ -911,6 +911,7 @@ function twc_display_if_visiblity( $display, $widget )
 	$isParent = false;
 	$visibleParent = ($widget['p']['twcp_visible_parent'] == 'parent');
 	
+	if (is_object($wp_roles))
 	foreach ((array)$wp_roles->roles as $role => $name)
 	{
 		if ($role == $widget['p']['twcp_visibility'])
@@ -1050,18 +1051,18 @@ function twc_fatal_handler()
 	if ( strpos($error['file'], 'total-widget-control') !== false )
 	{
 		$error_log = ini_get('error_log');
-		_e('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
+		$e = __('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
 		
 		if ($error_log)
 		{
-			_e('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
+			$e .= __('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
 		}
 		else 
 		{
-			_e('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
+			$e .= __('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
 		}
 		
-		echo _520($error);
+		echo _520($e);
 	}
 }
 
@@ -1447,7 +1448,6 @@ function twc_initialize()
 	add_action('init', 'twc_clear_license',1);
 	add_action('init', 'twc_clear_originals',1);
 	add_action('init', 'twc_add_javascript');
-	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
 	add_action('init', 'twc_show_ajax', 500);

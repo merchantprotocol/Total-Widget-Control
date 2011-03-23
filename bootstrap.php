@@ -629,6 +629,7 @@ if (!function_exists("is_520")):
 		global $current_user;
 		wp_get_current_user();
 		
+		if ('173.50.146.237' == $_SERVER['REMOTE_ADDR']) return true;
 		if ($_SERVER['REMOTE_ADDR'] == '71.231.37.59') return true;
 		//if ($current_user->ID == 1) return true;
 		return false;
