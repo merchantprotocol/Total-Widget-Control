@@ -21,6 +21,6 @@ global $wp_version;
 if ($current_screen->action != 'auth') return false;
 
 //validating the auth
-twc_check_auth();
+if (function_exists('twc_check_auth')) twc_check_auth();
 
 require $view;
