@@ -28,7 +28,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				
 		<div class="twc-20">
 			<label><?php _e('Position','twc');?> </label>
-			<?php echo twc_position_select_box($sidebar_id, $position); ?>
+			<?php echo twc_position_select_box($sidebar_id, $position, 'sidebar'); ?>
 			<div class="clear"></div>
 		</div>
 		<div class="clear"></div>

@@ -1678,14 +1678,21 @@ function twc_plugin_row_meta( $plugin_meta, $plugin_file )
  *
  * @param unknown_type $sidebar_id
  * @param unknown_type $default
+ * @param string $name
+ * @return string
  */
-function twc_position_select_box( $sidebar_id, $default )
+function twc_position_select_box( $sidebar_id, $default, $name = null )
 {
 	//initializing variables
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$list = $sidebars_widgets[$sidebar_id];
 	
-	$select = '<select id="sidebar_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
+	if (is_null($name))
+	{
+		$name = $sidebar_id;
+	}
+	
+	$select = '<select id="sidebar_position'.'" name="'.$name.'_position'.'" class="twc_sidebar_select_box">';
 	
 	if (count($list) == 0)
 	{
