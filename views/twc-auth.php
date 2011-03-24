@@ -13,13 +13,6 @@
 defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
-//initializing variables
-$current_screen = twc_get_current_screen();
-global $wp_version;
-
-//reasons to fail
-if ($current_screen->action != 'auth') return false;
-
 ?>
 <!--[if IE]>
 <script src="<?php echo plugin_dir_url(dirname(__file__)); ?>js/html5.js" type="text/javascript"></script>
