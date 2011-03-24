@@ -5,7 +5,7 @@
  * @Package Wordpress
  * @SubPackage Total Widget Control
  * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @Since 1.6.3
+ * @Since 1.6.03
  * 
  * 
  * Plugin Name: Total Widget Control
@@ -42,7 +42,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
  */
-defined("TWC_VERSION") or define("TWC_VERSION", '1.6.3');
+defined("TWC_VERSION") or define("TWC_VERSION", '1.6.03');
 
 /**
  * Startup
