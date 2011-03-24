@@ -17,7 +17,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 <div class="postbox">
 	<div class="handlediv" title="<?php _e('Click to toggle','twc'); ?>"><br></div>
 	<h3 class="hndle">
-		<span><?php _e('Widget Control Settings','twc');?></span>
+		<span><?php _e('Widget Display Settings','twc');?></span>
 	</h3>
 	<div class="inside">
 		<div class="twc-80">
@@ -28,7 +28,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 				
 		<div class="twc-20">
 			<label><?php _e('Position','twc');?> </label>
-			<?php echo twc_position_select_box($sidebar_id, $position); ?>
+			<?php echo twc_position_select_box($sidebar_id, $position, 'sidebar'); ?>
 			<div class="clear"></div>
 		</div>
 		<div class="clear"></div>

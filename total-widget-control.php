@@ -223,34 +223,54 @@ function twc_bulk_trash( $widgets )
 function twc_clear( $wp = null )
 {
 	//intiailizing variables
-	global $wp_registered_widgets, $wp_registered_sidebars;
+	global $wp_registered_widgets, $wp_registered_sidebars, $sidebars_widgets;
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$lost_widgets = array();
 	
 	foreach ($wp_registered_widgets as $widget_id => $widget_class)
 	{
-		if (!$widget_id) continue;
+		if (!$widget_id)
+		{
+			unset($wp_registered_widgets[$widget_id]);
+			continue;
+		}
+		$widget = twc_get_widget_by_id( $widget_id );
+		if (!$widget)
+		{
+			unset($wp_registered_widgets[$widget_id]);
+			continue;
+		}
 		$sidebar_id = twc_get_widgets_sidebar($widget_id);
 		
 		if ($sidebar_id == 'wp_inactive_widgets')
 		{
 			if (substr($widget_id,-2) == '-1') continue;
 			if ((int)trim(substr($widget_id,-2)) == -1) continue;
+			
 			$lost_widgets[] = $widget_id;
 		}
 	}
 	
-	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
-		if (is_array($sidebars_widgets[$sidebar_slug]))
-		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
+	foreach ($sidebars_widgets as $sidebar_slug => $sidebar_widgets): 
+		foreach ((array)$sidebar_widgets as $position => $widget_slug):
+			if ( !isset($wp_registered_sidebars[$sidebar_slug]) && $sidebar_slug != 'wp_inactive_widgets' )
+			{
+				$lost_widgets[] = $widget_slug;
+				unset($sidebars_widgets[$sidebar_slug][$position]);
+				twc_delete_widget_instance( $widget_slug, $delete_permanently = false );
+			}
+			
+			$widget = twc_get_widget_by_id($widget_slug);
+			if (!$widget)
+			{
+				twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
+			}
 			
 			if ($sidebar_slug == 'wp_inactive_widgets')
 			{
-				$widget = twc_get_widget_by_id( $widget_slug );	
 				if (!$widget || !isset($widget['p']) || empty($widget['p']))
 				{
-					unset($sidebars_widgets[$sidebar_slug]);
-					twc_delete_widget_instance( $widget['p'], $delete_permanently = true );
+					twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
 				}
 			}
 			
@@ -641,6 +661,7 @@ function twc_display_the_sidebar( $params )
 	global $wp_registered_widgets, $twc_wp_registered_widgets, $twc_default_sidebar_widgets;
 	$sidebars_widgets = wp_get_sidebars_widgets();
 	$sidebar_id = $params[0]['id'];
+	$count = twc_count_widgets( $sidebar_id );
 	
 	if (!isset($twc_wp_registered_widgets))
 	{
@@ -655,8 +676,7 @@ function twc_display_the_sidebar( $params )
 			break;
 		
 		// since we're running a loop already, then let's take this opportunity
-		// to create the defaults widgets array\
-		// @TODO This data needs to be sorted out just after the init function
+		// to create the defaults widgets array
 		$_widget = twc_get_widget_by_id($widget_id);
 		if ($_widget['p']['twcp_default_sidebar'] == 'default')
 		{
@@ -664,11 +684,19 @@ function twc_display_the_sidebar( $params )
 			$twc_default_sidebar_widgets[$default_sidebar_id][$widget_id] = $widget;
 		}
 		
-		//empty the registered_widgets array
-		$wp_registered_widgets[$widget_id]['callback'] = array();
-		$wp_registered_widgets[$widget_id]['callback'][0] = new twcEmptyWidgetClass();
-		$wp_registered_widgets[$widget_id]['callback'][1] = 'twc_empty_callback';
+		if ( $count || !empty($twc_default_sidebar_widgets[$sidebar_id]) )
+		{
+			//empty the registered_widgets array
+			$wp_registered_widgets[$widget_id]['callback'] = array();
+			$wp_registered_widgets[$widget_id]['callback'][0] = new twcEmptyWidgetClass();
+			$wp_registered_widgets[$widget_id]['callback'][1] = 'twc_empty_callback';
+		}
+		else
+		{
+			$wp_registered_widgets[$widget_id]['callback'] = false;
+		}
 	}
+	
 	return $params;
 }
 
@@ -778,7 +806,9 @@ function twc_display_if_excluded( $current, $widget )
 	
 	//check to see if we're even going to load this widget
 	$isExclude = ( isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude' );
+	$brandNew = ( !isset($widget['p']) || !isset($widget['p']['twc_menu_item']) || !is_array($widget['p']['twc_menu_item']) );
 	
+	if ($brandNew) return $current;
 	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
 	{
 		twc_display_debug('exclude false');
@@ -881,6 +911,7 @@ function twc_display_if_visiblity( $display, $widget )
 	$isParent = false;
 	$visibleParent = ($widget['p']['twcp_visible_parent'] == 'parent');
 	
+	if (is_object($wp_roles))
 	foreach ((array)$wp_roles->roles as $role => $name)
 	{
 		if ($role == $widget['p']['twcp_visibility'])
@@ -966,6 +997,7 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		if ( is_callable($callback) && !is_admin() )
 		{
+			
 			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
 			{
 				twc_display_the_widget(null, $id, null);
@@ -1019,18 +1051,18 @@ function twc_fatal_handler()
 	if ( strpos($error['file'], 'total-widget-control') !== false )
 	{
 		$error_log = ini_get('error_log');
-		_e('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
+		$e = __('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
 		
 		if ($error_log)
 		{
-			_e('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
+			$e .= __('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
 		}
 		else 
 		{
-			_e('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
+			$e .= __('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
 		}
 		
-		echo _520($error);
+		echo _520($e);
 	}
 }
 
@@ -1116,6 +1148,7 @@ function twc_get_widget_objects( $widget )
 	{
 		$instances = array();
 	}
+	
 	if (!isset($instances[$widget['id']]))
 	{
 		$instances[$widget['id']] = array();
@@ -1124,17 +1157,26 @@ function twc_get_widget_objects( $widget )
 		{
 			foreach ((array)$menu_items as $key => $value)
 			{
-				$instances[$widget['id']][$key][] = $value;
+				$instances[$widget['id']][$key][$menu_items['menu-item-object-id']] = $value;
+				
+				if ($value == get_bloginfo('url')."/home/")
+				{
+					$instances[$widget['id']]['menu-item-url'][] = get_bloginfo('url');
+					$instances[$widget['id']]['menu-item-url'][] = get_bloginfo('url').'/';
+				}
 			}
 		}
 		
 		//Assists with backwards compatibilities
+		if (!isset($instances[$widget['id']]['menu-item-url']))
 		foreach ((array)$widget['p']['menu_item_urls'] as $url)
-			$instances[$widget['id']]['menu-item-urls'][] = $url;
+			$instances[$widget['id']]['menu-item-url'][] = $url;
 			
+		if (!isset($instances[$widget['id']]['menu-item-object-id']))
 		foreach ((array)$widget['p']['menu_item_object_id'] as $url)
 			$instances[$widget['id']]['menu-item-object-id'][] = $url;
 			
+		if (!isset($instances[$widget['id']]['menu-item-object']))
 		foreach ((array)$widget['p']['menu_item_object'] as $url)
 			$instances[$widget['id']]['menu-item-object'][] = $url;
 	}
@@ -1393,17 +1435,17 @@ function twc_initialize()
 	$twc_table_type = $twc_widgetlistings_type = 'default';
 	$twc_has_displayed = false;
 	
-	wp_register_script( 'twc-nav-menu', plugin_dir_url(__file__).'js/twc-nav-menu.js');
-	wp_register_script( 'twc-base', plugin_dir_url(__file__).'js/twc.js');
-	wp_register_script( 'twc-qtip', plugin_dir_url(__file__).'js/tooltips.js');
-	wp_register_script( 'twc-sortables', plugin_dir_url(__file__).'js/sortables.js');
+	wp_register_script( 'twc-nav-menu', plugin_dir_url(__file__).'js/twc-nav-menu.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-base', plugin_dir_url(__file__).'js/twc.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-qtip', plugin_dir_url(__file__).'js/tooltips.js', array(), TWC_VERSION);
+	wp_register_script( 'twc-sortables', plugin_dir_url(__file__).'js/sortables.js', array(), TWC_VERSION);
 	
-	wp_register_style( 'twc', plugin_dir_url(__file__).'css/twc.css');
-	wp_register_style( 'twc-sortables', plugin_dir_url(__file__).'css/twcSortables.css');
+	wp_register_style( 'twc', plugin_dir_url(__file__).'css/twc.css', array(), TWC_VERSION, 'all');
+	wp_register_style( 'twc-sortables', plugin_dir_url(__file__).'css/twcSortables.css', array(), TWC_VERSION, 'all');
 	
-	add_shortcode('twc_show_widget', 'twc_shortcode_widget');
-	add_shortcode('twc_show_sidebar', 'twc_shortcode_sidebar');
-	
+	add_shortcode('widget', 'twc_shortcode_widget');
+	add_shortcode('sidebar', 'twc_shortcode_sidebar');
+		
 	add_action('activate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_activate_plugin');
 	add_action('deactivate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_deactivate_plugin');
 	add_action('sidebar_admin_setup', 'twc_init', 100);
@@ -1412,7 +1454,6 @@ function twc_initialize()
 	add_action('init', 'twc_clear_license',1);
 	add_action('init', 'twc_clear_originals',1);
 	add_action('init', 'twc_add_javascript');
-	add_action('init', 'show_ajax', 100);
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
 	add_action('init', 'twc_show_ajax', 500);
@@ -1525,7 +1566,7 @@ function twc_is_widget_displaying( $widget, $debug = false )
 	
 	
 	//THIS IS FOR EXACT URL MATCHES
-	$urlMatch = (is_array($objects['menu-item-urls']) && in_array(twc_get_object_url(), $objects['menu-item-urls']));
+	$urlMatch = (is_array($objects['menu-item-url']) && in_array(twc_get_object_url(), $objects['menu-item-url']));
 	if ( $debug && $urlMatch ) twc_display_debug('display '.$widget['id'].' because its urls match');
 	if ( $urlMatch ) return $widgets_displaying[$widget['id']] = true;
 	
@@ -1553,6 +1594,23 @@ function twc_is_widget_displaying( $widget, $debug = false )
 			{
 				if ( $menu_type != $twc_menu_item_object ) continue;
 				if ( !cat_is_ancestor_of( $menu_id, $object_id ) ) continue;
+				if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited taxonomy');
+				return $widgets_displaying[$widget['id']] = true;
+			}
+		}
+		// for posts
+		elseif ( $twc_menu_item_object == 'post' )
+		{
+			foreach ($objects['menu-item-object'] as $menu_id => $menu_type)
+			{
+				//reasons to continue
+				if ( $menu_type != 'post' && !taxonomy_exists($menu_type) ) continue;
+				
+				//initializing variables
+				$term_ids = wp_get_object_terms( $object_id, $menu_type, array('fields' => 'ids') );
+				
+				//reasons to continue
+				if ( !in_array( $menu_id, $term_ids ) ) continue;
 				if ( $debug ) twc_display_debug('display '.$widget['id'].' because it an inherited taxonomy');
 				return $widgets_displaying[$widget['id']] = true;
 			}
@@ -1620,14 +1678,21 @@ function twc_plugin_row_meta( $plugin_meta, $plugin_file )
  *
  * @param unknown_type $sidebar_id
  * @param unknown_type $default
+ * @param string $name
+ * @return string
  */
-function twc_position_select_box( $sidebar_id, $default )
+function twc_position_select_box( $sidebar_id, $default, $name = null )
 {
 	//initializing variables
 	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	$list = $sidebars_widgets[$sidebar_id];
 	
-	$select = '<select id="sidebar_position'.'" name="'.$sidebar_id.'_position'.'" class="twc_sidebar_select_box">';
+	if (is_null($name))
+	{
+		$name = $sidebar_id;
+	}
+	
+	$select = '<select id="sidebar_position'.'" name="'.$name.'_position'.'" class="twc_sidebar_select_box">';
 	
 	if (count($list) == 0)
 	{
@@ -2170,8 +2235,9 @@ function twc_set_object_id()
 			{
 				$query = array('p' => $post->ID, 'post_type' => 'any');
 			}
+			$wp_query->query($query);
 		}
-		$wp_query->query($query);
+		
 	}
 	
 	//now that the wp_query is setup, we get the object id
@@ -2192,6 +2258,34 @@ function twc_set_object_id()
 	}
 	
 	return $twc_menu_item_object_id;
+}
+
+/**
+ * Function is responsible for display a widget via shortcode
+ *
+ * @param unknown_type $atts
+ * @param unknown_type $content
+ */
+function twc_shortcode_widget( $atts, $content = '' )
+{
+	extract(shortcode_atts(array(
+	      'id' => false,
+     ), $atts));
+	twc_widget($id, true);
+}
+
+/**
+ * Enter description here...
+ *
+ * @param unknown_type $atts
+ * @param unknown_type $content
+ */
+function twc_shortcode_sidebar( $atts, $content = '' )
+{
+	extract(shortcode_atts(array(
+	      'id' => false,
+     ), $atts));
+	twc_sidebar($id, true);
 }
 
 /**

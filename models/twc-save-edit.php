@@ -23,5 +23,5 @@ unset($_REQUEST['menu-item']);
 
 //saving
 twc_save_widget_fields( $widget['id'], $_REQUEST );
-twc_save_widget_sidebar( $widget['id'], $_REQUEST['sidebar'], $_REQUEST[$_REQUEST['sidebar'].'_position'] );
+twc_save_widget_sidebar( $widget['id'], $_REQUEST['sidebar'], $_REQUEST['sidebar_position'] );
 

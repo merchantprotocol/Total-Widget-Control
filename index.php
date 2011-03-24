@@ -5,13 +5,13 @@
  * @Package Wordpress
  * @SubPackage Total Widget Control
  * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @Since 1.6.0
+ * @Since 1.0.0
  * 
  * 
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: This plugin is designed to revolutionize the widget control system within Wordpress 3.0+. The goal here is to learn from the Joomla module control system and implement their design into WordPress. <a href="http://www.jonathonbyrd.com" target="_blank">Author Website</a>
- * Version: 1.5.17
+ * Version: 1.6.4
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
@@ -42,7 +42,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
  */
-defined("TWC_VERSION") or define("TWC_VERSION", '1.6.0');
+defined("TWC_VERSION") or define("TWC_VERSION", '1.6.03');
 
 /**
  * Startup

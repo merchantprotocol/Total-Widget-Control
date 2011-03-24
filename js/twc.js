@@ -31,6 +31,9 @@ var twc;
 		{
 			//loading
 			$('.submit-add-to-menu').val('Add Widget To Pages');
+
+			$('.twc_sidebar_select_box:first').change(sidebar_select_box);
+			$('#twc-widget-wrap').submit(twc_save_widget_edit);
 		},
 		
 		delete_menu_item : function( widget_id, object_id )
@@ -52,18 +55,6 @@ var twc;
 })(jQuery);
 
 
-
-
-
-
-/**
- * Fire some actions
- * 
- */
-jQuery(document).ready(function(){
-	jQuery('.twc_sidebar_select_box:first').change(sidebar_select_box);
-	jQuery('#twc-widget-wrap').submit(twc_save_widget_edit);
-});
 
 
 function twc_update_positions_select( sidebar_select )
@@ -134,15 +125,6 @@ function twc_save_widget_edit()
 	var values = {};
 	var inputs = jQuery('#menu-management-liquid').find(':input');
 	values = twc_get_form_vars( inputs );
-	var checkboxes = jQuery('#menu-settings-column').find('input[type=checkbox]:checked');
-	re = new RegExp('menu-item\\[(\[^\\]\]*)');
-	checkboxes.each(function() {
-		values[this.name] = jQuery(this).val();
-		var menu_item_id = re.exec(this.name);
-		var menu_item_id = menu_item_id[1];
-		values['menu-item['+menu_item_id+'][menu-item-url]'] = jQuery(".menu-item-url[name*="+menu_item_id+"]").val();
-		values['menu-item['+menu_item_id+'][menu-item-object]'] = jQuery(".menu-item-object[name*="+menu_item_id+"]").val();
-	});
 	var radio = jQuery('#menu-management-liquid').find('input[type=radio]:checked');
 	radio.each(function() {values[this.name] = jQuery(this).val();});
 	var inputs = jQuery('.twcpi').find(':input');
@@ -154,7 +136,7 @@ function twc_save_widget_edit()
 		url: userSettings.url+'?view=twc-save-edit',
 		data: values,
 		success: function( result ){
-			//alert(result);
+			alert(result);
 			if (jQuery('#twc-redirect').val())
 			{
 				window.location.href = jQuery('#twc-redirect').val();

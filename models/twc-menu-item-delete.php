@@ -25,8 +25,7 @@ if (array_key_exists('object-id', $_REQUEST))
 	unset($widget['p']['twc_menu_item'][$_REQUEST['object-id']]);
 	
 	//saving
-	twc_save_widget_fields( $widget['id'], array('twc_menu_item' => $widget['p']['twc_menu_item']) );
-	
+	twc_save_widget_fields( $widget['id'], $widget['p'] );
 }
 
 //nothing else to do

@@ -43,15 +43,23 @@ if (array_key_exists('view', $_REQUEST) && $_REQUEST['view'] == 'twc-menu-item')
 	
 	$old_menu_items = $widget['p']['twc_menu_item'];
 	$all_menu_items = $twc_menu_items + $widget['p']['twc_menu_item'];
+	$widget['p']['twc_menu_item'] = $all_menu_items;
 	
 	//saving
-	twc_save_widget_fields( $widget['id'], array('twc_menu_item' => $all_menu_items) );
+	twc_save_widget_fields( $widget['id'], $widget['p'] );
 	
 	$twc_menu_items = array_diff_assoc($all_menu_items, $old_menu_items);
 }
 
 // LOOPING THE MENU ITEMS
-foreach ($twc_menu_items as $id => $menu_item) 
+if (!empty($twc_menu_items))
 {
-	require $view;
+	foreach ($twc_menu_items as $id => $menu_item) 
+	{
+		require $view;
+	}
+}
+else
+{
+	die('false');
 }
