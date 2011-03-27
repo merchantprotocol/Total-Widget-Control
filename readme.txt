@@ -1,45 +1,47 @@
 === Plugin Name ===
 Contributors: jonbyrd, byrd
-Donate link: http://community.5twentystudios.com/
+Author link: http://www.totalwidgetcontrol.com/
+Donate link: http://www.totalwidgetcontrol.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.6.7
+Stable tag: 1.6.8
 
-Rebuilding Wordpess Widget management from the ground up. 
+Total Widget Control is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want.
 
 == Description ==
+Now you can dynamically assign widgets to any page, post category, or custom listing type, change the order widgets display in, decide which users can see which widgets, and/or quickly change the style of a widget entirely.
 
-Total Widget Control is the first plugin to revolutionize wordpress widget management. Now you can dynamically assign widgets to any page, post category, or custom listing type, change the order widgets display in, decide which users can see which widgets, and/or quickly change the style of a widget entirely. That's not all, there is whole lot more flexibility now available to you. 
+= Dedicated Support Website =
+You will not find another plugin in the WordPress repository that has developers as dedicated to support as 5Twenty Studios is dedicated to supporting The Total Widget Control. Let this website testify to our dedication, try it out. <a href="http://www.totalwidgetcontrol.com/">Total Widget Support</a>
 
-= Quick Installation and getting started tutorial =
+= Getting Started Tutorial =
 [youtube http://www.youtube.com/watch?v=WNZ0cfAgWu4]
 
-Here is a list of just some of the features you can have with TWC:
+= Feature List =
+* *Dynamic Sidebars* apply widgets to any page, post, category, or custom listing type.
+* *Widget Themes* Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
+* *Widget Positions* use TWC to place and order widgets throughout your site
+* *Widget Notes* add titles to widgets only which are only viewable in the admin panel.
+* *Default Widgets* easily set default widgets to your sidebar.
+* *Privledges* set which to be viewable by specifc user groups including public, admin, or auther.
+* *Search, Sort, Filter* your widgets on demand.
+* *Future Publish Dates* set a date in the future for your widget to automatically be published. 
+* *Bulk actions* update multiple widgets at once using bulk options.
 
-* = Dynamic Sidebars = apply widgets to any page, post, category, or custom listing type.
-* = Widget Themes = Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
-* = Widget Positions = use TWC to place and order widgets throughout your site
-* = Widget Notes = add titles to widgets only which are only viewable in the admin panel.
-* = Default Widgets = easily set default widgets to your sidebar.
-* = Privledges = set which to be viewable by specifc user groups including public, admin, or auther.
-* = Search, Sort, Filter = your widgets on demand.
-* = Future Publish Dates = set a date in the future for your widget to automatically be published. 
-* = Bulk actions = update multiple widgets at once using bulk options.
-
-= TRY THE DEMO =
-[Total Widget Control Demo Site](http://demo.5twentystudios.com/)
+= Who's Using Total Widget Control? =
+The Total Widget Control website itself is using TWC. We have also installed the latest version on our demo website for you to try out, [Total Widget Control Demo Site](http://demo.5twentystudios.com/)
+`
 User: Demo
 Password: Demo
-
+`
 
 = The Source =
 5 Twenty is a Portland, Oregon based development firm which specializes in the development of interactive web applications. 100% of our team members are located within the United States and are full-time employees of 5 Twenty. We provide extensive white label development sevices for marketing, branding, and web design firms throughout the world. Working as their inhouse development teams, we have the ability to quickly and effiencently produce high quality applications that meet their client's needs. Interested in working with us? Visit [5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America")
 
+* [www.totalwidgetcontrol.com](http://www.totalwidgetcontrol.com "www.totalwidgetcontrol.com")
 * [5Twenty Studios Homepage](http://www.5twentystudios.com/ "The Developers Developer")
-* [5Twenty Studios Community](http://community.5twentystudios.com/ "Total Widget Control")
-* [Total Widget Control API and Codex](http://community.5twentystudios.com/kb/ "Total Widget Control API")
-* [Jonathon Byrd](http://www.jonathonbyrd.com/ "Software Engineer")2
+* [Jonathon Byrd](http://www.jonathonbyrd.com/ "Software Engineer")
 
 == Installation ==
 

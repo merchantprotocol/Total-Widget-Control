@@ -23,9 +23,10 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<p><strong style="color:#555;"><?php _e('Frequently Asked Questions:'); ?></strong></p>
 	<p><?php _e('As you hover over the following items, we will display information next to the item in the page.','twc'); ?></p>
 	<ul class="hot-to-twc">
-	<li id="qtipDisplayMetaBox"><?php _e('The meta box for my page type is not showing, what do i do?','twc'); ?>
-	<span class="sub-hidden"><img width="600px" src="<?php echo plugin_dir_url(dirname(__FILE__)); ?>images/help_file_one.png"/></span></li>
-	<li id="qtipDefaultWidget" tooltip="<?php _e('Check this option to have this widget display when there are no other widgets set to display.','twc'); ?>">
-	<?php _e('How do I create a widget that will display if there are no other widgets set to display for the page?','twc'); ?></li>
+		<li id="qtipDisplayMetaBox"><?php _e('The meta box for my page type is not showing, what do i do?','twc'); ?>
+		<span class="sub-hidden"><img width="600px" src="<?php echo plugin_dir_url(dirname(__FILE__)); ?>images/help_file_one.png"/></span></li>
+		<li id="qtipDefaultWidget" tooltip="<?php _e('Check this option to have this widget display when there are no other widgets set to display.','twc'); ?>">
+		<?php _e('How do I create a widget that will display if there are no other widgets set to display for the page?','twc'); ?></li>
+		<li><a href="http://totalwidgetcontrol.com/questions-answers/">Go to the online FAQ forum, click here.</a></li>
 	</ul>
 </div>

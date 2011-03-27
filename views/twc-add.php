@@ -34,5 +34,16 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 			</div>
 			<br class="clear" />
 		</div>
+		
+		<div class="widgets-holder-wrap">
+			<div class="sidebar-name">
+			<div class="sidebar-name-arrow"><br /></div>
+			<h3><?php _e('Inactive Widgets'); ?>
+			</div>
+			<div class="widget-holder inactive">
+			<?php wp_list_widget_controls('wp_inactive_widgets'); ?>
+			<br class="clear" />
+			</div>
+		</div>
 	</div>
 </div>

@@ -33,6 +33,10 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 			</a>
 			<img src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/Money-Back-Guarantee1.png" width="105px" style="padding-left:20px;" border="0" alt="Official Money Back Guarantee">
 		</div>
+		<div class="twc_auth_widget" style="text-align: center;padding-top:20px;">
+			<a href="http://www.totalwidgetcontrol.com/" target="_blank" style="display:inline-block;">
+			<img src="<?php echo plugin_dir_url(dirname(__file__)); ?>images/24-7-customer-support.png"/></a>
+		</div>
 	</div>
 
 <div class="grid" id="griddler_ii">

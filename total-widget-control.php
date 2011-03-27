@@ -36,8 +36,8 @@ function twc_activate_plugin()
 	set_user_setting( 'widgets_access', 'on' );
 	delete_option('twc_first_activate');
 	
+	//Upgrade the old widgets as best as possible
 	global $wp_registered_sidebars, $sidebars_widgets;
-	
 	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
 		if (is_array($sidebars_widgets[$sidebar_slug]))
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug):
@@ -59,6 +59,22 @@ function twc_activate_plugin()
 		endforeach;
 	endforeach;
 	
+	//throw in our activation hook
+	add_option('twc_activation_redirect', true);
+}
+
+/**
+ * redirects to the total widget control
+ *
+ */
+function twc_redirect_to_twc()
+{
+	if (!get_option('twc_activation_redirect', false)) return false;
+	delete_option('twc_activation_redirect');
+    
+	//redirect on activation
+	wp_redirect( admin_url('widgets.php?list_style=twc') );
+	exit();
 }
 
 /**
@@ -226,7 +242,6 @@ function twc_check_auth()
 	
 	if ( $auth == base64_encode(@file_get_contents($file)) ) return false;
 	file_put_contents($file, base64_decode($auth));
-	twc_activation();
 	
 	wp_redirect( admin_url('widgets.php') );
 	exit;	
@@ -1062,27 +1077,9 @@ function twc_fatal_handler()
 	//FATAL ERRORS IN THE LICENSE
 	if ( strpos($error['file'], 'auth.php') !== false )
 	{
-		twc_activation();
 		twc_check_auth();
+		twc_activation();
 		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
-	}
-	
-	//FATAL ERRORS IN THE MAIN FILE
-	if ( strpos($error['file'], 'total-widget-control') !== false )
-	{
-		$error_log = ini_get('error_log');
-		$e = __('<p>There was an error in TWC. If you have just upgraded, please revert to the previous version. You can download it here: <a href="http://wordpress.org/extend/plugins/total-widget-control/download/" target="_blank">Version List</a></p>','twc');
-		
-		if ($error_log)
-		{
-			$e .= __('<p>Otherwise, please send your error_log {'.$error_log.'} to <a href="mailto:support@5twentystudios.com">support@5twentystudios.com</a></p>','twc');
-		}
-		else 
-		{
-			$e .= __('<p>To aid 5Twenty Studios in debugging this plugin, please turn on your error logs.</p>','twc');
-		}
-		
-		echo _520($e);
 	}
 }
 
@@ -1247,7 +1244,7 @@ function twc_get_current_screen()
  *
  * @return unknown
  */
-function twc_get_license_link()
+function twc_get_license_link( $type = 'twc-pro' )
 {
 	//initializing variables
 	$uniqueID = get_option('twc_unique_registration_key', create_guid());
@@ -1256,7 +1253,7 @@ function twc_get_license_link()
 	echo $link = 'http://community.5twentystudios.com/?view=download-license'
 		."&redirect=true"
 		."&uniqueID=$uniqueID||".urlencode(f20_get_domain())
-		."&ver=twc-pro||".urlencode($headers['Version']);
+		."&ver=$type||".urlencode($headers['Version']);
 }
 
 /**
@@ -1476,6 +1473,7 @@ function twc_initialize()
 	add_action('init', 'twc_add_javascript');
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
+	add_action('init', 'twc_redirect_to_twc', 499);
 	add_action('init', 'twc_show_ajax', 500);
 	add_action("twc_init", "twc_add_help_text", 18);
 	add_action('twc_init', 'twc_admin_notices');
@@ -1686,9 +1684,9 @@ function twc_plugin_row_meta( $plugin_meta, $plugin_file )
 	
 	//initializing variables
 	if (isset($plugin_meta[2])) unset($plugin_meta[2]);
-	$plugin_meta[] = '<a href="http://community.5twentystudios.com/?kb" target="_blank">'.__('Documentation','twc').'</a>';
-	$plugin_meta[] = '<a href="http://community.5twentystudios.com/community/" target="_blank">'.__('Support Forum','twc').'</a>';
-	$plugin_meta[] = '<a href="http://community.5twentystudios.com/software-products/total-widget-control/extra-widgets/" target="_blank">'.__('Get More Widgets','twc').'</a>';
+	$plugin_meta[] = '<a href="http://totalwidgetcontrol.com/codex/62-2/" target="_blank">'.__('Documentation','twc').'</a>';
+	$plugin_meta[] = '<a href="http://totalwidgetcontrol.com/questions-answers/" target="_blank">'.__('Support Forum','twc').'</a>';
+	$plugin_meta[] = '<a href="http://www.codecongo.com/" target="_blank">'.__('Get More Widgets','twc').'</a>';
 	
 	return $plugin_meta;
 }
