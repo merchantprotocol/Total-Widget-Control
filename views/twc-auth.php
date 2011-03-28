@@ -90,7 +90,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	</section> 
 	<footer> 
 		<a class="button" href="<?php echo admin_url('widgets.php?action=register&license=0'); ?>">
-		<span>really?</span></a>
+		<span>FREE</span></a>
 	</footer>
 </article>
 

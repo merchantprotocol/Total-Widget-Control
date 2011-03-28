@@ -58,23 +58,6 @@ function twc_activate_plugin()
 			
 		endforeach;
 	endforeach;
-	
-	//throw in our activation hook
-	add_option('twc_activation_redirect', true);
-}
-
-/**
- * redirects to the total widget control
- *
- */
-function twc_redirect_to_twc()
-{
-	if (!get_option('twc_activation_redirect', false)) return false;
-	delete_option('twc_activation_redirect');
-    
-	//redirect on activation
-	wp_redirect( admin_url('widgets.php?list_style=twc') );
-	exit();
 }
 
 /**
@@ -256,63 +239,7 @@ function twc_check_auth()
  */
 function twc_clear( $wp = null )
 {
-	//intiailizing variables
-	global $wp_registered_widgets, $wp_registered_sidebars, $sidebars_widgets;
-	$sidebars_widgets = twc_wp_get_sidebars_widgets();
-	$lost_widgets = array();
-	
-	foreach ($wp_registered_widgets as $widget_id => $widget_class)
-	{
-		if (!$widget_id)
-		{
-			unset($wp_registered_widgets[$widget_id]);
-			continue;
-		}
-		$widget = twc_get_widget_by_id( $widget_id );
-		if (!$widget)
-		{
-			unset($wp_registered_widgets[$widget_id]);
-			continue;
-		}
-		$sidebar_id = twc_get_widgets_sidebar($widget_id);
-		
-		if ($sidebar_id == 'wp_inactive_widgets')
-		{
-			if (substr($widget_id,-2) == '-1') continue;
-			if ((int)trim(substr($widget_id,-2)) == -1) continue;
-			
-			$lost_widgets[] = $widget_id;
-		}
-	}
-	
-	foreach ($sidebars_widgets as $sidebar_slug => $sidebar_widgets): 
-		foreach ((array)$sidebar_widgets as $position => $widget_slug):
-			/* 
-			if ( !isset($wp_registered_sidebars[$sidebar_slug]) && $sidebar_slug != 'wp_inactive_widgets' )
-			{
-				$lost_widgets[] = $widget_slug;
-				unset($sidebars_widgets[$sidebar_slug][$position]);
-			}
-			*/
-			$widget = twc_get_widget_by_id($widget_slug);
-			if (!$widget)
-			{
-				twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
-			}
-			
-			if ($sidebar_slug == 'wp_inactive_widgets')
-			{
-				if (!$widget || !isset($widget['p']) || empty($widget['p']))
-				{
-					twc_delete_widget_instance( $widget_slug, $delete_permanently = true );
-				}
-			}
-			
-		endforeach;
-	endforeach;
-	
-	$sidebars_widgets['wp_inactive_widgets'] = $lost_widgets;
-	wp_set_sidebars_widgets($sidebars_widgets);
+	//Deprecated since 1.6.9
 }
 
 /**
@@ -813,7 +740,8 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	
 	//displaying the widget
 	$twc_has_displayed = true;
-	echo apply_filters('twc_widget_display', $display, $widget);
+	if (!is_admin()) 
+		echo apply_filters('twc_widget_display', $display, $widget);
 	
 	
 	//debug bit
@@ -1467,15 +1395,15 @@ function twc_initialize()
 	add_action('deactivate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_deactivate_plugin');
 	add_action('sidebar_admin_setup', 'twc_init', 100);
 	add_action('admin_notices', 'twc_view_switch', 1);
+	add_action('admin_notices', 'twc_needs_activation', 100);
 	add_action('admin_init', 'twc_set_object_id');
 	add_action('init', 'twc_clear_license',1);
 	add_action('init', 'twc_clear_originals',1);
 	add_action('init', 'twc_add_javascript');
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
-	add_action('init', 'twc_redirect_to_twc', 499);
 	add_action('init', 'twc_show_ajax', 500);
-	add_action("twc_init", "twc_add_help_text", 18);
+	add_action('twc_init', 'twc_add_help_text', 18);
 	add_action('twc_init', 'twc_admin_notices');
 	add_action('twc_init', 'twc_view_widget_wrap', 20);
 	add_action('twc_init', 'twc_destruct', 100);
@@ -1483,19 +1411,20 @@ function twc_initialize()
 	add_action('twc_display_admin', 'twc_register');
 	add_action('twc_display_admin', 'twc_manual_license');
 	add_action('twc-register', 'twc_register');
+	add_action('twc-table', 'twc_retrieve_widgets', 5);
 	add_action('twc-table', 'twc_rows', 10);
-	add_action('twc-table-rows','twc_table_row');
-	add_action('twc-table-rows','twc_table_row_empty');
+	add_action('twc-table-rows', 'twc_table_row');
+	add_action('twc-table-rows', 'twc_table_row_empty');
 	add_action('widgets_init', 'init_registered_widgets', 1);
 	add_action('twc-free-registration', 'twc_activation' );
 	add_action('admin_menu', 'f20_add_metaboxes');
 	add_action('save_post', 'f20_metabox_save_data');
-	add_action('wp_footer','twc_show_object_id');
+	add_action('wp_footer', 'twc_show_object_id');
 	add_action('wp', 'twc_sortable_initialize');
-	add_action('wp','twc_set_object_url');
-	add_action('twc_empty_sidebar','twc_sidebar_originals', 20, 1);
+	add_action('wp', 'twc_set_object_url');
+	add_action('twc_empty_sidebar', 'twc_sidebar_originals', 20, 1);
 	
-	add_filter('twc-save-widget-fields','twc_save_menu_items',20,1);
+	add_filter('twc-save-widget-fields', 'twc_save_menu_items',20,1);
 	add_filter('contextual_help_list', 'twc_contextual_pro');
 	add_filter('gettext', 'twc_gettext');
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
@@ -1671,6 +1600,23 @@ function twc_list_style_twc()
 }
 
 /**
+ * function is responsible for displaying the "activation needed" image.
+ *
+ * @return null
+ */
+function twc_needs_activation()
+{
+	//initializing variables	
+	$current_screen = twc_get_current_screen();
+	
+	//reasons to fail
+	if (!$GLOBALS['TWCAUTH']) return false;
+	if ($current_screen->parent_base == 'themes') return false;
+	
+	echo '<a href="'.admin_url('widgets.php?list_style=twc').'" style="display:block;width:900px;margin:10px auto;"><img src="'.plugin_dir_url(__file__).'images/activate.png"/></a>';
+}
+
+/**
  * function is responsible for adjusting the plugin meta links on the plugin page
  *
  * @param array $plugin_meta
@@ -1793,12 +1739,13 @@ function twc_rows( $action = 'default' )
 	foreach ($wp_registered_sidebars as $sidebar_slug => $sidebar): 
 		if (is_array($sidebars_widgets[$sidebar_slug]))
 		foreach ($sidebars_widgets[$sidebar_slug] as $position => $widget_slug): 
+			$widget = twc_get_widget_by_id($widget_slug);
+			if (!$widget) continue;
 			
 			switch ($action)
 			{
 				case 'on-page':
 					//initializing variables
-					$widget = twc_get_widget_by_id($widget_slug);
 					$display = twc_is_widget_displaying($widget);
 					
 					//reasons to continue
@@ -1815,7 +1762,7 @@ function twc_rows( $action = 'default' )
 				if (twc_inactive_list() && $sidebar_slug == 'wp_inactive_widgets')
 				{
 					$twcp_pagi['total']++;
-					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = $widget;
 					continue;
 				}
 				if (twc_inactive_list()) continue;
@@ -1825,7 +1772,7 @@ function twc_rows( $action = 'default' )
 				if (twc_filter_list_for() == $sidebar_slug)
 				{
 					$twcp_pagi['total']++;
-					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = $widget;
 					continue;
 				}
 				if (twc_filter_list_for()) continue;
@@ -1835,7 +1782,7 @@ function twc_rows( $action = 'default' )
 				if (!twc_inactive_list() && $sidebar_slug != 'wp_inactive_widgets')
 				{
 					$twcp_pagi['total']++;
-					$twc_rows[$sidebar_slug][$position][$widget_slug] = twc_get_widget_by_id( $widget_slug );
+					$twc_rows[$sidebar_slug][$position][$widget_slug] = $widget;
 					continue;
 				}
 				break;
@@ -2034,6 +1981,83 @@ function twc_receive_license()
 	update_option('twc_licenses',$licenses);
 	
 	return die('done : success');
+}
+
+/**
+ * look for "lost" widgets, this has to run at least on each theme change
+ *
+ * @return null
+ */
+function twc_retrieve_widgets()
+{
+	//start of the retreive bit
+	global $wp_registered_widget_updates, $wp_registered_sidebars, $sidebars_widgets, $wp_registered_widgets;
+
+	//preparing the sidebars
+	$sidebars_widgets = wp_get_sidebars_widgets();
+	
+	$_sidebars_widgets = array();
+	$sidebars = array_keys($wp_registered_sidebars);
+
+	unset( $sidebars_widgets['array_version'] );
+
+	$old = array_keys($sidebars_widgets);
+	sort($old);
+	sort($sidebars);
+
+	if ( $old == $sidebars )
+		return;
+
+	// Move the known-good ones first
+	foreach ( $sidebars as $id ) {
+		if ( array_key_exists( $id, $sidebars_widgets ) ) {
+			$_sidebars_widgets[$id] = $sidebars_widgets[$id];
+			unset($sidebars_widgets[$id], $sidebars[$id]);
+		}
+	}
+
+	// if new theme has less sidebars than the old theme
+	if ( !empty($sidebars_widgets) ) {
+		foreach ( $sidebars_widgets as $lost => $val ) {
+			if ( is_array($val) )
+				$_sidebars_widgets['wp_inactive_widgets'] = array_merge( (array) $_sidebars_widgets['wp_inactive_widgets'], $val );
+		}
+	}
+
+	// discard invalid, theme-specific widgets from sidebars
+	$shown_widgets = array();
+	foreach ( $_sidebars_widgets as $sidebar => $widgets ) {
+		if ( !is_array($widgets) )
+			continue;
+
+		$_widgets = array();
+		foreach ( $widgets as $widget ) {
+			if ( isset($wp_registered_widgets[$widget]) )
+				$_widgets[] = $widget;
+		}
+		$_sidebars_widgets[$sidebar] = $_widgets;
+		$shown_widgets = array_merge($shown_widgets, $_widgets);
+	}
+
+	$sidebars_widgets = $_sidebars_widgets;
+	unset($_sidebars_widgets, $_widgets);
+
+	// find hidden/lost multi-widget instances
+	$lost_widgets = array();
+	foreach ( $wp_registered_widgets as $key => $val ) {
+		if ( in_array($key, $shown_widgets, true) )
+			continue;
+
+		$number = preg_replace('/.+?-([0-9]+)$/', '$1', $key);
+
+		if ( 2 > (int) $number )
+			continue;
+
+		$lost_widgets[] = $key;
+	}
+
+	$sidebars_widgets['wp_inactive_widgets'] = array_merge($lost_widgets, (array) $sidebars_widgets['wp_inactive_widgets']);
+	wp_set_sidebars_widgets($sidebars_widgets);
 }
 
 /**

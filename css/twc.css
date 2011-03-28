@@ -10,6 +10,7 @@
  */
 @charset "utf-8"; 
 
+#wpwrap {overflow: hidden;}
 .twc_meta_listings_table td {height:57px;}
 .twc_meta_listings_table td strong {padding-bottom:5px;display:inline-block;}
 .twc_meta_listings_table td .row-actions {margin-top:10px;}

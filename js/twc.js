@@ -32,7 +32,7 @@ var twc;
 			//loading
 			$('.submit-add-to-menu').val('Add Widget To Pages');
 
-			$('.twc_sidebar_select_box:first').change(sidebar_select_box);
+			$('.twc_sidebar_select_box').change(sidebar_select_box);
 			$('#twc-widget-wrap').submit(twc_save_widget_edit);
 		},
 		
