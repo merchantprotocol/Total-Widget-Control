@@ -27,11 +27,14 @@ wp_enqueue_style( 'twc' );
 	<h2><?php _e('Total Widget Control','twc'); ?>
 	<?php do_action('twc_widget_wrap_h2'); ?>
 	</h2>
-
+	
+	<?php do_action('twc_notifications'); ?>
+	
 	<form id="twc-widget-wrap" action="#" method="post" enctype="multipart/form-data">
 	<?php do_action('twc_display_admin'); ?>
 	</form>
 	
+	<div id="twc_debug_javascript"></div>
 </div> 
 
 <script type="text/javascript">

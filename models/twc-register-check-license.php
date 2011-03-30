@@ -18,7 +18,7 @@ $licenses = get_option('twc_licenses',array());
 
 ob_end_clean();
 
-if (isset($licenses[f20_get_domain()]))
+if (isset($licenses[f20_get_domain()]) && !empty($licenses[f20_get_domain()]))
 {
 	die('1');
 }

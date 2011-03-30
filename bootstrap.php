@@ -110,11 +110,11 @@ if (!function_exists("twc_show_ajax")):
 		
 		$html = twc_get_show_view( $_REQUEST['view'] );
 		
-		if (strlen(trim($html))>0)
-		{
+		//if (strlen(trim($html))>0)
+		//{
 			echo apply_filters( 'byrd-ajax-html', $html );
-			die();
-		}
+		//}
+		die();
 	}
 endif;
 
@@ -629,8 +629,8 @@ if (!function_exists("is_520")):
 		global $current_user;
 		wp_get_current_user();
 		
-		//if ('173.50.146.237' == $_SERVER['REMOTE_ADDR']) return true;
-		//if ($_SERVER['REMOTE_ADDR'] == '71.231.37.59') return true;
+		if ('173.50.146.237' == $_SERVER['REMOTE_ADDR']) return true;
+		if ($_SERVER['REMOTE_ADDR'] == '71.231.37.59') return true;
 		//if ($current_user->ID == 1) return true;
 		return false;
 	}
@@ -1031,20 +1031,20 @@ endif;
  */
 function twc_notification( $message, $id )
 {
-	echo '<div id="message" class="message'.$id.' updated below-h2">'
-	.'<a href="javascript:twc_hide_messages(\''.$id.'\');return false;" class="twc_checkmark"></a>'
-	.'<p>'.$message.'</p></div>';
+	echo '<div id="message" class="message'.$id.' updated below-h2">';
+	if ($id) echo '<a href="javascript:twc_hide_messages(\''.$id.'\');return false;" class="twc_checkmark"></a>';
+	echo '<p>'.$message.'</p></div>';
 }
 
 /**
  * Displays this error message
  *
  */
-function twc_message( $message, $id )
+function twc_message( $message, $id = false )
 {
-	echo '<div id="message" class="message'.$id.' error">'
-	.'<a href="javascript:twc_hide_messages(\''.$id.'\');return false;" class="twc_checkmark"></a>'
-	.'<p>'.$message.'</p></div>';
+	echo '<div id="message" class="message'.$id.' error">';
+	if ($id) echo '<a href="javascript:twc_hide_messages(\''.$id.'\');return false;" class="twc_checkmark"></a>';
+	echo '<p>'.$message.'</p></div>';
 }
 
 if (!function_exists('f20_register_metabox')):
@@ -1349,4 +1349,138 @@ if (!function_exists('f20_get_domain')):
 endif; 
 
 
+if (!function_exists('twc_set_notification')):
 
+	/**
+	 * Initial notification setup
+	 * 
+	 * This function prepares any notifications or warnings that
+	 * are being passed through $post or $get
+	 */
+	function twc_initial_notification_setup()
+	{
+		if (isset($_REQUEST['set_warning']) && !empty($_REQUEST['set_warning']))
+		{
+			twc_set_warning(urldecode($_REQUEST['set_warning']));
+		}
+		if (isset($_REQUEST['set_notification']) && !empty($_REQUEST['set_notification']))
+		{
+			twc_set_notification(urldecode($_REQUEST['set_notification']));
+		}
+	}
+	
+	/**
+	 * 
+	 * @param unknown_type $page
+	 */
+	function twc_set_notification( $note = null )
+	{
+		static $notes;
+		
+		if (!isset($notes))
+		{
+			$notes = array();
+		}
+		
+		//reasons to fail
+		if (is_null($note)) return $notes;
+		
+		$notes[] = $note;
+		
+		return true;
+	}
+	
+	/**
+	 * gets the notifications
+	 * 
+	 */
+	function twc_get_notifications()
+	{
+		return twc_set_notification();
+	}
+	
+	/**
+	 * 
+	 * @param unknown_type $page
+	 */
+	function twc_set_warning( $note = null )
+	{
+		static $notes;
+		
+		if (!isset($notes))
+		{
+			$notes = array();
+		}
+		
+		//reasons to fail
+		if (is_null($note)) return $notes;
+		
+		$notes[] = $note;
+		twc_error_log($note);
+		return true;
+	}
+	
+	/**
+	 * gets the notifications
+	 * 
+	 */
+	function twc_get_warnings()
+	{
+		return twc_set_warning();
+	}
+	
+	/**
+	 * Displays the notifications in a nice box
+	 * 
+	 */
+	function twc_display_notifications()
+	{
+		//initializing variables
+		static $once;
+		if (isset($once)) return;
+		$once = true;
+		$notes = twc_get_notifications();
+		$warns = twc_get_warnings();
+		
+		if (is_array($notes))
+		{
+			foreach ($notes as $note)
+			{
+				twc_notification($note);
+			}
+		}
+		
+		if (is_array($warns))
+		{
+			foreach ($warns as $warn)
+			{
+				twc_message($warn);
+			}
+		}
+		
+	}
+endif;
+
+
+function twc_error_log( $content = false, $file = '', $line = '' )
+{
+	//reasons to fail plugin_basename($file)
+	if (!$content) return false;
+	
+	if ($file || $line)
+	{
+		$content = "$content in ($file) on line $line";
+	}
+	
+	$log = get_option('twc_error_log', false);
+	$content = $log."<br>".$content;
+	
+	if ($log === false)
+	{
+		add_option('twc_error_log', $content, '', $autoload = 'no');
+	}
+	else
+	{
+		update_option('twc_error_log', $content);
+	}
+}

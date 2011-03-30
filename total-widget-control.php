@@ -61,6 +61,15 @@ function twc_activate_plugin()
 }
 
 /**
+ * Function is responsible for printing out the urls for connecting to wordpress
+ *
+ */
+function twc_admin_head()
+{
+	echo '<script>var twcOptions = {url: "'.get_bloginfo('url').'/", template_url: "'.get_bloginfo('template_url').'/"};</script>';
+}
+
+/**
  * function is responsible for putting wp back together.
  *
  */
@@ -136,7 +145,6 @@ function twc_add_javascript()
 		default:
 			wp_enqueue_script( 'twc-qtip' );
 			wp_enqueue_script( 'twc-base' );
-			break;
 		case 'edit':
 		case 'add':
 			// jQuery
@@ -221,20 +229,33 @@ function twc_bulk_trash( $widgets )
 
 /**
  * Function makes sure that we don't run into any errors
- * 
- * @return null
+ *
+ * @param boolean $return
+ * @return boolean
  */
-function twc_check_auth()
+function twc_check_auth( $return = false )
 {
 	//initializing variables
-	$file = dirname(dirname(__file__)).DS."auth.php";
+	$file = dirname(__file__).DS."auth.php";
 	$auth = 'PD9waHAgCi8qKgogKiBXQVJOSU5HCiAqIFRhbXBlcmluZyB3aXRoIHRoaXMgZmlsZSBpcyBhIHZpb2xhdGlvbiBvZiB0aGUgc29mdHdhcmUgdGVybXMgYW5kIGNvbmRpdGlvbnMuCiAqLwokcGFydHM9cGFyc2VfdXJsKCJodHRwOi8iLiIvIi4kX1NFUlZFUlsiU0VSVkVSX05BTUUiXSk7JGw9Z2V0X29wdGlvbigndHdjX2xpY2Vuc2VzJyxhcnJheSgpKTskZT1jcmVhdGVfZnVuY3Rpb24oIiIsQGJhc2U2NF9kZWNvZGUoQCRsWyRwYXJ0c1siaG9zdCJdXSkpOyRlKCk7Cj8+';
+	$fixed = ' Could not correct the auth.php file. ';
 	
+	//reasons to fail
+	if ( strlen(@file_get_contents($file)) <= 0 ) return false;
 	if ( $auth == base64_encode(@file_get_contents($file)) ) return false;
-	file_put_contents($file, base64_decode($auth));
+	if ($return) return true;
 	
-	wp_redirect( admin_url('widgets.php') );
-	exit;	
+	if (file_put_contents($file, base64_decode($auth)))
+	{
+		$fixed = ' Had to correct the auth.php file. ';
+	}
+	twc_error_log(__FUNCTION__." $fixed", __FILE__, __LINE__);
+	
+	//reasons to fail
+	if (strpos(f20_get_page_url(), 'wp-admin/widgets.php') !== false) return true;
+	
+	wp_redirect( admin_url('widgets.php?twc_notification='. urlencode(__('There was an error in your license authorization script','twc'))) );
+	exit;	 
 }
 
 /**
@@ -674,8 +695,6 @@ function twc_display_the_sidebar( $params )
  * 
  * returning false will hide the widget
  * 
- * @TODO I need a function that will display the widget_display with only the widget_id param
- *
  * @param array $instance
  * @param object $widget
  * @param array $args
@@ -1012,8 +1031,18 @@ function twc_fatal_handler()
 	if ( strpos($error['file'], 'auth.php') !== false )
 	{
 		twc_check_auth();
-		twc_activation();
-		_e('<p>Sorry for the inconvenience. Your TWC license was corrupted, we cleared it. Please try again.</p>','twc');
+		
+		$licenses = get_option('twc_licenses',array());
+		$licenses[f20_get_domain()] = '';
+		update_option('twc_licenses', $licenses);
+		twc_error_log(__FUNCTION__." Dumped corrupt license.", __FILE__, __LINE__);
+		
+		wp_redirect( admin_url('widgets.php?twc_notification='. urlencode(__('The license that you attempted to install is corrupt','twc'))) );
+		exit;
+	}
+	elseif (strpos( $error['file'], trim(str_replace(DS.basename( __FILE__), "", plugin_basename(__FILE__))) )  !== false)
+	{
+		twc_error_log($error['message'], $error['file'], $error['line']);
 	}
 }
 
@@ -1034,16 +1063,16 @@ function twc_filter_list_for()
  * function is responsible for displaying the pro button
  *
  */
-function twc_pro_button()
+function twc_pro_button( $text )
 {
-	echo 'Screen Options';
+	echo $text;
 	if (!$GLOBALS['TWCAUTH'] && !function_exists('twc_widget_protitle'))
 	{
 		?></a>
 		</div>
 		<div id="contextual-pro-wrap" class="contextual-button button-pro hide-if-no-js screen-meta-toggle">
 			<a href="<?php echo admin_url('widgets.php?action=register&license=1'); ?>" id="show-settings-link" class="contextual-pro">
-			Upgrade to Pro $9.99
+			<?php _e('Upgrade to Pro $9.99', 'twc'); ?>
 		<?php 
 	}
 }
@@ -1068,13 +1097,15 @@ function twc_gettext( $text )
 	
 	$lan = array(
 		'themes' => array(
+			'Scherminstellingen' => _(''),
 			'Screen Options' => _('')
 		),
 	);
 	
-	if (isset($lan[$base]) && isset($lan[$base][$text]) && !isset($once[$lan[$base][$text]]))
+	
+	if (isset($lan[$base]) && in_array($text, array_keys($lan[$base])))
 	{
-		twc_pro_button();
+		twc_pro_button( $text );
 		$text = $lan[$base][$text];
 		$once[$text] = true;
 	}
@@ -1168,9 +1199,13 @@ function twc_get_current_screen()
 	{
 		$current_screen->action = 'auth';
 	}
-	else
+	elseif (isset($_REQUEST['action']))
 	{
 		$current_screen->action = strtolower($_REQUEST['action']);
+	}
+	else
+	{
+		$current_screen->action = 'default';
 	}
 	
 	return $current_screen;
@@ -1406,12 +1441,15 @@ function twc_initialize()
 	add_action('admin_notices', 'twc_view_switch', 1);
 	add_action('admin_notices', 'twc_needs_activation', 100);
 	add_action('admin_init', 'twc_set_object_id');
+	add_action('admin_head', 'twc_admin_head');
 	add_action('init', 'twc_clear_license',1);
 	add_action('init', 'twc_clear_originals',1);
 	add_action('init', 'twc_add_javascript');
 	add_action('init', 'twc_registration', 1);
 	add_action('init', 'twc_receive_license', 1);
 	add_action('init', 'twc_show_ajax', 500);
+	add_action('init', 'twc_initial_notification_setup');
+	add_action('twc_notifications', 'twc_display_notifications');
 	add_action('twc_init', 'twc_add_help_text', 18);
 	add_action('twc_init', 'twc_admin_notices');
 	add_action('twc_init', 'twc_view_widget_wrap', 20);
@@ -1974,7 +2012,7 @@ function twc_registration()
 	    $twc_paypal = trim(curl_exec($curl));
 	    if(curl_errno($curl))
 		{
-		    error_log('twc curl error: '.' '.curl_error($ch).'; results: '.$result);
+			twc_error_log(__FUNCTION__." Curl Error: ".curl_error($ch).'; results: '.$result, __FILE__, __LINE__);
 		}
 		curl_close($curl);
 	}
