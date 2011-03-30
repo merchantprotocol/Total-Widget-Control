@@ -15,7 +15,7 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 ?>
 <div class="postbox">
-	<h3 class="hndle"><span><?php _e('Publish', 'twc'); ?></span></h3>
+	<h3 class="hndle"><span><?php _e('Publishing', 'twc'); ?></span></h3>
 	<div class="widget-publishing-actions">
 	
 		<div id="minor-publishing-actions">

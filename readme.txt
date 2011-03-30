@@ -5,7 +5,7 @@ Donate link: http://www.totalwidgetcontrol.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1
-Stable tag: 1.6.9
+Stable tag: 1.6.10
 
 Total Widget Control is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want.
 
@@ -31,10 +31,9 @@ You will not find another plugin in the WordPress repository that has developers
 
 = Who's Using Total Widget Control? =
 The Total Widget Control website itself is using TWC. We have also installed the latest version on our demo website for you to try out, [Total Widget Control Demo Site](http://demo.5twentystudios.com/)
-`
-User: Demo
-Password: Demo
-`
+`User: Demo
+Password: Demo`
+
 
 = The Source =
 5 Twenty is a Portland, Oregon based development firm which specializes in the development of interactive web applications. 100% of our team members are located within the United States and are full-time employees of 5 Twenty. We provide extensive white label development sevices for marketing, branding, and web design firms throughout the world. Working as their inhouse development teams, we have the ability to quickly and effiencently produce high quality applications that meet their client's needs. Interested in working with us? Visit [5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America")
@@ -46,6 +45,8 @@ Password: Demo
 == Installation ==
 
 = Standard installation procedures =
+
+*The installation is REALLY EASY. Just click and activate. But I'm providing as much detail as I possibly can, just to give you some comfort.*
 
 1. Upload the folder `total-widget-control` to the `/wp-content/plugins/` directory
 1. Activate the `Total Widget Control` plugin through the 'Plugins' menu in WordPress
@@ -78,8 +79,8 @@ register_sidebar(array(
 
 = Administrative Setup =
 
-1. Upon activation all of your widgets will dissappear. This is because none of the widgets have been set to display on any particular page. 
-1. Simply head to the wp-admin widgets area and begin editing the widgets.
+1. Upon activation NONE of your widgets will dissappear. TWC works alongside the core WordPress without any conflicts, you can actually use the old widget area without any problems.
+1. Simply head to the wp-admin widgets area and begin setting widget specifics.
 1. When editing a widget, you will see a list of your websites menu items on the right hand side. If you check any of these menu items, and save, then your widget will display on those pages, whether or not the menu item is included in any menu.
 
 
@@ -87,9 +88,13 @@ register_sidebar(array(
 
 These questions are focused towards new users, that have not yet used the Total Widget Control Plugin. For more indepth information or questions regarding the code and/or use of the Total Widget Control Plugin, please visit the support community website.
 
+= Are there any online resources for using TWC? =
+
+[TotalWidgetControl.com](http://www.TotalWidgetControl.com/ "Total Widget Control") Codex, Tutorials, Support Forum, and also a Questions and Answers section.
+
 = What if I have a problem with my installation? =
 
-That's why we're here. The tech support provided by 5Twenty Studios, a U.S.A based company, will overcome any issues that you may have with your installation. We've gone to great lengths to make our users happy, we'll do the same for you. Email us: support@5twentystudios.com ...just to say hi!
+That's why we're here, [TotalWidgetControl.com](http://www.TotalWidgetControl.com/ "Total Widget Control") and here support@5twentystudios.com. The tech support provided by 5Twenty Studios, a U.S.A based company, will overcome any issues that you may have with your installation. We've gone to great lengths to make our users happy, we'll do the same for you.
 
 = The free version of this software is designed for small websites =
 
@@ -97,7 +102,7 @@ We are interested in providing excellent software solutions to this community, t
 
 = What features does Total Widget Control Provide? =
 
-TWC provides numeroius very helpful features for dynamically managing your website and it's widgets. The following are just a couple of the features you will find:
+TWC provides numerous very helpful features for dynamically managing your website and it's widgets. The following are just a couple of the features you will find:
 
 * "Dynamic Sidebars" apply widgets to any page, post, category, or custom listing type.
 * "Widget Themes" Quickly change the design for any widget by selecting from a dropdown list of your predesigned widget styles.
@@ -113,22 +118,22 @@ TWC provides numeroius very helpful features for dynamically managing your websi
 
 This plugin routes around the native widget control structure without affecting any of the code. If you deactivate this Plugin after placing all of your widgets, then the system will snap back to its default logic and your widgets will all display as normal. At any time you can come back and reactivate the Total Widget Control Plugin and it will remember all of your past decisions as well as your new ones.
 
-= What if your plugin doesn't offer the features that I need? =
-
-Our development rates are very affordable, couple that with rapid development time and a free pro license and you've got yourself the features that you need. We encourage people to help us invest in this software.
-
 = I'm building a website that will be administered by an idiot, can they use this software? =
 
-YES. Just show them where the help tab is or activate the help features for their user account. Our built in help takes advantage of 
-jquery tooltips and will display helpful information to the user as they navigate through the system. You are in good hands my friend.
+YES. Just show them where the help tab is and also where the support website is, we'll take care of them for you. Our built in help takes advantage of jquery tooltips and will display helpful information to the user as they navigate through the system. You are in good hands my friend.
 
 = Is TWC production ready? =
 
-This is currently a beta release of TWC, we cannot guarantee that there will be no bugs at this time. We have launced this beta version so that the WP community can help us locate new potentail problems and we can fix them. Our goal is to provide software of the highest quality, and we will continue to do this by fixing any bugs quickly.
+Yes. We are confident in this release and have installed it on all of our websites. We will still be actively maintaining Total Widget Control, but we will not be releasing versions as often as we have been.
 
 = Who is 5 Twenty Studios? =
 
 5 Twenty is a Portland, Oregon based development firm which specializes in the development of interactive web applications. 100% of our team members are located within the United States and are full-time employees of 5 Twenty. We provide extensive white label development sevices for marketing, branding, and web design firms throughout the world. Working as their inhouse development teams, we have the ability to quickly and effiencently produce high quality applications that meet their client's needs. Interested in working with us? Visit [5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America")
+
+= What if your plugin doesn't offer the features that I need? =
+
+Our development rates are very affordable, couple that with rapid development time and a free pro license and you've got yourself the features that you need. We encourage people to help us invest in this software.
+
 
 == Screenshots ==
 

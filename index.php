@@ -11,16 +11,10 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: <a href="http://www.totalwidgetcontrol.com" target="_blank">Total Widget Control</a> is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want. Additionally, TWC makes theme development a breeze by providing template codes for managing and creating widgets and sidebars. Visit the dedicated community at <a href="http://www.totalwidgetcontrol.com" target="_blank">www.totalwidgetcontrol.com</a>
- * Version: 1.6.9
+ * Version: 1.6.10
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
- * 
- * 
- * @TODO I need to clean up the twc-nav-menu javascript to only include the js that I need
- * @TODO I need to build in my own set of default widgets and default wrappers
- * @TODO I need to activate shortcodes for widgets
- * @TODO I need to activate shortcodes for sidebars
  * 
  */
 
@@ -42,7 +36,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
  */
-defined("TWC_VERSION") or define("TWC_VERSION", '1.6.03');
+defined("TWC_VERSION") or define("TWC_VERSION", '1.6.10');
 
 /**
  * Startup
@@ -97,7 +91,6 @@ defined("TWC_LITE_LICENSE") or define("TWC_LITE_LICENSE", 'IGNsYXNzIFpqSXdYMlp2Z
  * widget.
  * 
  * @TODO need to set this to call get_option from the db
- * @TODO need to add this as a security check to every file
  */
 defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can("edit_theme_options")) );
 

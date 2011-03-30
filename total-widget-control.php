@@ -106,7 +106,14 @@ function twc_add_help_text()
 			add_filter('contextual_help', 'twc_view_help_edit'); 
 			break;
 		case 'add':
-			add_filter('contextual_help', 'twc_view_help_add'); 
+			if (isset($_REQUEST['editwidget']))
+			{
+				add_filter('contextual_help', 'twc_view_help_edit'); 
+			}
+			else
+			{
+				add_filter('contextual_help', 'twc_view_help_add'); 
+			}
 			break;
 	}
 }

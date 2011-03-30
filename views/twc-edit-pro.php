@@ -29,15 +29,16 @@ $wrappers = twc_read_wrapper_files();
 		<ol style="margin-left:30px;">
 			<li><?php _e('Dyamically set default sidebars','twc'); ?></li>
 			<li><?php _e('Ability to recursivly display a widget to all child pages','twc'); ?></li>
-			<li><?php _e('choose to exclude the widget from checked pages','twc'); ?></li>
+			<li><?php _e('Choose to exclude the widget from checked pages','twc'); ?></li>
 			<li><?php _e('Display widgets by user role','twc'); ?></li>
 			<li><?php _e('Enable and Disable widgets without loosing their sidebar locations','twc'); ?></li>
 			<li><?php _e('Set Specific publishing dates for widgets','twc'); ?></li>
 			<li><?php _e('Set administrative titles for every widget instance','twc'); ?></li>
 			<li><?php _e('Create your own widget wrappers to style widget instances individually','twc'); ?></li>
 			<li><?php _e('Get bulk action options in the widget list','twc'); ?></li>
-			<li><?php _e('Filter, Pagination and Search the widget list','twc'); ?></li>
+			<li><?php _e('Filter, Paginate and Search the widget list','twc'); ?></li>
 		</ol>
+		<p><a href="http://www.totalwidgetcontrol.com/" target="_blank">Questions and Answers Website</a></p>
 		<?php twc_upgrade_button(); ?>
 	</div>
 	<?php endif; ?>

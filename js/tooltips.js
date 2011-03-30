@@ -111,8 +111,8 @@ jQuery(document).ready(function(){
 		}
 	});
 
-	if (jQuery('.widget-options').length)
-	jQuery('.widget-options:first').qtip({
+	if (jQuery('#post_form').length)
+	jQuery('#post_form').qtip({
 		content: { text: jQuery('#twcWidgetsOptions').attr('tooltip') },
 		show: { when: { target: jQuery('#twcWidgetsOptions') } },
 		hide: { when: { target: jQuery('#twcWidgetsOptions'), event: 'mouseout' } },
@@ -133,15 +133,15 @@ jQuery(document).ready(function(){
 		}
 	});
 
-	if (jQuery('#menu-settings-column').length)
-	jQuery('#menu-settings-column').qtip({
+	if (jQuery('#side-sortables').length)
+	jQuery('#side-sortables').qtip({
 		content: { text: jQuery('#twcNavMenu').attr('tooltip') },
 		show: { when: { target: jQuery('#twcNavMenu') } },
 		hide: { when: { target: jQuery('#twcNavMenu'), event: 'mouseout' } },
 		position: {
 			corner: {
 			   target: 'topMiddle',
-			   tooltip: 'bottomLeft'
+			   tooltip: 'bottomRight'
 			}
 		},
 		style: {
