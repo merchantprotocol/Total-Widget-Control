@@ -85,22 +85,7 @@ function twc_update_positions_select( sidebar_select )
  */
 function twc_ongoing_selection( widget_id, object_id )
 {
-	var $selected = false;
-	jQuery('#side-sortables').find('[type=checkbox][name*=menu-item-object-id]').each(function(){
-		if (jQuery(this).val() == object_id)
-		{
-			$selected = true;
-			jQuery(this).attr('checked', true);
-		}
-		else
-		{
-			jQuery(this).attr('checked', false);
-		}
-	});
-	if (!$selected)
-	{
-		twc.delete_menu_item(widget_id, object_id);
-	}
+	return;
 }
 
 /**
@@ -125,22 +110,14 @@ function twc_save_widget_edit()
 	var values = {};
 	var inputs = jQuery('#menu-management-liquid').find(':input');
 	values = twc_get_form_vars( inputs );
-	/*
-	var checkboxes = jQuery('#menu-settings-column').find('input[type=checkbox]:checked');
-	re = new RegExp('menu-item\\[(\[^\\]\]*)');
-	checkboxes.each(function() {
-		values[this.name] = jQuery(this).val();
-		var menu_item_id = re.exec(this.name);
-		var menu_item_id = menu_item_id[1];
-		values['menu-item['+menu_item_id+'][menu-item-url]'] = jQuery(".menu-item-url[name*="+menu_item_id+"]").val();
-		values['menu-item['+menu_item_id+'][menu-item-object]'] = jQuery(".menu-item-object[name*="+menu_item_id+"]").val();
-	});
-	*/
 	var radio = jQuery('#menu-management-liquid').find('input[type=radio]:checked');
 	radio.each(function() {values[this.name] = jQuery(this).val();});
 	var inputs = jQuery('.twcpi').find(':input');
 	inputs.each(function(){values[this.name] = jQuery(this).val();});
 	values['twcp_visible_parent'] = (jQuery('#twcp_visible_parent').attr('checked'))? jQuery('#twcp_visible_parent').val():''; 
+	
+	//boolean checks
+	var need_prompt = (jQuery('.twc_sidebar_select_box:first').val() == 'wp_inactive_widgets');
 	
 	jQuery.ajax({
 		type : 'POST',
@@ -148,12 +125,13 @@ function twc_save_widget_edit()
 		data: values,
 		success: function( result ){
 			//alert(result);
-			if (jQuery('#twc-redirect').val())
+			if (jQuery('#twc-redirect').val() && (!need_prompt || (need_prompt && confirm("You're saving this to the inactive widgets sidebar, continue?"))) )
 			{
 				window.location.href = jQuery('#twc-redirect').val();
 			}
 			else
 			{
+				jQuery('#twc-redirect').val('');
 				jQuery('#ajax-feedback').css('visibility','hidden');
 			}
 		}

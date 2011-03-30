@@ -53,6 +53,8 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 		<?php if (empty($widget['p']['twc_menu_item'])): ?>
 		<div id="menu-instructions" class="post-body-plain">
 			<p><?php _e('Select menu items (pages, categories, links) from the boxes at right to begin adding this widget to specific pages.','twc'); ?></p>
+			<p id="default_display_notice"><?php _e('Since no pages have been selected, this widgets default is to display on all pages. This keeps consistency with the default WordPress functionality','twc'); ?></p>
+			<br>
 		</div>
 		<?php endif; ?>
 		

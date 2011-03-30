@@ -768,9 +768,8 @@ function twc_display_if_excluded( $current, $widget )
 	
 	//check to see if we're even going to load this widget
 	$isExclude = ( isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude' );
-	$brandNew = ( !isset($widget['p']) || !isset($widget['p']['twc_menu_item']) || !is_array($widget['p']['twc_menu_item']) );
 	
-	if ($brandNew) return $current;
+	if (twc_is_widget_new( $widget )) return $current;
 	if (!$twc_isDefault && ((!$current && !$isExclude) || ($current && $isExclude))) 
 	{
 		twc_display_debug('exclude false');
@@ -1112,18 +1111,21 @@ function twc_get_widget_objects( $widget )
 			}
 		}
 		
-		//Assists with backwards compatibilities
-		if (!isset($instances[$widget['id']]['menu-item-url']))
-		foreach ((array)$widget['p']['menu_item_urls'] as $url)
-			$instances[$widget['id']]['menu-item-url'][] = $url;
-			
-		if (!isset($instances[$widget['id']]['menu-item-object-id']))
-		foreach ((array)$widget['p']['menu_item_object_id'] as $url)
-			$instances[$widget['id']]['menu-item-object-id'][] = $url;
-			
-		if (!isset($instances[$widget['id']]['menu-item-object']))
-		foreach ((array)$widget['p']['menu_item_object'] as $url)
-			$instances[$widget['id']]['menu-item-object'][] = $url;
+		if (!twc_is_widget_new( $widget, false ))
+		{
+			//Assists with backwards compatibilities
+			if (!isset($instances[$widget['id']]['menu-item-url']))
+			foreach ((array)$widget['p']['menu_item_urls'] as $url)
+				$instances[$widget['id']]['menu-item-url'][] = $url;
+				
+			if (!isset($instances[$widget['id']]['menu-item-object-id']))
+			foreach ((array)$widget['p']['menu_item_object_id'] as $url)
+				$instances[$widget['id']]['menu-item-object-id'][] = $url;
+				
+			if (!isset($instances[$widget['id']]['menu-item-object']))
+			foreach ((array)$widget['p']['menu_item_object'] as $url)
+				$instances[$widget['id']]['menu-item-object'][] = $url;
+		}
 	}
 	
 	return $instances[$widget['id']];
@@ -1489,9 +1491,8 @@ function twc_is_widget_displaying( $widget, $debug = false )
 	
 	
 	//IF THE WIDGET IS BRAND NEW, JUST SHOW IT
-	$brandNew = ( ! isset($widget['p']) || !isset($widget['p']['twc_menu_item']) || !is_array($widget['p']['twc_menu_item']) );
-	if ( $debug && $brandNew ) twc_display_debug('display '.$widget['id'].' because its brand new');
-	if ( $brandNew ) return $widgets_displaying[$widget['id']] = true; 
+	if ( $debug && twc_is_widget_new( $widget ) ) twc_display_debug('display '.$widget['id'].' because its brand new');
+	if ( twc_is_widget_new( $widget ) ) return $widgets_displaying[$widget['id']] = true; 
 	
 	
 	//initializing variables
@@ -1567,6 +1568,36 @@ function twc_is_widget_displaying( $widget, $debug = false )
 	//WE DIDN'T MATCH ANYTHING
 	if ( $debug ) twc_display_debug('don\'t display '.$widget['id'].' because nothing matched');
 	return $widgets_displaying[$widget['id']] = false;
+}
+
+/**
+ * Function determines if the widget has been modified in any way
+ *
+ * @param string|object $widget
+ * @param boolean $include_objects
+ * @return boolean
+ */
+function twc_is_widget_new( $widget, $include_objects = true )
+{
+	//initializing variables
+	if (is_string($widget)) $widget = twc_get_widget_by_id($widget);
+	
+	if ($include_objects)
+	{
+		$objects = twc_get_widget_objects( $widget );
+	}
+	
+	//reasons widget is TWC
+	if ($include_objects && !empty($objects)) return false;
+	if (isset($widget['p']['twcp_exclude_sidebar']) && $widget['p']['twcp_exclude_sidebar'] == 'exclude') return false;
+	if (isset($widget['p']['twcp_default_sidebar']) && $widget['p']['twcp_default_sidebar'] == 'default') return false;
+	//if (isset($widget['p']['twcp_status']) && $widget['p']['twcp_status'] == 'disabled') return false;
+	//if (isset($widget['p']['twcp_publish_time']) && $widget['p']['twcp_publish_time'] > time()) return false;
+	//if (isset($widget['p']['twcp_visibility']) && $widget['p']['twcp_visibility'] != 'public') return false;
+	//if (isset($widget['p']['twcp_visible_parent']) && $widget['p']['twcp_visible_parent'] == 'parent') return false;
+	
+	//widget is brand new
+	return true;
 }
 
 /**
@@ -1656,7 +1687,7 @@ function twc_position_select_box( $sidebar_id, $default, $name = null )
 		$name = $sidebar_id;
 	}
 	
-	$select = '<select id="sidebar_position'.'" name="'.$name.'_position'.'" class="twc_sidebar_select_box">';
+	$select = '<select id="sidebar_position'.'" name="'.$name.'_position'.'" class="twc_position_select_box">';
 	
 	if (count($list) == 0)
 	{
