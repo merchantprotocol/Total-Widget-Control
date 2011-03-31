@@ -261,37 +261,6 @@ var twc;
 })(jQuery);
 
 
-
-//Deprecated as of 1.6.11
-function twc_update_positions_select( sidebar_select )
-{
-	return twc.update_positions(sidebar_select);
-}
-
-//Deprecated as of 1.6.11
- function twc_ongoing_selection( widget_id, object_id )
-{
-	return;
-}
-
-//Deprecated as of 1.6.11
-function twc_save_widget_edit()
-{
-	return twc.save_widget_edit();
-}
-
-//Deprecated as of 1.6.11
-function twc_save_widget_qedit( widget_id )
-{
-	return twc.save_quick_edit(widget_id);
-}
-
-//Deprecated as of 1.6.11
-function twc_get_form_vars( inputs )
-{
-	return twc.inputs( inputs );
-}
-
 /**
  * 
  * @return
@@ -484,3 +453,12 @@ function twc_hide_messages( messageID )
 	        return -1;
 	    }
 	}
+ 
+ 
+//Deprecated functions as of 1.6.11
+function twc_update_positions_select( sidebar_select ){return twc.update_positions(sidebar_select);}
+function twc_ongoing_selection( widget_id, object_id ){return;}
+function twc_save_widget_edit(){return twc.save_widget_edit();}
+function twc_save_widget_qedit( widget_id ){return twc.save_quick_edit(widget_id);}
+function twc_get_form_vars( inputs ){return twc.inputs( inputs ); }
+

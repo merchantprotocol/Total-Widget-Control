@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: <a href="http://www.totalwidgetcontrol.com" target="_blank">Total Widget Control</a> is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want. Additionally, TWC makes theme development a breeze by providing template codes for managing and creating widgets and sidebars. Visit the dedicated community at <a href="http://www.totalwidgetcontrol.com" target="_blank">www.totalwidgetcontrol.com</a>
- * Version: 1.6.10
+ * Version: 1.6.11
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
