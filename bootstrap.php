@@ -1343,7 +1343,9 @@ if (!function_exists('f20_get_domain')):
 	 */
 	function f20_get_domain()
 	{
-		$parts = parse_url("http:/"."/".str_replace("http:/"."/",'',$_SERVER["SERVER_NAME"]));
+		$parts = parse_url(str_replace("http:/"."/"."www.", "http:/"."/", 
+			"http:/"."/".str_replace("http:/"."/",'',$_SERVER["SERVER_NAME"]))
+		);
 		return $parts['host'];
 	}
 endif; 
@@ -1473,6 +1475,7 @@ function twc_error_log( $content = false, $file = '', $line = '' )
 	}
 	
 	$log = get_option('twc_error_log', false);
+	$content = date('Y-m-d g:i a',time()).' '.$content;
 	$content = $log."<br>".$content;
 	
 	if ($log === false)

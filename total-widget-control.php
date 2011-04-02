@@ -23,6 +23,17 @@ function twc_activation( )
 	$licenses = get_option('twc_licenses',array());
 	$licenses[f20_get_domain()] = TWC_LITE_LICENSE;
 	update_option('twc_licenses',$licenses);
+	
+	//debugging logs
+	$licenses = get_option('twc_licenses',array());
+	if (empty($licenses[f20_get_domain()]))
+	{
+		twc_error_log("Lite license is not saving to the database; domain : ".f20_get_domain());
+	}
+	else 
+	{
+		twc_error_log("Lite license saved to the database.");
+	}
 }
 
 /**
@@ -77,6 +88,7 @@ function twc_deactivate_plugin()
 {
 	//shutting off the little used accessibility option
 	set_user_setting( 'widgets_access', 'off' );
+	twc_error_log("Plugin has been deactivated.");
 }
 
 /**
@@ -283,6 +295,9 @@ function twc_clear_license( $inside = false )
 	$licenses = get_option('twc_licenses',array());
 	$licenses[f20_get_domain()] = '';
 	update_option('twc_licenses',$licenses);
+	
+	//debug loggin
+	twc_error_log("License was manually cleared.");
 	
 	wp_redirect( admin_url('widgets.php') );
 	exit();
@@ -1205,7 +1220,7 @@ function twc_get_current_screen()
 	}
 	else
 	{
-		$current_screen->action = 'default';
+		$current_screen->action = '';
 	}
 	
 	return $current_screen;
@@ -1658,7 +1673,7 @@ function twc_list_style_twc()
 	global $current_user;
 	get_currentuserinfo();
 	
-	if (!isset($view) && $style = $_REQUEST['list_style']) //querystring
+	if (!isset($view) && isset($_REQUEST['list_style']) && $style = $_REQUEST['list_style']) //querystring
 	{
 		$view = $style;
 	}
@@ -1910,7 +1925,7 @@ function twc_rows( $action = 'default' )
  * This takes care of the alternating row colors without all the messy code
  * in my table rows
  */
-function twc_row_alternate()
+function twc_row_alternate( $echo = true )
 {
 	//initializing variables
 	static $alternate;
@@ -1927,7 +1942,14 @@ function twc_row_alternate()
 	if ($alternate)
 	{
 		$alternate = -1;
-		echo 'alternate';
+		if ($echo)
+		{
+			echo 'alternate';
+		}
+		else 
+		{
+			return 'alternate';
+		}
 	}
 }
 
@@ -1999,6 +2021,8 @@ function twc_registration()
 		"&domain=".urlencode($domain)."&type=$type&unique=$uniqueID&return_url=".
 		urlencode(get_bloginfo('url'));
 	
+	twc_error_log("Requesting $type License : $path");
+	
 	if (ini_get('allow_url_fopen') && $twc_paypal = trim(@file_get_contents($path)))
 	{
 		
@@ -2022,6 +2046,7 @@ function twc_registration()
 	
 	if ($twc_paypal)
 	{
+		twc_error_log("Redirecting the user to paypal.");
 		if (!headers_sent())
 		{
 			$twc_paypal = trim(str_replace("\r\n", '', $twc_paypal));
@@ -2052,9 +2077,22 @@ function twc_receive_license()
 	//reasons to fail
 	if (!isset($_REQUEST[$uniqueID])) return false;
 	
+	update_option('twc_received_a_license', true);
+	
 	$licenses = get_option('twc_licenses',array());
 	$licenses[f20_get_domain()] = $_REQUEST[$uniqueID];
 	update_option('twc_licenses',$licenses);
+	
+	//debugging logs
+	$licenses = get_option('twc_licenses',array());
+	if (empty($licenses[f20_get_domain()]))
+	{
+		twc_error_log("The license is <span style='color:red;'>NOT</span> saving to the database.");
+	}
+	else 
+	{
+		twc_error_log("The license saved <span style='color:green;'>OK</span>.");
+	}
 	
 	return die('done : success');
 }

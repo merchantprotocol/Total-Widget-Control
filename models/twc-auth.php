@@ -23,4 +23,5 @@ if ($current_screen->action != 'auth') return false;
 //validating the auth
 if (function_exists('twc_check_auth')) twc_check_auth();
 
+twc_error_log("Viewing compare and purchase page.");
 require $view;
