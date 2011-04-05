@@ -14,9 +14,14 @@ defined('ABSPATH') or die("Cannot access pages directly.");
 if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 
 //initializing variables
-global $wp_version;
+global $wp_version, $is_iphone, $current_user;
 $current_screen = twc_get_current_screen();
 wp_enqueue_style( 'twc' );
+wp_get_current_user();
+
+$hook_suffix = $pagenow = 'widgets.php';
+$title = 'Total Widget Control';
+$user_identity = $current_user->user_login;
 
 ?>
 <?php do_action('twc_before_wrapper'); ?>

@@ -301,7 +301,7 @@ if (!class_exists("TwcPath")):
 					{
 						if ($fullpath)
 						{
-							$arr[] = $path . DS . $file;
+							$arr[] = TwcPath::clean($path . DS . $file);
 						}
 						else
 						{
@@ -1343,9 +1343,7 @@ if (!function_exists('f20_get_domain')):
 	 */
 	function f20_get_domain()
 	{
-		$parts = parse_url(str_replace("http:/"."/"."www.", "http:/"."/", 
-			"http:/"."/".str_replace("http:/"."/",'',$_SERVER["SERVER_NAME"]))
-		);
+		$parts = parse_url("http:/"."/".str_replace("http:/"."/",'',$_SERVER["SERVER_NAME"]));
 		return $parts['host'];
 	}
 endif; 

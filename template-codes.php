@@ -20,7 +20,7 @@ defined('ABSPATH') or die("Cannot access pages directly.");
  * @param string $sidebar_id
  * @return integer
  */
-function twc_count_widgets( $sidebar_id = 1 )
+function twc_count_widgets( $index = 1 )
 {
 	//initializing variables
 	global $wp_registered_sidebars, $sidebars_widgets;
@@ -39,9 +39,9 @@ function twc_count_widgets( $sidebar_id = 1 )
 		}
 	}
 	
-	if (isset($sidebars_widgets[$sidebar_id]))
+	if (isset($sidebars_widgets[$index]))
 	{
-		foreach ((array)$sidebars_widgets[$sidebar_id] as $position => $widget_slug)
+		foreach ((array)$sidebars_widgets[$index] as $position => $widget_slug)
 		{
 			//initializing variables
 			$widget = twc_get_widget_by_id($widget_slug);

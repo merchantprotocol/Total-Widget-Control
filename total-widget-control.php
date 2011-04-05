@@ -506,6 +506,16 @@ function twc_create_new_widget()
 }
 
 /**
+ * Function is responsible for setting the actual capability check
+ * after the plugins are loaded and the cookie is also loaded.
+ * 
+ */
+function twc_current_user_can()
+{
+	defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can(TWC_ACCESS_CAPABILITY)) );
+}
+
+/**
  * This function displays the widgets that are dynamic sidebar widgets
  * 
  * @TODO Test to see if this can be called directly
@@ -682,7 +692,7 @@ function twc_display_the_sidebar( $params )
 		// since we're running a loop already, then let's take this opportunity
 		// to create the defaults widgets array
 		$_widget = twc_get_widget_by_id($widget_id);
-		if ($_widget['p']['twcp_default_sidebar'] == 'default')
+		if (isset($_widget['p']['twcp_default_sidebar']) && $_widget['p']['twcp_default_sidebar'] == 'default')
 		{
 			$default_sidebar_id = twc_get_widgets_sidebar($widget_id);
 			$twc_default_sidebar_widgets[$default_sidebar_id][$widget_id] = $widget;
@@ -767,14 +777,15 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 	
 	//load the widget into a variable
 	ob_start();
-	if (is_callable($callback))
+	if ( is_callable($callback) )
 	{
-		if ( !$widget['multiwidget'] ) {
-			call_user_func_array($callback, $params);
-		}
-		else 
+		if (is_object($widget['callback'][0]) && is_string($widget['callback'][1]) && $widget['callback'][1] = 'widget')
 		{
 			$widget['callback'][0]->widget($sidebar, $instance);
+		}
+		else
+		{
+			call_user_func_array($callback, $params);
 		}
 	}
 	$display = ob_get_clean();
@@ -930,7 +941,7 @@ function twc_display_if_visiblity( $display, $widget )
 	//setting matches
 	$matchedRole = ($user_role == $widget['p']['twcp_visibility']);
 	
-	if ($matchedRole || !$visibleParent && $isParent) return true;\
+	if ($matchedRole || !$visibleParent && $isParent) return true;
 	
 	twc_display_debug('user does not have permission');
 	return false;
@@ -1149,6 +1160,10 @@ function twc_get_widget_objects( $widget )
 	if (!isset($instances[$widget['id']]))
 	{
 		$instances[$widget['id']] = array();
+		if (!isset($widget['p']) || !isset($widget['p']['twc_menu_item']))
+		{
+			$widget['p']['twc_menu_item'] = array();
+		}
 		
 		foreach ((array)$widget['p']['twc_menu_item'] as $menu_items)
 		{
@@ -1209,6 +1224,8 @@ function twc_get_current_screen()
 	$current_screen->parent_base = str_replace('.php', '', $current_screen->parent_base);
 	$current_screen->id = 'twc-widgets';
 	$current_screen->base = 'widgets';
+	$current_screen->is_network = is_network_admin();
+	$current_screen->is_user = is_user_admin();
 	
 	if ($GLOBALS['TWCAUTH'] && !isset($_REQUEST['action']))
 	{
@@ -1302,6 +1319,20 @@ function &twc_get_widget_by_id( $widget_id = null )
 		//take the data handling into our own hands if this is not a multiwidget
 		$singles = get_option('twc_single_widget_data', array());
 		$widget['p'] = @$singles[$widget['id']];
+	}
+	
+	//just making sure that we dont throw errors later
+	if (!isset($widget['p']['twcp_default_sidebar']))
+	{
+		$widget['p']['twcp_default_sidebar'] = '';
+	}
+	if (!isset($widget['p']['twcp_inherit_sidebar']))
+	{
+		$widget['p']['twcp_inherit_sidebar'] = '';
+	}
+	if (!isset($widget['p']['twcp_exclude_sidebar']))
+	{
+		$widget['p']['twcp_exclude_sidebar'] = '';
 	}
 	
 	$twc_registered_widgets[$widget_id] = $widget;
@@ -1405,6 +1436,8 @@ function twc_has_wrapper( $widget )
 	
 	//initializing variables
 	$hasWrapper = (isset($widget['p']['twcp_wrapper_file']) && $widget['p']['twcp_wrapper_file']);
+	if (!isset($widget['p']['twcp_wrapper_file']))
+		$wrapper = $widget['p']['twcp_wrapper_file'] = '';
 	$wrapper = $widget['p']['twcp_wrapper_file'];
 	
 	//reasons to return
@@ -1485,6 +1518,7 @@ function twc_initialize()
 	add_action('wp', 'twc_sortable_initialize');
 	add_action('wp', 'twc_set_object_url');
 	add_action('twc_empty_sidebar', 'twc_sidebar_originals', 20, 1);
+	add_action('plugins_loaded', 'twc_current_user_can');
 	
 	add_filter('twc-save-widget-fields', 'twc_save_menu_items',20,1);
 	add_filter('contextual_help_list', 'twc_contextual_pro');
@@ -1792,10 +1826,10 @@ function twc_read_wrapper_files()
 		'description' => __('Description','twc'),
 	);
 	
-	foreach ($files as $file)
+	foreach ((array)$files as $file)
 	{
-		if (!file_exists($path.$file)) continue;
-		$file_data[$file] = get_file_data($path.$file, $headers);
+		if (!file_exists($file)) continue;
+		$file_data[$file] = get_file_data($file, $headers);
 	}
 	
 	return $file_data;
@@ -1984,6 +2018,7 @@ function twc_registration()
 	
 	//initializing variables
 	global $twc_paypal;
+	$args = array();
 	$twc_paypal = false;
 	$current_screen = twc_get_current_screen();
 	$first = get_option('twc_unique_registration_key', true);
@@ -1996,7 +2031,7 @@ function twc_registration()
 	
 	//initializing variables
 	$headers = get_plugin_data( dirname(__file__).DS.'index.php' );
-	$domain = 'http://'.str_replace('http://', '', $_SERVER['HTTP_HOST']);
+	$url = "http://community.5twentystudios.com/?view=register-for-free&ver=".urlencode($headers['Version'])."&domain=".f20_get_domain()."&return_url=".urlencode(get_bloginfo('url'))."&email=".get_bloginfo('admin_email')."&unique=$uniqueID&type=";
 	
 	switch($_REQUEST['license'])
 	{
@@ -2016,35 +2051,20 @@ function twc_registration()
 			break;
 	}
 	
-	$path = "http://community.5twentystudios.com/?view=register-for-free&email=".
-		get_bloginfo('admin_email')."&ver=".urlencode($headers['Version']).
-		"&domain=".urlencode($domain)."&type=$type&unique=$uniqueID&return_url=".
-		urlencode(get_bloginfo('url'));
+	//debug logging
+	twc_error_log("Requesting {$type} License : $url".$type);
 	
-	twc_error_log("Requesting $type License : $path");
+	//making the call
+	$twc_paypal = wp_remote_get( $url.$type, $args );
 	
-	if (ini_get('allow_url_fopen') && $twc_paypal = trim(@file_get_contents($path)))
+	//this redirects after activation
+	if ($type == 'twc-free') do_action('twc-free-registration'); 
+	
+	if (is_wp_error( $twc_paypal ))
 	{
-		
+		twc_error_log("wp_remote_get returned an error.");
 	}
-	else 
-	{
-		$curl = curl_init($path);
-	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-
-	    $twc_paypal = trim(curl_exec($curl));
-	    if(curl_errno($curl))
-		{
-			twc_error_log(__FUNCTION__." Curl Error: ".curl_error($ch).'; results: '.$result, __FILE__, __LINE__);
-		}
-		curl_close($curl);
-	}
-	
-	if ($type == 'twc-free')  
-		do_action('twc-free-registration'); 
-	
-	if ($twc_paypal)
+	elseif (is_string($twc_paypal))
 	{
 		twc_error_log("Redirecting the user to paypal.");
 		if (!headers_sent())
@@ -2668,12 +2688,12 @@ function twcp_widget_wrapper( $display, $widget )
 {
 	//initializing variables
 	global $twc_widget_to_wrap, $twc_widget;
-	$wrapper = $widget['p']['twcp_wrapper_file'];
 	
 	//reasons to return
 	if (!twc_has_wrapper( $widget )) return $display;
 	
 	//initializing variables
+	$wrapper = $widget['p']['twcp_wrapper_file'];
 	$twc_widget_to_wrap = $display;
 	$twc_widget = $widget;
 	
