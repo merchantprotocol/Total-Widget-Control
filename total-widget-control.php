@@ -559,7 +559,8 @@ function twc_default_sidebar( $index )
 
 		// Substitute HTML id and class attributes into before_widget
 		$classname_ = '';
-		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn ) {
+		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn )
+		{
 			if ( is_string($cn) )
 				$classname_ .= '_' . $cn;
 			elseif ( is_object($cn) )
@@ -570,7 +571,8 @@ function twc_default_sidebar( $index )
 		
 		$callback = $wp_registered_widgets[$id]['callback'];
 		
-		if ( is_callable($callback) ) {
+		if ( is_callable($callback) )
+		{
 			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
 			{
 				twc_display_the_widget(null, $id, null);
@@ -997,7 +999,8 @@ function twc_dynamic_sidebar( $index = 1 )
 		
 		// Substitute HTML id and class attributes into before_widget
 		$classname_ = '';
-		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn ) {
+		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn ) 
+		{
 			if ( is_string($cn) )
 				$classname_ .= '_' . $cn;
 			elseif ( is_object($cn) )
@@ -1224,8 +1227,16 @@ function twc_get_current_screen()
 	$current_screen->parent_base = str_replace('.php', '', $current_screen->parent_base);
 	$current_screen->id = 'twc-widgets';
 	$current_screen->base = 'widgets';
-	$current_screen->is_network = is_network_admin();
-	$current_screen->is_user = is_user_admin();
+	$current_screen->is_user = false;
+	$current_screen->is_network = false;
+	if (function_exists('is_network_admin'))
+	{
+		$current_screen->is_network = is_network_admin();
+	}
+	if (function_exists('is_user_admin'))
+	{
+		$current_screen->is_network = is_user_admin();
+	}
 	
 	if ($GLOBALS['TWCAUTH'] && !isset($_REQUEST['action']))
 	{
@@ -2008,7 +2019,9 @@ function twc_register_placeholder_sidebar()
 
 /**
  * function is responsible for pinging for a license and redirecting if necessary
- *
+ * 
+ * @TODO Bookmarking the registration
+ * 
  * @return unknown
  */
 function twc_registration()
@@ -2050,12 +2063,14 @@ function twc_registration()
 			$type = 'twc-free';
 			break;
 	}
+	$url = $url.$type;
 	
 	//debug logging
-	twc_error_log("Requesting {$type} License : $url".$type);
+	twc_error_log("Requesting {$type} License : $url");
 	
 	//making the call
-	$twc_paypal = wp_remote_get( $url.$type, $args );
+	$headers = wp_remote_get( $url, $args );
+	$twc_paypal = wp_remote_retrieve_body($headers);
 	
 	//this redirects after activation
 	if ($type == 'twc-free') do_action('twc-free-registration'); 
@@ -2064,7 +2079,7 @@ function twc_registration()
 	{
 		twc_error_log("wp_remote_get returned an error.");
 	}
-	elseif (is_string($twc_paypal))
+	elseif (is_string($twc_paypal) && !empty($twc_paypal))
 	{
 		twc_error_log("Redirecting the user to paypal.");
 		if (!headers_sent())
@@ -2128,7 +2143,7 @@ function twc_retrieve_widgets()
 	global $wp_registered_widget_updates, $wp_registered_sidebars, $sidebars_widgets, $wp_registered_widgets;
 
 	//preparing the sidebars
-	$sidebars_widgets = wp_get_sidebars_widgets();
+	$sidebars_widgets = twc_wp_get_sidebars_widgets();
 	
 	$_sidebars_widgets = array();
 	$sidebars = array_keys($wp_registered_sidebars);
@@ -2139,8 +2154,8 @@ function twc_retrieve_widgets()
 	sort($old);
 	sort($sidebars);
 
-	if ( $old == $sidebars )
-		return;
+	if ( !is_admin() ) return;
+	//if ( $old == $sidebars ) return;
 
 	// Move the known-good ones first
 	foreach ( $sidebars as $id ) {
