@@ -513,6 +513,15 @@ function twc_create_new_widget()
 function twc_current_user_can()
 {
 	defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can(TWC_ACCESS_CAPABILITY)) );
+	defined("TWC_USER_CAN_ACTIVATE_PLUGINS") or define("TWC_USER_CAN_ACTIVATE_PLUGINS", (current_user_can('activate_plugins')) );
+	
+	//Is administrator
+	//
+	//The value of this constant will determine if the user can modify widgets from
+	//the front end of the website. We combine this with sortables even being turned 
+	//on.
+	defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can("edit_theme_options") && TWC_SORTABLES));
+	
 }
 
 /**
@@ -550,39 +559,10 @@ function twc_default_sidebar( $index )
 	foreach ((array)$twc_default_sidebar_widgets[$index] as $id => $widget)
 	{
 		if ( !isset($wp_registered_widgets[$id]) ) continue;
+		if ( is_admin() ) continue;
 		
-		$sidebar = twc_get_widgets_sidebar($index);
-		$params = array_merge(
-			array( array_merge( (array)$sidebar, array('widget_id' => $id, 'widget_name' => $wp_registered_widgets[$id]['name']) ) ),
-			(array) $wp_registered_widgets[$id]['params']
-		);
-
-		// Substitute HTML id and class attributes into before_widget
-		$classname_ = '';
-		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn )
-		{
-			if ( is_string($cn) )
-				$classname_ .= '_' . $cn;
-			elseif ( is_object($cn) )
-				$classname_ .= '_' . get_class($cn);
-		}
-		$classname_ = ltrim($classname_, '_');
-		$params[0]['before_widget'] = sprintf($params[0]['before_widget'], $id, $classname_);
-		
-		$callback = $wp_registered_widgets[$id]['callback'];
-		
-		if ( is_callable($callback) )
-		{
-			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
-			{
-				twc_display_the_widget(null, $id, null);
-			}
-			else
-			{
-				call_user_func_array($callback, $params);
-			}
-			$did_one = true;
-		}
+		twc_display_the_widget(null, $id, null);
+		$did_one = true;
 	}
 	$twc_isDefault = false;
 	
@@ -776,14 +756,13 @@ function twc_display_the_widget( $instance = null, $widget_id, $args = null, $fo
 		echo '<div style="border:1px solid red;"><b>'.$widget_id.'</b>';
 	}
 	
-	
 	//load the widget into a variable
 	ob_start();
 	if ( is_callable($callback) )
 	{
-		if (is_object($widget['callback'][0]) && is_string($widget['callback'][1]) && $widget['callback'][1] = 'widget')
+		if (isset($callback[0]) && is_object($callback[0]) && $callback[0] instanceof WP_Widget && method_exists($callback[0], 'widget'))
 		{
-			$widget['callback'][0]->widget($sidebar, $instance);
+			$callback[0]->widget($sidebar, $instance);
 		}
 		else
 		{
@@ -984,46 +963,14 @@ function twc_dynamic_sidebar( $index = 1 )
 	if ( empty($wp_registered_sidebars[$index]) || !array_key_exists($index, $sidebars_widgets) || !is_array($sidebars_widgets[$index]) || empty($sidebars_widgets[$index]) )
 		return false;
 
-	$sidebar = $wp_registered_sidebars[$index];
-	
 	$did_one = false;
 	foreach ( (array) $sidebars_widgets[$index] as $id )
 	{
 		if ( !isset($wp_registered_widgets[$id]) ) continue;
+		if ( is_admin() )  continue;
 		
-		//$sidebar = twc_get_widgets_sidebar($index);
-		$params = array_merge(
-			array( array_merge( (array)$sidebar, array('widget_id' => $id, 'widget_name' => $wp_registered_widgets[$id]['name']) ) ),
-			(array) $wp_registered_widgets[$id]['params']
-		);
-		
-		// Substitute HTML id and class attributes into before_widget
-		$classname_ = '';
-		foreach ( (array) $wp_registered_widgets[$id]['classname'] as $cn ) 
-		{
-			if ( is_string($cn) )
-				$classname_ .= '_' . $cn;
-			elseif ( is_object($cn) )
-				$classname_ .= '_' . get_class($cn);
-		}
-		$classname_ = ltrim($classname_, '_');
-		$params[0]['before_widget'] = sprintf($params[0]['before_widget'], $id, $classname_);
-		
-		$callback = $wp_registered_widgets[$id]['callback'];
-		
-		if ( is_callable($callback) && !is_admin() )
-		{
-			
-			if ( is_string($callback) || (isset($callback[1]) && $callback[1] != 'display_callback') )
-			{
-				twc_display_the_widget(null, $id, null);
-			}
-			else
-			{
-				call_user_func_array($callback, $params);
-			}
-			$did_one = true;
-		}
+		twc_display_the_widget(null, $id, null);
+		$did_one = true;
 	}
 	
 	return $did_one;
@@ -2272,7 +2219,7 @@ function twc_save_menu_items( $fields )
  */
 function twc_save_widget_sidebar( $widget_id, $sidebar_id, $position = 0, $delete = false )
 {
-	if (!$widget_id || !current_user_can('activate_plugins'))
+	if (!$widget_id || !TWC_USER_CAN_ACTIVATE_PLUGINS)
 		return false;
 	
 	//initializing variables
@@ -2298,7 +2245,7 @@ function twc_save_widget_sidebar( $widget_id, $sidebar_id, $position = 0, $delet
 function twc_save_widget_fields( $widget_id, $post )
 {
 	//initializing variables
-	if (!$widget_id || !current_user_can('activate_plugins'))
+	if (!$widget_id || !TWC_USER_CAN_ACTIVATE_PLUGINS)
 	{
 		wp_redirect( admin_url('widgets.php?message=0') );
 		exit;

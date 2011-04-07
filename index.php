@@ -39,24 +39,6 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
 defined("TWC_VERSION") or define("TWC_VERSION", '1.6.10');
 
 /**
- * Startup
- * 
- * This block of functions is only preloading a set of functions that I've prebuilt
- * and that I use throughout my websites.
- * 
- * @TODO Need to test this system while it's using the bootstrap file, currently it's being 
- * overridden by the 520 plugin
- * 
- * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
- * @since 1.0
- */
-require_once ABSPATH.WPINC.DS."pluggable.php";
-require_once dirname(__file__).DS."bootstrap.php";
-require_once dirname(__file__).DS."total-widget-control.php";
-require_once dirname(__file__).DS."template-codes.php";
-require_once dirname(__file__).DS."widgets.php";
-
-/**
  * Initialize Localization
  * 
  * @tutorial http://codex.wordpress.org/I18n_for_WordPress_Developers
@@ -103,13 +85,22 @@ defined("TWC_ACCESS_CAPABILITY") or define("TWC_ACCESS_CAPABILITY", "edit_theme_
 defined("TWC_SORTABLES") or define("TWC_SORTABLES", FALSE);
 
 /**
- * Is administrator
+ * Startup
  * 
- * The value of this constant will determine if the user can modify widgets from
- * the front end of the website. We combine this with sortables even being turned 
- * on.
+ * This block of functions is only preloading a set of functions that I've prebuilt
+ * and that I use throughout my websites.
+ * 
+ * @TODO Need to test this system while it's using the bootstrap file, currently it's being 
+ * overridden by the 520 plugin
+ * 
+ * @copyright Proprietary Software, Copyright Byrd Incorporated. All Rights Reserved
+ * @since 1.0
  */
-defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can("edit_theme_options") && TWC_SORTABLES));
+require_once ABSPATH.WPINC.DS."pluggable.php";
+require_once dirname(__file__).DS."bootstrap.php";
+require_once dirname(__file__).DS."total-widget-control.php";
+require_once dirname(__file__).DS."template-codes.php";
+require_once dirname(__file__).DS."widgets.php";
 
 /**
  * Initialize the Framework
