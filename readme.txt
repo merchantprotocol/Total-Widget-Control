@@ -5,7 +5,7 @@ Donate link: http://www.totalwidgetcontrol.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1.1
-Stable tag: 1.6.13
+Stable tag: 1.6.14
 
 Total Widget Control is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want.
 

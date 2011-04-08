@@ -28,7 +28,9 @@ if ( TWC_CURRENT_USER_CANNOT ) wp_die('');
 	<a href="<?php twc_get_license_link(); ?>"><?php _e('Click to download your pro license.','twc'); ?></a>
 	</p>
 </div>
+
 <script type="text/javascript">
+
 var twcp_count = 0;
 function twc_register_check_license()
 {
