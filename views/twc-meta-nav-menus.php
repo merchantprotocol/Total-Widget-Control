@@ -22,4 +22,4 @@ wp_initial_nav_menu_meta_boxes();
 remove_meta_box( 'nav-menu-theme-locations', 'nav-menus', 'side' );
 remove_meta_box( 'add-custom-links', 'nav-menus', 'side' );
 
-do_meta_boxes( 'nav-menus', 'side', null ); 
+do_meta_boxes( 'nav-menus', 'side', null );
