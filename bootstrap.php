@@ -110,11 +110,10 @@ if (!function_exists("twc_show_ajax")):
 		
 		$html = twc_get_show_view( $_REQUEST['view'] );
 		
-		//if (strlen(trim($html))>0)
-		//{
+		if (strlen(trim($html))>0)
+		{
 			echo apply_filters( 'byrd-ajax-html', $html );
-		//}
-		die();
+		}
 	}
 endif;
 
