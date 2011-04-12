@@ -34,7 +34,7 @@
 a.twc_checkmark {background: url(../../../../wp-admin/images/xit.gif) no-repeat;margin: 10px 5px 0 0px;cursor: pointer;width: 10px;height: 10px;display: block;float: left;text-indent: -9999px;overflow: hidden;padding:0 !important;}
 a.twc_checkmark:hover {background-position:-10px 0;}
 .twc_auth {width:600px;border:10px solid #ccc;background:#fff;border-radius:10px;-moz-border-radius: 10px;position:relative;margin: 50px 0 0 100px;}
-.twc_auth iframe {width:560px;margin-left:18px;border:2px solid #ccc;height:250px;border-radius:5px;-moz-border-radius:5px;}
+.twc_auth iframe {width:560px;margin-left:18px;border:2px solid #ccc;height:250px;border: 1px solid #F9F9F9;background:#F9F9F9;}
 .twc_auth h1 {margin-left:20px;color:#555;text-shadow: 1px 1px #ccc;}
 .twc_auth .button-primary {position:relative;float:right;margin:15px 0;}
 .twc_auth .button-secondary {position:relative;float:right;margin:15px;}
@@ -46,7 +46,7 @@ a.twc_checkmark:hover {background-position:-10px 0;}
 .twc-avatar {margin-right:20px;position:relative;float:left;width:100px;}
 .twc-share {position:relative;float:right;width:200px;}
 
-#twc-widget-wrap #menu-management-liquid iframe {*border:none;*background:transparent;}
+#twc-widget-wrap #menu-management-liquid iframe {border: 1px solid #F9F9F9;background:#F9F9F9;}
 #twc-widget-wrap #menu-management-liquid #poststuff {*width:97%;}
 #twc-widget-wrap #menu-management-liquid .postbox {*width:100%;}
 #twc-widget-wrap #menu-management-liquid .postbox .inside {*width:98%;}

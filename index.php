@@ -27,6 +27,15 @@ defined('ABSPATH') or die("Cannot access pages directly.");
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
  */
+defined("TWC_AFFILIATE_ID") or define("TWC_AFFILIATE_ID", '1');
+
+/**
+ * Initializing 
+ * 
+ * The directory separator is different between linux and microsoft servers.
+ * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
+ * to use.
+ */
 defined("DS") or define("DS", DIRECTORY_SEPARATOR);
 
 /**

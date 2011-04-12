@@ -514,14 +514,13 @@ function twc_create_new_widget()
 function twc_current_user_can()
 {
 	defined("TWC_CURRENT_USER_CANNOT") or define("TWC_CURRENT_USER_CANNOT", (!current_user_can(TWC_ACCESS_CAPABILITY)) );
-	defined("TWC_USER_CAN_ACTIVATE_PLUGINS") or define("TWC_USER_CAN_ACTIVATE_PLUGINS", (current_user_can('activate_plugins')) );
 	
 	//Is administrator
 	//
 	//The value of this constant will determine if the user can modify widgets from
 	//the front end of the website. We combine this with sortables even being turned 
 	//on.
-	defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can("edit_theme_options") && TWC_SORTABLES));
+	defined("TWC_IS_SORTER") or define("TWC_IS_SORTER", (current_user_can(TWC_ACCESS_CAPABILITY) && TWC_SORTABLES));
 	
 }
 
@@ -1992,7 +1991,7 @@ function twc_registration()
 	
 	//initializing variables
 	$headers = get_plugin_data( dirname(__file__).DS.'index.php' );
-	$url = "http://community.5twentystudios.com/?view=register-for-free&ver=".urlencode($headers['Version'])."&domain=".f20_get_domain()."&return_url=".urlencode(get_bloginfo('url'))."&email=".get_bloginfo('admin_email')."&unique=$uniqueID&type=";
+	$url = "http://community.5twentystudios.com/?view=register-for-free&affiliate=".TWC_AFFILIATE_ID."&ver=".urlencode($headers['Version'])."&domain=".f20_get_domain()."&return_url=".urlencode(get_bloginfo('url'))."&email=".get_bloginfo('admin_email')."&unique=$uniqueID&type=";
 	
 	switch($_REQUEST['license'])
 	{
@@ -2220,7 +2219,7 @@ function twc_save_menu_items( $fields )
  */
 function twc_save_widget_sidebar( $widget_id, $sidebar_id, $position = 0, $delete = false )
 {
-	if (!$widget_id || !TWC_USER_CAN_ACTIVATE_PLUGINS)
+	if (!$widget_id || TWC_CURRENT_USER_CANNOT)
 		return false;
 	
 	//initializing variables
@@ -2246,7 +2245,7 @@ function twc_save_widget_sidebar( $widget_id, $sidebar_id, $position = 0, $delet
 function twc_save_widget_fields( $widget_id, $post )
 {
 	//initializing variables
-	if (!$widget_id || !TWC_USER_CAN_ACTIVATE_PLUGINS)
+	if (!$widget_id || TWC_CURRENT_USER_CANNOT)
 	{
 		wp_redirect( admin_url('widgets.php?message=0') );
 		exit;
