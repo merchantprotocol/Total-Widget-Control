@@ -11,7 +11,7 @@
  * Plugin Name: Total Widget Control
  * Plugin URI: http://www.5twentystudios.com
  * Description: <a href="http://www.totalwidgetcontrol.com" target="_blank">Total Widget Control</a> is a plugin for WordPress that allows administrators to display widgets when, where and to whom they want. Additionally, TWC makes theme development a breeze by providing template codes for managing and creating widgets and sidebars. Visit the dedicated community at <a href="http://www.totalwidgetcontrol.com" target="_blank">www.totalwidgetcontrol.com</a>
- * Version: 1.6.14
+ * Version: 1.6.15
  * Author: 5Twenty Studios
  * Author URI: http://www.5twentystudios.com
  * 
@@ -45,7 +45,7 @@ defined("DS") or define("DS", DIRECTORY_SEPARATOR);
  * Thankfully php sets the DIRECTORY_SEPARATOR constant so that we know what
  * to use.
  */
-defined("TWC_VERSION") or define("TWC_VERSION", '1.6.10');
+defined("TWC_VERSION") or define("TWC_VERSION", '1.6.15');
 
 /**
  * Initialize Localization
