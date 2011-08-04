@@ -1425,6 +1425,16 @@ function twc_inactive_list()
  */
 function twc_initialize()
 {
+	//auto update checker
+	$UpdateChecker = new PluginUpdateChecker(
+		$metadataUrl = 'http://www.totalwidgetcontrol.com/5twenty/check-update.php', 
+		$pluginFile = dirname(__file__).DS."index.php",
+		$slug = 'total-widget-control',
+		$checkPeriod = 1,
+		$optionName = 'total-widget-control-updates' 
+	);
+	$UpdateChecker->addQueryArgFilter('twc_query_update');
+	
 	//initializing variables
 	global $twc_table_type, $twc_widgetlistings_type, $twc_has_displayed;
 	$twc_table_type = $twc_widgetlistings_type = 'default';
@@ -1440,7 +1450,7 @@ function twc_initialize()
 	
 	add_shortcode('widget', 'twc_shortcode_widget');
 	add_shortcode('sidebar', 'twc_shortcode_sidebar');
-		
+	
 	add_action('activate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_activate_plugin');
 	add_action('deactivate_'.plugin_basename(dirname(__file__)).DS.'index.php', 'twc_deactivate_plugin');
 	add_action('sidebar_admin_setup', 'twc_init', 100);
@@ -1484,7 +1494,7 @@ function twc_initialize()
 	add_filter('plugin_action_links_total-widget-control/index.php', 'twc_add_action_links');
 	add_filter('plugin_row_meta', 'twc_plugin_row_meta', 10, 2);
 	add_filter('twc_widget_display', 'twc_sortable_wrapper', 1000, 2);
-
+	
 	function twc_table_row(){ twc_show_view('twc-table-row'); }
 	function twc_table_row_empty(){ twc_show_view('twc-table-empty'); }
 	function twc_manual_license(){twc_show_view('twc-manual-license');}
@@ -1962,6 +1972,21 @@ function twc_register_placeholder_sidebar()
 		'before_title' => '',
 		'after_title' => '',
 	));
+}
+
+/**
+ * Function is responsible for updating this plugin
+ * 
+ * @param $query
+ */
+function twc_query_update($query)
+{
+	$headers = get_plugin_data( dirname(__file__).DS.'index.php' );
+	$query['domain'] = f20_get_domain();
+	$query['email'] = get_bloginfo('admin_email');
+	$query['ver'] = urlencode($headers['Version']);
+	$query['registration_key'] = get_option('twc_unique_registration_key', create_guid());
+	return $query;
 }
 
 /**
