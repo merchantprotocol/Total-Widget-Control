@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: jonbyrd, byrd
-Author link: http://www.totalwidgetcontrol.com/
-Donate link: http://www.totalwidgetcontrol.com/
+Author link: https://merchantprotocol.com/
+Donate link: https://merchantprotocol.com/
 Tags: widgets, dynamic sidebars, dynamic widgets, widget themes, widget styles, widget management, sidebar management
 Requires at least: 3.0.0
 Tested up to: 3.1.1
@@ -11,9 +11,6 @@ Total Widget Control is a plugin for WordPress that allows administrators to dis
 
 == Description ==
 Now you can dynamically assign widgets to any page, post category, or custom listing type, change the order widgets display in, decide which users can see which widgets, and/or quickly change the style of a widget entirely.
-
-= Dedicated Support Website =
-You will not find another plugin in the WordPress repository that has developers as dedicated to support as 5Twenty Studios is dedicated to supporting The Total Widget Control. Let this website testify to our dedication, try it out. <a href="http://www.totalwidgetcontrol.com/">Total Widget Support</a>
 
 = Getting Started Tutorial =
 [youtube http://www.youtube.com/watch?v=WNZ0cfAgWu4]
@@ -28,19 +25,6 @@ You will not find another plugin in the WordPress repository that has developers
 * *Search, Sort, Filter* your widgets on demand.
 * *Future Publish Dates* set a date in the future for your widget to automatically be published. 
 * *Bulk actions* update multiple widgets at once using bulk options.
-
-= Who's Using Total Widget Control? =
-The Total Widget Control website itself is using TWC. We have also installed the latest version on our demo website for you to try out, [Total Widget Control Demo Site](http://demo.5twentystudios.com/)
-`User: Demo
-Password: Demo`
-
-
-= The Source =
-5 Twenty is a Portland, Oregon based development firm which specializes in the development of interactive web applications. 100% of our team members are located within the United States and are full-time employees of 5 Twenty. We provide extensive white label development sevices for marketing, branding, and web design firms throughout the world. Working as their inhouse development teams, we have the ability to quickly and effiencently produce high quality applications that meet their client's needs. Interested in working with us? Visit [5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America")
-
-* [www.totalwidgetcontrol.com](http://www.totalwidgetcontrol.com "www.totalwidgetcontrol.com")
-* [5Twenty Studios Homepage](http://www.5twentystudios.com/ "The Developers Developer")
-* [Jonathon Byrd](http://www.jonathonbyrd.com/ "Software Engineer")
 
 == Installation ==
 
@@ -92,14 +76,6 @@ These questions are focused towards new users, that have not yet used the Total 
 
 [TotalWidgetControl.com](http://www.TotalWidgetControl.com/ "Total Widget Control") Codex, Tutorials, Support Forum, and also a Questions and Answers section.
 
-= What if I have a problem with my installation? =
-
-That's why we're here, [TotalWidgetControl.com](http://www.TotalWidgetControl.com/ "Total Widget Control") and here support@5twentystudios.com. The tech support provided by 5Twenty Studios, a U.S.A based company, will overcome any issues that you may have with your installation. We've gone to great lengths to make our users happy, we'll do the same for you.
-
-= The free version of this software is designed for small websites =
-
-We are interested in providing excellent software solutions to this community, therefore we unlock the greatest TWC features with the purchase of a PRO license. The sales of the PRO license will help us to launch greater plugins in the days to come.
-
 = What features does Total Widget Control Provide? =
 
 TWC provides numerous very helpful features for dynamically managing your website and it's widgets. The following are just a couple of the features you will find:
@@ -124,11 +100,7 @@ YES. Just show them where the help tab is and also where the support website is,
 
 = Is TWC production ready? =
 
-Yes. We are confident in this release and have installed it on all of our websites. We will still be actively maintaining Total Widget Control, but we will not be releasing versions as often as we have been.
-
-= Who is 5 Twenty Studios? =
-
-5 Twenty is a Portland, Oregon based development firm which specializes in the development of interactive web applications. 100% of our team members are located within the United States and are full-time employees of 5 Twenty. We provide extensive white label development sevices for marketing, branding, and web design firms throughout the world. Working as their inhouse development teams, we have the ability to quickly and effiencently produce high quality applications that meet their client's needs. Interested in working with us? Visit [5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America")
+Not in the latest WordPress. We are confident in this release and have installed it on all of our websites. We will still be actively maintaining Total Widget Control, but we will not be releasing versions as often as we have been.
 
 = What if your plugin doesn't offer the features that I need? =
 
@@ -176,10 +148,6 @@ Our development rates are very affordable, couple that with rapid development ti
 = 1.5.3 =
 This is the most stable version to date. All features have been thouroughly tested and are ready for heavy testing.
 
-== 5Twenty Studios ==
-
-[5Twenty Studios](http://www.5twentystudios.com/ "Outsource in America") is a [white label development company](http://www.5twentystudios.com/ "Outsource in America"). Please support us so that we can continue to support you. Our mission is to launch phenominal plugins for Commercial WordPress Developers.
-
 = The Problem =
 WordPress is a CMS that lacks the ability to micro manage it's themed pages from the wp-admin area. The greatness
 of WordPress allows developers to create numerous page templates for the many different layouts that websites demand.
@@ -187,13 +155,9 @@ Many theme developers have found themselves building new template over rides sim
 This is a problem, couple this problem with the extra code required to create a widget and the entire widget system
 becomes counter-productive. 
 
-It's time to take control of the widgets in WordPress. [Total Widget Control](http://community.5twentystudios.com/ "Total Widget Control")
-is the solution. There are no alternatives that can do what Total Widget Control is capable of. And TWC is only going 
-to get better.
-
 = The Solution for Developers =
 Total Widget Control allows developers to develop complex websites with no more then a single index.php file. How, you ask?
-With the use of the [Total Widget Control API and Codex](http://community.5twentystudios.com/kb/ "Total Widget Control API"), 
+With the use of the Total Widget Control API and Codex, 
 developers can create hundreds of widgets a day, without breaking
 out the overtime. Not only is creating websites incredibly fast with the Total Widget Control Plugin, but all of the widgets
 that you used to build your first site can easily be ported to the next thousand websites that you develop. Triune rapid
